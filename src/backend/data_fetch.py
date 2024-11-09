@@ -23,12 +23,12 @@ def fetch_from_sql_file(filename):
     return results
 
 def get_countries(query=None, page=1, per_page=24):
-    conn = sqlite3.connect('db/nba_db.sqlite')
+    conn = sqlite3.connect('../db/nba_db.sqlite')
     cursor = conn.cursor()
 
     if query:
         sql_query = "SELECT name, flag_link FROM countries WHERE name LIKE ? LIMIT ? OFFSET ?"
-        params = (f"%{query}%", per_page, (page - 1) * per_page)
+        params = (f"{query}%", per_page, (page - 1) * per_page)
     else:
         sql_query = "SELECT name, flag_link FROM countries LIMIT ? OFFSET ?"
         params = (per_page, (page - 1) * per_page)
@@ -38,7 +38,7 @@ def get_countries(query=None, page=1, per_page=24):
 
     if query:
         count_query = "SELECT COUNT(*) FROM countries WHERE name LIKE ?"
-        cursor.execute(count_query, (f"%{query}%",))
+        cursor.execute(count_query, (f"{query}%",))
     else:
         count_query = "SELECT COUNT(*) FROM countries"
         cursor.execute(count_query)
