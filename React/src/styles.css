@@ -20,8 +20,7 @@ body {
 }
 
 .container {
-    width: 80%;
-    max-width: 1200px;
+    width: 100%;
     text-align: center;
     overflow-y: auto;
 }
@@ -32,12 +31,13 @@ h1 {
 }
 
 .flag-grid {
+    width: 80%;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 20px; /* Space between flag cards */
     overflow-y: auto;
     place-items: center;
-
+    margin: 0 auto;
 }
 
 .flag-card { 
