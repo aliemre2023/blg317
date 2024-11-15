@@ -19,8 +19,8 @@ def fetch_from_sql_file(filename):
     conn.close()
     
     # Convert rows to a list of dictionaries
-    results = [dict(row) for row in rows]
-    return results
+    #results = [dict(row) for row in rows]
+    return rows
 
 def get_countries(query=None, page=1, per_page=24):
     conn = sqlite3.connect('../db/nba_db.sqlite')
@@ -48,3 +48,11 @@ def get_countries(query=None, page=1, per_page=24):
 
     conn.close()
     return countries, total_pages
+
+def get_numberOfTeamsInCountry():
+    team_number_in_country = fetch_from_sql_file("team_number_in_country.sql")
+    return team_number_in_country
+
+def get_numberOfPlayersInCountry():
+    player_number_in_country = fetch_from_sql_file("player_number_in_country.sql")
+    return player_number_in_country

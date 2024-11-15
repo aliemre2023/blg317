@@ -37,4 +37,18 @@ SELECT
 FROM
     nba_original.team_details t;
 
+ALTER TABLE teams
+    ADD name TEXT NOT NULL DEFAULT '';
+
+UPDATE teams
+    SET name = (
+        SELECT t.full_name
+        FROM nba_original.team t
+        WHERE t.abbreviation = teams.abbreviation
+    )
+    WHERE abbreviation IN (
+        SELECT t.abbreviation
+        FROM nba_original.team t
+    );
+
 DETACH DATABASE nba_original;
