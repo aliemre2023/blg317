@@ -51,7 +51,6 @@ def get_countries(query=None, page=1, per_page=24):
 
 def get_numberOfTeamsInCountry():
     team_number_in_country = fetch_from_sql_file("team_number_in_country.sql")
-    print(team_number_in_country)
     return team_number_in_country
 
 def get_numberOfPlayersInCountry():
