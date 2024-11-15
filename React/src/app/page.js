@@ -1,10 +1,13 @@
+'use client'
+
+import styles from "./page.module.css"
 import React, { useState, useEffect } from "react";
-import "./styles.css"
+
 function Countries() {
   const [countries, setCountries] = useState([]);
 
-  const [totalPages, setTotalPages] = useState([0]);
-  const [currentPage, setCurrentPage] = useState([1]);
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const [tempText, setTempText] = useState("");
   const [searchText, setSearchText] = useState("");
@@ -46,17 +49,17 @@ function Countries() {
 
 
   return (
-    <div class="container">
-        <div class="top">
+    <div className={styles.container}>
+        <div className={styles.top}>
         <h1>Countries</h1>
-        <div class="search-bar"> 
+        <div className={styles.search_bar}> 
             <input type="text" name="query" placeholder="Search..." value={`${tempText}`} onChange={handleInputChange}></input>
-            <img class="search-icon" src="/search-icon.png" alt="search icon" onClick={searchFlags}></img>
+            <img className={styles.search_icon} src="/search-icon.png" alt="search icon" onClick={searchFlags}></img>
         </div>
         </div>
-        <div class="flag-grid">
+        <div className={styles.flag_grid}>
             {countries.map((country,index) => (
-              <div class="flag-card">
+              <div className={styles.flag_card} key={index}>
                 <img
               src={country.flag_link}
               alt={`Flag of ${country.name}`}
@@ -69,26 +72,27 @@ function Countries() {
             </div>
             ))}
         </div>
-    <div className="pagination">
+        <div className={styles.pagination}>
       <button disabled={currentPage === 1} onClick={handlePreviousClick}>
         Previous
       </button>
 
       {Array.from({ length: totalPages }, (_, index) => (
         <button
-          key={index+1}
-          className={currentPage === index+1 ? "active" : ""}
-          onClick={() => handlePageClick(index+1)}
-        >
-          {index+1}
-        </button>
+        key={index+1}
+        className={currentPage === index+1 ? "active" : ""}
+        onClick={() => handlePageClick(index+1)}
+      >
+        {index+1}
+      </button>
       ))}
       
-      <button disabled={currentPage === totalPages} onClick={handleNextClick}>
+      <button className={styles.button} disabled={currentPage === totalPages} onClick={handleNextClick}>
         Next
       </button>
     </div>
     </div>
   );
 }
+
 export default Countries;
