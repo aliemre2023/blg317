@@ -56,3 +56,7 @@ def get_numberOfTeamsInCountry():
 def get_numberOfPlayersInCountry():
     player_number_in_country = fetch_from_sql_file("player_number_in_country.sql")
     return player_number_in_country
+
+def get_last5Games():
+    last_5_games = fetch_from_sql_file("last_5_games.sql")
+    return last_5_games
