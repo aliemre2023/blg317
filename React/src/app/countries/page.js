@@ -3,12 +3,13 @@
 import styles from './page.module.css';
 import React, { useState, useEffect } from 'react';
 
+
 function Countries() {
     const [countries, setCountries] = useState([]);
-
+    const [teamCounts, setTeamCounts] = useState([]); // Correct state definition
+    const [playerCounts, setPlayerCounts] = useState([]);
     const [totalPages, setTotalPages] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
-
     const [tempText, setTempText] = useState('');
     const [searchText, setSearchText] = useState('');
 
@@ -47,6 +48,37 @@ function Countries() {
             .catch((error) => console.log(error));
     }, [currentPage, searchText]);
 
+    useEffect(() => {
+        fetch('http://127.0.0.1:5000/api/numberOfTeams')
+            .then((response) => response.json())
+            .then((data) => {
+                //console.log(data); // Debugging
+                setTeamCounts(data.numberOfTeams);
+            }) 
+            .catch((error) => console.log(error));
+    }, []);
+
+    const getTeamCount = (countryId) => {
+        const countryData = teamCounts.find((team) => team.country_id === countryId);
+        return countryData ? countryData.team_count : 0;
+    };
+
+    useEffect(() => {
+        fetch('http://127.0.0.1:5000/api/numberOfPlayers')
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+                setPlayerCounts(data.numberOfPlayers);
+            }) 
+            .catch((error) => console.log(error));
+    }, []);
+
+    const getPlayerCount = (countryId) => {
+        const countryData = playerCounts.find((player) => player.country_id === countryId);
+        return countryData ? countryData.player_count : 0; 
+        //return countryData?.player_count ?? -1;
+    };
+
     return (
         <div className={styles.container}>
             <div className={styles.top}>
@@ -80,6 +112,18 @@ function Countries() {
                             }}
                         />
                         <p>{country.name}</p>
+                        <div className={styles.country_info}>
+                            <div className={styles.icon_container}>
+                                <span>{getTeamCount(country.country_id)}</span>
+                                <img src="/default_team.png" alt="Team Icon" className={styles.iconSize} />
+                            </div>
+    
+                            <div className={styles.icon_container}>
+                                <img src="/default_player.png" alt="Player Icon" className={styles.iconSize} />  
+                                <span>{getPlayerCount(country.country_id)}</span>
+                            </div>
+                        </div>
+
                     </div>
                 ))}
             </div>

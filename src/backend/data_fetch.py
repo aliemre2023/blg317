@@ -27,10 +27,10 @@ def get_countries(query=None, page=1, per_page=24):
     cursor = conn.cursor()
 
     if query:
-        sql_query = "SELECT name, flag_link FROM countries WHERE name LIKE ? LIMIT ? OFFSET ?"
+        sql_query = "SELECT country_id, name, flag_link FROM countries WHERE name LIKE ? LIMIT ? OFFSET ?"
         params = (f"{query}%", per_page, (page - 1) * per_page)
     else:
-        sql_query = "SELECT name, flag_link FROM countries LIMIT ? OFFSET ?"
+        sql_query = "SELECT country_id, name, flag_link FROM countries LIMIT ? OFFSET ?"
         params = (per_page, (page - 1) * per_page)
 
     cursor.execute(sql_query, params)
