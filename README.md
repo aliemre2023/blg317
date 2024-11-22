@@ -2,11 +2,13 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Dependencies
 
-Install Flask and FlaskCors with this command.
+Install Dependencies with these commands.
 
 ```bash
 pip install -r "requirements.txt"
+make build
 ```
+''
 ## Getting Started
 
 You can use the make file to run project

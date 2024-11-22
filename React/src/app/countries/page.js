@@ -2,9 +2,12 @@
 
 import styles from './page.module.css';
 import React, { useState, useEffect } from 'react';
+import { Button } from 'primereact/button';
+import { useRouter } from 'next/navigation';
 
 
 function Countries() {
+    const router = useRouter();
     const [countries, setCountries] = useState([]);
     const [teamCounts, setTeamCounts] = useState([]); // Correct state definition
     const [playerCounts, setPlayerCounts] = useState([]);
@@ -82,7 +85,21 @@ function Countries() {
     return (
         <div className={styles.container}>
             <div className={styles.top}>
-                <h1>Countries</h1>
+                <div className='grid mt-1 mx-auto w-10 bg-primary-reverse'>
+                    <div className='col-2'>
+                        <Button
+                        className="mt-0 bg-primary h-full w-full font-bold text-center w-full"
+                        onClick={() => {
+                            router.replace('/');
+                        }}
+                        label='Home'
+                    > </Button>  
+                    </div>
+                    <div className='col-8'>
+                        <div className="text-center p-3 border-round-sm  font-bold">COUNTRIES</div>  
+                    </div>
+                    <div className='col-2'></div>
+                </div>
                 <div className={styles.search_bar}>
                     <input
                         type="text"

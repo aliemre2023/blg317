@@ -3,8 +3,11 @@ NEXT_DIR=React
 FLASK_DIR=src/backend
 
 # Commands
-.PHONY: next flask start_all stop_all
+.PHONY: build next flask start_all stop_all
 
+#npm i
+build:
+	cd $(NEXT_DIR) && npm i
 # Run Next.js
 next:
 	cd $(NEXT_DIR) && npm run dev
