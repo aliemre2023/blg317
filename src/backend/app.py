@@ -15,7 +15,7 @@ def countries_api():
     countries, total_pages = get_countries(query, page)
 
     return jsonify({
-        'countries': [{'name': country[0], 'flag_link': country[1]} for country in countries],
+        'countries': [{'country_id': country[0], 'name': country[1], 'flag_link': country[2]} for country in countries],
         'page': page,
         'total_pages': total_pages
     })
