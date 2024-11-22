@@ -1,22 +1,27 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+## Dependencies
 
-First, run the development server:
+Install Flask and FlaskCors with this command.
 
 ```bash
-npm run dev
+pip install -r "requirements.txt"
+```
+## Getting Started
+
+You can use the make file to run project
+
+```bash
+make startall   #Runs both frontend and backend servers
 # or
-yarn dev
+make next       #Runs only frontend server
 # or
-pnpm dev
+make flask      #Runs only backend server
 # or
-bun dev
+make stopall
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result after starting the frontend server.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
