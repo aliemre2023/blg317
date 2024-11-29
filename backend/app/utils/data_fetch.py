@@ -47,6 +47,42 @@ def get_countries(query=None, page=1, per_page=24):
     conn.close()
     return countries, total_pages
 
+def get_teams(query=None, page=1, per_page=24):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    if query:
+        sql_query = """
+            SELECT team_id, abbreviation, nickname, logo_url
+            FROM teams
+            WHERE nickname LIKE ?
+            LIMIT ? OFFSET ?
+        """
+        params = (f"{query}%", per_page, (page - 1) * per_page)
+    else:
+        sql_query = """
+            SELECT team_id, abbreviation, nickname, logo_url
+            FROM teams
+            LIMIT ? OFFSET ?
+        """
+        params = (per_page, (page - 1) * per_page)
+
+    cursor.execute(sql_query, params)
+    teams = cursor.fetchall()
+
+    if query:
+        count_query = "SELECT COUNT(*) FROM teams WHERE nickname LIKE ?"
+        cursor.execute(count_query, (f"{query}%",))
+    else:
+        count_query = "SELECT COUNT(*) FROM teams"
+        cursor.execute(count_query)
+
+    total_count = cursor.fetchone()[0]
+    total_pages = (total_count + per_page - 1) // per_page
+
+    conn.close()
+    return teams, total_pages
+
 def get_numberOfTeamsInCountry():
     team_number_in_country = fetch_from_sql_file("team_number_in_country.sql")
     return team_number_in_country
