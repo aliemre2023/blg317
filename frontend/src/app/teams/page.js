@@ -1,6 +1,6 @@
 'use client';
 
-import styles from '../page.module.css';
+import './styles.css';
 import React, { useState, useEffect } from 'react';
 import { Button } from 'primereact/button';
 import { useRouter } from 'next/navigation';
@@ -46,7 +46,7 @@ function Teams() {
         fetch(`http://127.0.0.1:5000/api/teams?page=${currentPage}&nickname=${searchText}`)
             .then((response) => response.json())
             .then((data) => {
-                console.log(data)
+                console.log(data);
                 setTotalPages(data.total_pages);
                 setTeams(data.teams);
             })
@@ -54,8 +54,8 @@ function Teams() {
     }, [currentPage, searchText]);
 
     return (
-        <div className={styles.container}>
-            <div className={styles.top}>
+        <div className="container">
+            <div className="top">
                 <div className="grid mt-1 mx-auto w-10 bg-primary-reverse">
                     <div className="col-2">
                         <Button
@@ -71,7 +71,7 @@ function Teams() {
                     </div>
                     <div className="col-2"></div>
                 </div>
-                <div className={styles.search_bar}>
+                <div className="search_bar">
                     <input
                         type="text"
                         name="query"
@@ -80,17 +80,17 @@ function Teams() {
                         onChange={handleInputChange}
                     />
                     <img
-                        className={styles.search_icon}
+                        className="search_icon"
                         src="/search-icon.png"
                         alt="search icon"
                         onClick={() => setSearchText(tempText.trim())} // Trigger search on click
                     />
                 </div>
             </div>
-            <div className={styles.flag_grid}>
+            <div className="flag_grid">
                 {teams.length > 0 ? (
                     teams.map((team) => (
-                        <div className={styles.flag_card} key={team.team_id}>
+                        <div className="flag_card" key={team.team_id}>
                             <img
                                 src={team.logo_url}
                                 alt={`Logo of ${team.nickname}`}
@@ -106,7 +106,7 @@ function Teams() {
                     <p>No teams match your search.</p>
                 )}
             </div>
-            <div className={styles.pagination}>
+            <div className="pagination">
                 <button disabled={currentPage === 1} onClick={handlePreviousClick}>
                     Previous
                 </button>
