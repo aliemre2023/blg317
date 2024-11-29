@@ -42,10 +42,9 @@ def get_countries(query=None, page=1, per_page=24):
         cursor.execute(count_query)
 
     total_count = cursor.fetchone()[0]
-    total_pages = (total_count + per_page - 1) // per_page
 
     conn.close()
-    return countries, total_pages
+    return countries, total_count
 
 def get_teams(query=None, page=1, per_page=24):
     conn = get_db_connection()
@@ -78,10 +77,9 @@ def get_teams(query=None, page=1, per_page=24):
         cursor.execute(count_query)
 
     total_count = cursor.fetchone()[0]
-    total_pages = (total_count + per_page - 1) // per_page
 
     conn.close()
-    return teams, total_pages
+    return teams, total_count
 
 def get_numberOfTeamsInCountry():
     team_number_in_country = fetch_from_sql_file("team_number_in_country.sql")

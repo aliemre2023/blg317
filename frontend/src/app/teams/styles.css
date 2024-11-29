@@ -1,13 +1,3 @@
-#root {
-  font-family: Arial, sans-serif;
-  background-color: whitesmoke;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  margin: 0;
-}
-
 .container {
   width: 100%;
   text-align: center;
@@ -22,7 +12,7 @@
   max-height: 70vh;
   overflow-y: auto;
   place-items: center;
-  margin: 50px auto 0 auto;
+  margin: 6rem auto 0 auto;
 }
 
 .flag_card { 
@@ -62,44 +52,21 @@
 
 .search_bar {
   position: relative;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   padding-bottom: 10px;
-}
-
-.search_bar input[type="text"] {
-  padding-left: 5px;
 }
 
 .search_icon {
-  padding-bottom: 10px;
+  color: #333;
   position: absolute;
-  float: right;
   right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 16px; 
-  height: 16px; 
-  transition: width 0.3s ease, height 0.3s ease;
-  box-sizing: content-box !important;
 }
 
 .search_icon:hover {
   width: 20px;
   height: 20px;
 
-}
-
-.pagination {
-  display: flex;
-  position: absolute;
-  gap: 5px;
-  align-items: center;
-  justify-content: center;
-  margin-top: 20px;
-  bottom: 0;
-  font-size: 1.2em;
-  width: 100%;
-  padding-bottom: 30px;
 }
 
 .top {
@@ -142,4 +109,9 @@
 .flag_card:hover .country_info{
   background-color: var(--primary-color);
   color: var(--primary-color-text);
+}
+
+.pagination {
+  position: absolute;
+  bottom: 0;
 }

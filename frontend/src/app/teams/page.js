@@ -3,31 +3,19 @@
 import './styles.css';
 import React, { useState, useEffect } from 'react';
 import { Button } from 'primereact/button';
+import { InputText } from 'primereact/inputtext';
+import { Paginator } from 'primereact/paginator';
 import { useRouter } from 'next/navigation';
 
 function Teams() {
     const router = useRouter();
+
     const [teams, setTeams] = useState([]);
-    const [totalPages, setTotalPages] = useState(0);
+    const [totalTeams, setTotalTeams] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
-    const [tempText, setTempText] = useState('');
+    const [firstIndex, setFirstIndex] = useState(0);
     const [searchText, setSearchText] = useState('');
-
-    const handlePageClick = (page) => {
-        setCurrentPage(page);
-    };
-
-    const handlePreviousClick = () => {
-        if (currentPage > 1) {
-            setCurrentPage(currentPage - 1);
-        }
-    };
-
-    const handleNextClick = () => {
-        if (currentPage < totalPages) {
-            setCurrentPage(currentPage + 1);
-        }
-    };
+    const [tempText, setTempText] = useState('');
 
     // debounce logic
     const handleInputChange = (event) => {
@@ -41,13 +29,18 @@ function Teams() {
         }, 300); // delay
     };
 
+    const searchTeams = () => {
+        setCurrentPage(1);
+        setSearchText(tempText.trim());
+    };
+
     // Fetch teams based on search and pagination
     useEffect(() => {
         fetch(`http://127.0.0.1:5000/api/teams?page=${currentPage}&nickname=${searchText}`)
             .then((response) => response.json())
             .then((data) => {
-                console.log(data);
-                setTotalPages(data.total_pages);
+                // console.log(data);
+                setTotalTeams(data.total_teams);
                 setTeams(data.teams);
             })
             .catch((error) => console.log('Error fetching teams:', error));
@@ -71,20 +64,14 @@ function Teams() {
                     </div>
                     <div className="col-2"></div>
                 </div>
-                <div className="search_bar">
-                    <input
-                        type="text"
+                <div className="search_bar mt-3">
+                    <InputText
+                        className="p-inputtext-sm"
                         name="query"
-                        placeholder="Search Teams..."
-                        value={tempText}
+                        placeholder="Search..."
                         onChange={handleInputChange}
                     />
-                    <img
-                        className="search_icon"
-                        src="/search-icon.png"
-                        alt="search icon"
-                        onClick={() => setSearchText(tempText.trim())} // Trigger search on click
-                    />
+                    <i className="search_icon fa-solid fa-magnifying-glass" onClick={searchTeams}></i>
                 </div>
             </div>
             <div className="flag_grid">
@@ -106,25 +93,17 @@ function Teams() {
                     <p>No teams match your search.</p>
                 )}
             </div>
-            <div className="pagination">
-                <button disabled={currentPage === 1} onClick={handlePreviousClick}>
-                    Previous
-                </button>
-
-                {Array.from({ length: totalPages }, (_, index) => (
-                    <button
-                        key={index + 1}
-                        className={currentPage === index + 1 ? 'active' : ''}
-                        onClick={() => handlePageClick(index + 1)}
-                    >
-                        {index + 1}
-                    </button>
-                ))}
-
-                <button disabled={currentPage === totalPages} onClick={handleNextClick}>
-                    Next
-                </button>
-            </div>
+            <Paginator
+                className="pagination w-full"
+                style={{ bottom: 0 }}
+                first={firstIndex}
+                rows={24}
+                totalRecords={totalTeams}
+                onPageChange={(e) => {
+                    setFirstIndex(e.first);
+                    setCurrentPage(e.page + 1);
+                }}
+            ></Paginator>
         </div>
     );
 }

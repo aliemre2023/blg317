@@ -9,12 +9,12 @@ def countries_api():
     query = request.args.get("name")
     page = int(request.args.get("page", 1))
 
-    countries, total_pages = get_countries(query, page)
+    countries, total_countries = get_countries(query, page)
 
     return jsonify({
         'countries': [{'country_id': country[0], 'name': country[1], 'flag_link': country[2]} for country in countries],
         'page': page,
-        'total_pages': total_pages
+        'total_countries': total_countries
     })
 
 @api_bp.route('/teams', methods=['GET'])
@@ -22,7 +22,7 @@ def teams_api():
     query = request.args.get("nickname") # !! search column 
     page = int(request.args.get("page", 1))
 
-    teams, total_pages = get_teams(query, page)
+    teams, total_teams = get_teams(query, page)
 
     return jsonify({
         'teams': [
@@ -30,7 +30,7 @@ def teams_api():
             for team in teams
         ],
         'page': page,
-        'total_pages': total_pages
+        'total_teams': total_teams
     })
 
 

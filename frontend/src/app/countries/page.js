@@ -3,34 +3,22 @@
 import './styles.css';
 import React, { useState, useEffect } from 'react';
 import { Button } from 'primereact/button';
+import { InputText } from 'primereact/inputtext';
+import { Paginator } from 'primereact/paginator';
 import { useRouter } from 'next/navigation';
-
 
 function Countries() {
     const router = useRouter();
-    const [countries, setCountries] = useState([]);
+
     const [teamCounts, setTeamCounts] = useState([]); // Correct state definition
     const [playerCounts, setPlayerCounts] = useState([]);
-    const [totalPages, setTotalPages] = useState(0);
+
+    const [countries, setCountries] = useState([]);
+    const [totalCountries, setTotalCountries] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
-    const [tempText, setTempText] = useState('');
+    const [firstIndex, setFirstIndex] = useState(0);
     const [searchText, setSearchText] = useState('');
-
-    const handlePageClick = (page) => {
-        setCurrentPage(page);
-    };
-
-    const handlePreviousClick = () => {
-        if (currentPage > 1) {
-            setCurrentPage(currentPage - 1);
-        }
-    };
-
-    const handleNextClick = () => {
-        if (currentPage < totalPages) {
-            setCurrentPage(currentPage + 1);
-        }
-    };
+    const [tempText, setTempText] = useState('');
 
     const handleInputChange = (event) => {
         const value = event.target.value;
@@ -52,7 +40,7 @@ function Countries() {
         fetch(`http://127.0.0.1:5000/api/countries?page=${currentPage}&name=${searchText}`)
             .then((response) => response.json())
             .then((data) => {
-                setTotalPages(data.total_pages);
+                setTotalCountries(data.total_countries);
                 setCountries(data.countries);
             })
             .catch((error) => console.log(error));
@@ -64,7 +52,15 @@ function Countries() {
             .then((data) => {
                 //console.log(data); // Debugging
                 setTeamCounts(data.numberOfTeams);
-            }) 
+            })
+            .catch((error) => console.log(error));
+
+        fetch('http://127.0.0.1:5000/api/numberOfPlayers')
+            .then((response) => response.json())
+            .then((data) => {
+                //console.log(data); // Debugging
+                setPlayerCounts(data.numberOfPlayers);
+            })
             .catch((error) => console.log(error));
     }, []);
 
@@ -73,20 +69,9 @@ function Countries() {
         return countryData ? countryData.team_count : 0;
     };
 
-    useEffect(() => {
-        fetch('http://127.0.0.1:5000/api/numberOfPlayers')
-            .then((response) => response.json())
-            .then((data) => {
-                //console.log(data); // Debugging
-                setPlayerCounts(data.numberOfPlayers);
-            }) 
-            .catch((error) => console.log(error));
-    }, []);
-
     const getPlayerCount = (countryId) => {
         const countryData = playerCounts.find((player) => player.country_id === countryId);
         return countryData ? countryData.player_count : 0;
-        //return countryData?.player_count ?? -1;
     };
 
     return (
@@ -105,24 +90,29 @@ function Countries() {
                         </Button>
                     </div>
                     <div className="col-8">
-                        <div className="text-center p-3 border-round-sm  font-bold">COUNTRIES</div>
+                        <div className="text-center p-3 border-round-sm font-bold">COUNTRIES</div>
                     </div>
                     <div className="col-2"></div>
                 </div>
-                <div className="search_bar">
-                    <input
-                        type="text"
+                <div className="search_bar mt-3">
+                    <InputText
+                        className="p-inputtext-sm"
                         name="query"
                         placeholder="Search..."
-                        value={`${tempText}`}
                         onChange={handleInputChange}
-                    ></input>
-                    <img className="search_icon" src="/search-icon.png" alt="search icon" onClick={searchFlags}></img>
+                    />
+                    <i className="search_icon fa-solid fa-magnifying-glass" onClick={searchFlags}></i>
                 </div>
             </div>
             <div className="flag_grid">
                 {countries.map((country, index) => (
-                    <div className="flag_card" key={index}>
+                    <div
+                        className="flag_card"
+                        key={index}
+                        onClick={() => {
+                            router.push(`countries/${country.country_id}`);
+                        }}
+                    >
                         <img
                             src={country.flag_link}
                             alt={`Flag of ${country.name}`}
@@ -147,25 +137,17 @@ function Countries() {
                     </div>
                 ))}
             </div>
-            <div className="pagination">
-                <button disabled={currentPage === 1} onClick={handlePreviousClick}>
-                    Previous
-                </button>
-
-                {Array.from({ length: totalPages }, (_, index) => (
-                    <button
-                        key={index + 1}
-                        className={currentPage === index + 1 ? 'active' : ''}
-                        onClick={() => handlePageClick(index + 1)}
-                    >
-                        {index + 1}
-                    </button>
-                ))}
-
-                <button className="button" disabled={currentPage === totalPages} onClick={handleNextClick}>
-                    Next
-                </button>
-            </div>
+            <Paginator
+                className="pagination w-full"
+                style={{ bottom: 0 }}
+                first={firstIndex}
+                rows={24}
+                totalRecords={totalCountries}
+                onPageChange={(e) => {
+                    setFirstIndex(e.first);
+                    setCurrentPage(e.page + 1);
+                }}
+            ></Paginator>
         </div>
     );
 }
