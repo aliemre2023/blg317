@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app.utils.data_fetch import get_countries, get_numberOfPlayersInCountry, get_numberOfTeamsInCountry, get_last5Games
+from app.utils.data_fetch import get_countries, get_teams, get_numberOfPlayersInCountry, get_numberOfTeamsInCountry, get_last5Games
 
 api_bp = Blueprint("api", __name__)
 
@@ -16,6 +16,23 @@ def countries_api():
         'page': page,
         'total_pages': total_pages
     })
+
+@api_bp.route('/teams', methods=['GET'])
+def teams_api():
+    query = request.args.get("nickname") # !! search column 
+    page = int(request.args.get("page", 1))
+
+    teams, total_pages = get_teams(query, page)
+
+    return jsonify({
+        'teams': [
+            {'team_id': team[0], 'abbreviation': team[1], 'nickname': team[2], 'logo_url': team[3]} 
+            for team in teams
+        ],
+        'page': page,
+        'total_pages': total_pages
+    })
+
 
 @api_bp.route('/numberOfTeams', methods=['GET'])
 def numberOfTeams_api():

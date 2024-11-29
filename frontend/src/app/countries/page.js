@@ -33,7 +33,14 @@ function Countries() {
     };
 
     const handleInputChange = (event) => {
-        setTempText(event.target.value);
+        const value = event.target.value;
+        setTempText(value);
+
+        clearTimeout(window.searchDebounce); // clear debounce
+        window.searchDebounce = setTimeout(() => {
+            setSearchText(value.trim());
+            setCurrentPage(1);
+        }, 300); // delay
     };
 
     const searchFlags = () => {

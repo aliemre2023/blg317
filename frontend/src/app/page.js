@@ -29,9 +29,9 @@ function Page() {
                     <Button
                         className="mt-0 bg-primary h-full w-full font-bold text-center w-full"
                         onClick={() => {
-                            router.push('/countries');
+                            router.push('/teams');
                         }}
-                        label="Countries"
+                        label="Teams"
                     >
                         {' '}
                     </Button>
