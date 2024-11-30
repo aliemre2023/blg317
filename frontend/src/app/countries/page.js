@@ -78,7 +78,7 @@ function Countries() {
         <div className="container">
             <div className="top">
                 <div className="grid mt-1 mx-auto w-10 bg-primary-reverse">
-                    <div className="col-2">
+                    <div className="col-4 md:col-2">
                         <Button
                             className="mt-0 bg-primary h-full w-full font-bold text-center w-full"
                             onClick={() => {
@@ -89,10 +89,10 @@ function Countries() {
                             {' '}
                         </Button>
                     </div>
-                    <div className="col-8">
-                        <div className="text-center p-3 border-round-sm font-bold">COUNTRIES</div>
+                    <div className="col-4 md:col-8">
+                        <div className="text-center p-3 border-round-sm font-bold">COUNTRIES</div>  
                     </div>
-                    <div className="col-2"></div>
+                    <div className="col-4 md:col-2"></div>
                 </div>
                 <div className="search_bar mt-3">
                     <InputText
