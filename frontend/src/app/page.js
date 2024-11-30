@@ -53,9 +53,9 @@ function Page() {
                     <Button
                         className="mt-0 bg-primary h-full w-full font-bold text-center w-full"
                         onClick={() => {
-                            router.push('/countries');
+                            router.push('/players');
                         }}
-                        label="Countries"
+                        label="Players"
                     />
                 </div>
                 <div className="mt-0 py-1 col-12 lg:col-2">

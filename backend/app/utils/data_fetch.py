@@ -81,6 +81,42 @@ def get_teams(query=None, page=1, per_page=24):
     conn.close()
     return teams, total_count
 
+def get_players(query=None, page=1, per_page=24):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    if query:
+        sql_query = """
+            SELECT player_id, first_name, last_name, height, weight, birth_date, college, country_id, png_name
+            FROM players
+            WHERE first_name LIKE ? OR last_name LIKE ?
+            LIMIT ? OFFSET ?
+        """
+        params = (f"{query}%", f"{query}%", per_page, (page - 1) * per_page)
+    else:
+        sql_query = """
+            SELECT player_id, first_name, last_name, height, weight, birth_date, college, country_id, png_name
+            FROM players
+            LIMIT ? OFFSET ?
+        """
+        params = (per_page, (page - 1) * per_page)
+
+    cursor.execute(sql_query, params)
+    players = cursor.fetchall()
+
+    if query:
+        count_query = "SELECT COUNT(*) FROM players WHERE first_name LIKE ? OR last_name LIKE ?"
+        cursor.execute(count_query, (f"{query}%", f"{query}%"))
+    else:
+        count_query = "SELECT COUNT(*) FROM players"
+        cursor.execute(count_query)
+
+    total_count = cursor.fetchone()[0]
+
+    conn.close()
+    return players, total_count
+
+
 def get_numberOfTeamsInCountry():
     team_number_in_country = fetch_from_sql_file("team_number_in_country.sql")
     return team_number_in_country
