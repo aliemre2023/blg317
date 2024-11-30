@@ -2,8 +2,6 @@
 @import 'primeicons/primeicons.css';
 @import 'primeflex/primeflex.css';
 
-
-
 :root {
   --primary-color-text : #e9ae1c;
   --primary-color-hsl : 246, 21%, 9%;
@@ -36,8 +34,6 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
 }
@@ -78,7 +74,17 @@ button:focus-visible {
   a:hover {
     color: #747bff;
   }
-  button {
+  /* button {
     background-color: #f9f9f9;
+  } */
+
+  input {
+    background-color: #f9f9f9 !important;
   }
+}
+
+.p-paginator {
+  background-color: var(--primary-color);
+  color: var(--primary-color-text);
+  border-color: var(--primary-color);
 }
