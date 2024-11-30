@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app.utils.data_fetch import get_countries, get_teams, get_numberOfPlayersInCountry, get_numberOfTeamsInCountry, get_last5Games
+from app.utils.data_fetch import get_countries, get_teams, get_numberOfPlayersInCountry, get_numberOfTeamsInCountry, getLastGames
 
 api_bp = Blueprint("api", __name__)
 
@@ -50,21 +50,29 @@ def numberOfPlayers_api():
         'numberOfPlayers': [{'country_id': row[0], 'country_name': row[1], 'player_count': row[2]} for row in table],
     })
 
-@api_bp.route('/last5Games', methods=['GET'])
-def last5Games_api():
-    table = get_last5Games()
+@api_bp.route('/getLastGames', methods=['GET'])
+def getLastGames_api():
+    # Get the limit parameter from the query string, default to 5
+    limit = request.args.get('limit', default=5, type=int)
+    games = getLastGames(limit)
 
-    return jsonify({
-        'last5Games': [{'game_id': row[0], 
-                        'date': row[1], 
-                        'home_team_id': row[2], 
-                        'home_team_name': row[3], 
-                        'home_team_score': row[4], 
-                        "away_team_id": row[5], 
-                        "away_team_name": row[6],
-                        "away_team_score": row[7],
-                        "official_name": row[8]} for row in table],
-    })
+    # Format games into a list of dictionaries for JSON response
+    formatted_games = [
+        {
+            "game_id": game[0],
+            "date": game[1],
+            "home_team_id": game[2],
+            "home_team_name": game[3],
+            "home_team_score": game[4],
+            "away_team_id": game[5],
+            "away_team_name": game[6],
+            "away_team_score": game[7],
+            "official_name": game[8]
+        }
+        for game in games
+    ]
+
+    return jsonify(formatted_games)
 
 if __name__ == '__main__':
     app.run(debug=True)
