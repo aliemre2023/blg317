@@ -24,14 +24,14 @@ function Page() {
     }, []);
 
     return (
-        <div className="h-screen">
-            <div className="grid mt-1 w-screen bg-primary">
+        <div className="h-auto">
+            <div className="grid mt-1 w-full bg-primary">
                 <div className="col-8 col-offset-2">
                     <div className="text-center p-3 border-round-sm font-bold">NBA-DATABASE PROJECT</div>
                 </div>
             </div>
             <div className="grid mt-0 w-10 mx-auto bg-primary-reverse">
-                <div className="col-2">
+                <div className="mt-0 py-1 col-12 lg:col-2">
                     <Button
                         className="mt-0 bg-primary h-full w-full font-bold text-center w-full"
                         onClick={() => {
@@ -40,7 +40,7 @@ function Page() {
                         label="Countries"
                     />
                 </div>
-                <div className="col-2">
+                <div className="mt-0 py-1 col-12 lg:col-2">
                     <Button
                         className="mt-0 bg-primary h-full w-full font-bold text-center w-full"
                         onClick={() => {
@@ -49,7 +49,7 @@ function Page() {
                         label="Teams"
                     />
                 </div>
-                <div className="col-2">
+                <div className="mt-0 py-1 col-12 lg:col-2">
                     <Button
                         className="mt-0 bg-primary h-full w-full font-bold text-center w-full"
                         onClick={() => {
@@ -58,7 +58,7 @@ function Page() {
                         label="Countries"
                     />
                 </div>
-                <div className="col-2">
+                <div className="mt-0 py-1 col-12 lg:col-2">
                     <Button
                         className="mt-0 bg-primary h-full w-full font-bold text-center w-full"
                         onClick={() => {
@@ -67,7 +67,7 @@ function Page() {
                         label="Countries"
                     />
                 </div>
-                <div className="col-4">
+                <div className="mt-0 py-1 col-12 lg:col-4">
                     <Button
                         className="mt-0 bg-primary h-full w-full font-bold text-center w-full"
                         onClick={() => {

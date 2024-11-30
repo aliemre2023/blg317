@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app.utils.data_fetch import get_countries, get_teams, get_numberOfPlayersInCountry, get_numberOfTeamsInCountry, getLastGames
+from app.utils.data_fetch import *
 
 api_bp = Blueprint("api", __name__)
 
@@ -9,12 +9,12 @@ def countries_api():
     query = request.args.get("name")
     page = int(request.args.get("page", 1))
 
-    countries, total_pages = get_countries(query, page)
+    countries, total_countries = get_countries(query, page)
 
     return jsonify({
         'countries': [{'country_id': country[0], 'name': country[1], 'flag_link': country[2]} for country in countries],
         'page': page,
-        'total_pages': total_pages
+        'total_countries': total_countries
     })
 
 @api_bp.route('/teams', methods=['GET'])
@@ -22,7 +22,7 @@ def teams_api():
     query = request.args.get("nickname") # !! search column 
     page = int(request.args.get("page", 1))
 
-    teams, total_pages = get_teams(query, page)
+    teams, total_teams = get_teams(query, page)
 
     return jsonify({
         'teams': [
@@ -30,7 +30,7 @@ def teams_api():
             for team in teams
         ],
         'page': page,
-        'total_pages': total_pages
+        'total_teams': total_teams
     })
 
 
@@ -50,11 +50,38 @@ def numberOfPlayers_api():
         'numberOfPlayers': [{'country_id': row[0], 'country_name': row[1], 'player_count': row[2]} for row in table],
     })
 
+
 @api_bp.route('/getLastGames', methods=['GET'])
 def getLastGames_api():
     # Get the limit parameter from the query string, default to 5
     limit = request.args.get('limit', default=5, type=int)
     games = getLastGames(limit)
+
+@api_bp.route('/country/<int:country_id>/players', methods=['GET'])
+def countryPlayers_api(country_id):
+    page = int(request.args.get("page", 1))
+    limit = int(request.args.get("limit", 10))
+
+    table, total_countryPlayers = get_countryPlayers(country_id, page, limit)
+
+    return jsonify({
+        'counrtyPlayers': [{'player_id': row[0], 'first_name': row[1], 'last_name': row[2], 'height': row[3], 'weight': row[4], 'birth_date': row[5], 'college': row[6]} for row in table],
+        'page': page,
+        'totalCountryPlayers': total_countryPlayers
+    })
+
+@api_bp.route('/country/<int:country_id>/teams', methods=['GET'])
+def countryTeams_api(country_id):
+    page = int(request.args.get("page", 1))
+    limit = int(request.args.get("limit", 10))
+
+    table, total_countryTeams = get_countryTeams(country_id, page, limit)
+
+    return jsonify({
+        'counrtyTeams': [{'team_id': row[0], 'name': row[1], 'owner': row[2], 'general_manager': row[3], 'headcoach': row[4], 'city_name': row[5], 'arena_name': row[6], 'year_founded': row[7], 'instagram': row[8]} for row in table],
+        'page': page,
+        'totalCountryTeams': total_countryTeams
+    })
 
     # Format games into a list of dictionaries for JSON response
     formatted_games = [
