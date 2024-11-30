@@ -33,6 +33,33 @@ def teams_api():
         'total_teams': total_teams
     })
 
+@api_bp.route('/players', methods=['GET'])
+def players_api():
+    query = request.args.get("name")  # !! Search across first_name and last_name
+    page = int(request.args.get("page", 1))
+
+    players, total_players = get_players(query, page)
+
+    return jsonify({
+        'players': [
+            {
+                'player_id': player[0],
+                'first_name': player[1],
+                'last_name': player[2],
+                'height': player[3],
+                'weight': player[4],
+                'birth_date': player[5],
+                'college': player[6],
+                'country_id': player[7],
+                'png_name' : player[8],
+            }
+            for player in players
+        ],
+        'page': page,
+        'total_players': total_players
+    })
+
+
 
 @api_bp.route('/numberOfTeams', methods=['GET'])
 def numberOfTeams_api():
