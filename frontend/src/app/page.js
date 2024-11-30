@@ -7,8 +7,8 @@ function Page() {
     const router = useRouter();
 
     return (
-        <div className="h-screen">
-            <div className="grid mt-1 w-screen bg-primary">
+        <div className="h-auto">
+            <div className="grid mt-1 w-full bg-primary">
                 <div className="col-8 col-offset-2">
                     <div className="text-center p-3 border-round-sm  font-bold">NBA-DATABASE PROJECT</div>
                 </div>
