@@ -56,6 +56,23 @@ def getLastGames_api():
     # Get the limit parameter from the query string, default to 5
     limit = request.args.get('limit', default=5, type=int)
     games = getLastGames(limit)
+        # Format games into a list of dictionaries for JSON response
+    formatted_games = [
+        {
+            "game_id": game[0],
+            "date": game[1],
+            "home_team_id": game[2],
+            "home_team_name": game[3],
+            "home_team_score": game[4],
+            "away_team_id": game[5],
+            "away_team_name": game[6],
+            "away_team_score": game[7],
+            "official_name": game[8]
+        }
+        for game in games
+    ]
+
+    return jsonify(formatted_games)
 
 @api_bp.route('/country/<int:country_id>/players', methods=['GET'])
 def countryPlayers_api(country_id):
@@ -82,24 +99,6 @@ def countryTeams_api(country_id):
         'page': page,
         'totalCountryTeams': total_countryTeams
     })
-
-    # Format games into a list of dictionaries for JSON response
-    formatted_games = [
-        {
-            "game_id": game[0],
-            "date": game[1],
-            "home_team_id": game[2],
-            "home_team_name": game[3],
-            "home_team_score": game[4],
-            "away_team_id": game[5],
-            "away_team_name": game[6],
-            "away_team_score": game[7],
-            "official_name": game[8]
-        }
-        for game in games
-    ]
-
-    return jsonify(formatted_games)
 
 if __name__ == '__main__':
     app.run(debug=True)
