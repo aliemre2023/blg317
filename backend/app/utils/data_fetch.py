@@ -89,6 +89,68 @@ def get_numberOfPlayersInCountry():
     player_number_in_country = fetch_from_sql_file("player_number_in_country.sql")
     return player_number_in_country
 
+def get_countryPlayers(query, page=1, per_page=24):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    sql_query = """
+        SELECT p.player_id, p.first_name, p.last_name, p.height, p.weight, p.birth_date, p.college 
+        FROM players p
+        NATURAL JOIN countries c
+        WHERE c.country_id = ?
+        LIMIT ? OFFSET ?
+    """
+    params = (query, per_page, (page - 1) * per_page)
+
+    cursor.execute(sql_query, params)
+    country_players = cursor.fetchall()
+
+    sql_query = """
+        SELECT COUNT(*)
+        FROM players p
+        NATURAL JOIN countries c
+        WHERE c.country_id = ?
+    """
+
+    cursor.execute(sql_query, (query,))
+    total_count = cursor.fetchone()[0]
+
+    return country_players, total_count
+
+def get_countryTeams(query, page=1, per_page=24):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    sql_query = """
+        SELECT t.team_id, t.nickname as name, t.owner, t.general_manager, t.headcoach, c.name as city_name, a.name as arena_name, t.year_founded, t.instagram
+        FROM teams t
+        JOIN arenas a ON t.arena_id = a.arena_id
+        JOIN cities c ON t.city_id = c.city_id
+        JOIN states s ON c.state_id = s.state_id
+        JOIN countries cout ON s.country_id = cout.country_id
+        WHERE cout.country_id = ?
+        LIMIT ? OFFSET ?
+    """
+    params = (query, per_page, (page - 1) * per_page)
+
+    cursor.execute(sql_query, params)
+    country_teams = cursor.fetchall()
+
+    sql_query = """
+        SELECT COUNT(*)
+        FROM teams t
+        JOIN arenas a ON t.arena_id = a.arena_id
+        JOIN cities c ON t.city_id = c.city_id
+        JOIN states s ON c.state_id = s.state_id
+        JOIN countries cout ON s.country_id = cout.country_id
+        WHERE cout.country_id = ?
+    """
+
+    cursor.execute(sql_query, (query,))
+    total_count = cursor.fetchone()[0]
+
+    return country_teams, total_count
+
 def get_last5Games():
     last_5_games = fetch_from_sql_file("last_5_games.sql")
     return last_5_games

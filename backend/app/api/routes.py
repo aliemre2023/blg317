@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app.utils.data_fetch import get_countries, get_teams, get_numberOfPlayersInCountry, get_numberOfTeamsInCountry, get_last5Games
+from app.utils.data_fetch import *
 
 api_bp = Blueprint("api", __name__)
 
@@ -48,6 +48,32 @@ def numberOfPlayers_api():
 
     return jsonify({
         'numberOfPlayers': [{'country_id': row[0], 'country_name': row[1], 'player_count': row[2]} for row in table],
+    })
+
+@api_bp.route('/country/<int:country_id>/players', methods=['GET'])
+def countryPlayers_api(country_id):
+    page = int(request.args.get("page", 1))
+    limit = int(request.args.get("limit", 10))
+
+    table, total_countryPlayers = get_countryPlayers(country_id, page, limit)
+
+    return jsonify({
+        'counrtyPlayers': [{'player_id': row[0], 'first_name': row[1], 'last_name': row[2], 'height': row[3], 'weight': row[4], 'birth_date': row[5], 'college': row[6]} for row in table],
+        'page': page,
+        'totalCountryPlayers': total_countryPlayers
+    })
+
+@api_bp.route('/country/<int:country_id>/teams', methods=['GET'])
+def countryTeams_api(country_id):
+    page = int(request.args.get("page", 1))
+    limit = int(request.args.get("limit", 10))
+
+    table, total_countryTeams = get_countryTeams(country_id, page, limit)
+
+    return jsonify({
+        'counrtyTeams': [{'team_id': row[0], 'name': row[1], 'owner': row[2], 'general_manager': row[3], 'headcoach': row[4], 'city_name': row[5], 'arena_name': row[6], 'year_founded': row[7], 'instagram': row[8]} for row in table],
+        'page': page,
+        'totalCountryTeams': total_countryTeams
     })
 
 @api_bp.route('/last5Games', methods=['GET'])
