@@ -99,4 +99,25 @@ FROM nba_original.common_player_info;
 
 DETACH DATABASE nba_original;
 
+ATTACH DATABASE '/Users/aliemre2023/Desktop/archive_players/players.sqlite' AS player_images;
+
+ALTER TABLE players
+    ADD COLUMN png_name TEXT NOT NULL DEFAULT '';
+
+UPDATE players
+SET png_name = (
+    SELECT images.playerid || '.png'
+    FROM player_images.players AS images
+    WHERE images.fname = players.first_name
+      AND images.lname = players.last_name
+)
+WHERE EXISTS (
+    SELECT 1
+    FROM player_images.players AS images
+    WHERE images.fname = players.first_name
+      AND images.lname = players.last_name
+);
+
+DETACH DATABASE player_images;
+
 SELECT * FROM players LIMIT 5;
