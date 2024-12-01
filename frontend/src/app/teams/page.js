@@ -1,6 +1,6 @@
 'use client';
 
-import './styles.css';
+import './styles.scss';
 import React, { useState, useEffect } from 'react';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
@@ -64,23 +64,26 @@ function Teams() {
                     </div>
                     <div className="col-4 md:col-2"></div>
                 </div>
-                <div className="search_bar mt-3">
+                <div className="search-bar mt-3">
                     <InputText
                         className="p-inputtext-sm"
                         name="query"
                         placeholder="Search..."
                         onChange={handleInputChange}
                     />
-                    <i className="search_icon fa-solid fa-magnifying-glass" onClick={searchTeams}></i>
+                    <i className="search-icon fa-solid fa-magnifying-glass" onClick={searchTeams}></i>
                 </div>
             </div>
-            <div className="flag_grid">
+            <div className="grid-view">
                 {teams.length > 0 ? (
                     teams.map((team) => (
-                        <div className="flag_card" key={team.team_id} 
-                        onClick={() => {
-                            router.push(`teams/${team.team_id}`);
-                        }}>
+                        <div
+                            className="grid-card"
+                            key={team.team_id}
+                            onClick={() => {
+                                router.push(`teams/${team.team_id}`);
+                            }}
+                        >
                             <img
                                 src={team.logo_url}
                                 alt={`Logo of ${team.nickname}`}

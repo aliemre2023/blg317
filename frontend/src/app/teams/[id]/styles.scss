@@ -1,0 +1,42 @@
+.p-datatable-thead tr th,
+.p-datatable-striped tr:nth-child(even) {
+    background-color: var(--primary-color);
+    border: 0.5px solid var(--primary-color-text-darker); /* Light blue background for even rows */
+}
+
+/* Apply custom background color for odd rows */
+.p-datatable-striped tr:nth-child(odd) {
+    background-color: var(--surface-ground);
+    border: 0.5px solid var(--primary-color-text-darker); /* White background for odd rows */
+}
+
+/* Optionally, you can customize text color or other properties */
+.p-datatable-striped tr {
+    color: var(--primary-color-text); /* Text color for all rows */
+}
+
+/* Change the border color of the entire DataTable */
+.p-datatable {
+    border: 0.5px solid var(--primary-color-text-darker); /* Custom border color */
+}
+
+/* Change the border color of the table head */
+.p-datatable-thead > tr > th {
+    border-bottom: 0.5px solid var(--primary-color-text-darker); /* Custom border color */
+    color: var(--primary-color-text);
+}
+
+/* Change the border color of the table rows */
+.p-datatable-tbody > tr {
+    border-bottom: 0.5px solid var(--primary-color-text-darker); /* Custom border color */
+}
+
+/* Change the border color of footer (if applicable) */
+.p-datatable-tfoot > tr > td {
+    border-top: 0.5px solid var(--primary-color-text-darker); /* Custom border color */
+}
+
+/* Optionally, remove or change the border of individual cells */
+.p-datatable-tbody > tr > td {
+    border: 0.5px solid var(--primary-color-text-darker); /* Custom border color */
+}

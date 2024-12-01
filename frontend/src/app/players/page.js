@@ -1,6 +1,6 @@
 'use client';
 
-import './styles.css';
+import './styles.scss';
 import React, { useState, useEffect } from 'react';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
@@ -63,23 +63,23 @@ function Players() {
                     </div>
                     <div className="col-4 md:col-2"></div>
                 </div>
-                <div className="search_bar mt-3">
+                <div className="search-bar mt-3">
                     <InputText
                         className="p-inputtext-sm"
                         name="query"
                         placeholder="Search..."
                         onChange={handleInputChange}
                     />
-                    <i className="search_icon fa-solid fa-magnifying-glass" onClick={searchPlayers}></i>
+                    <i className="search-icon fa-solid fa-magnifying-glass" onClick={searchPlayers}></i>
                 </div>
             </div>
-            <div className="player_grid">
+            <div className="grid-view">
                 {players.length > 0 ? (
                     players.map((player) => (
-                        <div className="player_card" key={player.player_id}>
-                            <div className="player_details">
+                        <div className="grid-card" key={player.player_id}>
+                            <div>
                                 <img
-                                    src={"/player_images/" + player.png_name}
+                                    src={'/player_images/' + player.png_name}
                                     alt={`image of ${player.player_id}`}
                                     onError={(e) => {
                                         e.target.onerror = null;

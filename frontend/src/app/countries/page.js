@@ -1,6 +1,6 @@
 'use client';
 
-import './styles.css';
+import './styles.scss';
 import React, { useState, useEffect } from 'react';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
@@ -90,24 +90,24 @@ function Countries() {
                         </Button>
                     </div>
                     <div className="col-4 md:col-8">
-                        <div className="text-center p-3 border-round-sm font-bold">COUNTRIES</div>  
+                        <div className="text-center p-3 border-round-sm font-bold">COUNTRIES</div>
                     </div>
                     <div className="col-4 md:col-2"></div>
                 </div>
-                <div className="search_bar mt-3">
+                <div className="search-bar mt-3">
                     <InputText
                         className="p-inputtext-sm"
                         name="query"
                         placeholder="Search..."
                         onChange={handleInputChange}
                     />
-                    <i className="search_icon fa-solid fa-magnifying-glass" onClick={searchFlags}></i>
+                    <i className="search-icon fa-solid fa-magnifying-glass" onClick={searchFlags}></i>
                 </div>
             </div>
-            <div className="flag_grid">
+            <div className="grid-view">
                 {countries.map((country, index) => (
                     <div
-                        className="flag_card"
+                        className="grid-card"
                         key={index}
                         onClick={() => {
                             router.push(`countries/${country.country_id}`);
@@ -123,13 +123,13 @@ function Countries() {
                             }}
                         />
                         <p>{country.name}</p>
-                        <div className="country_info">
-                            <div className="icon_container">
+                        <div className="country-info">
+                            <div className="icon-container">
                                 <span>{getTeamCount(country.country_id)}</span>
                                 <img src="/default_team.png" alt="Team Icon" className="iconSize" />
                             </div>
 
-                            <div className="icon_container">
+                            <div className="icon-container">
                                 <img src="/default_player.png" alt="Player Icon" className="iconSize" />
                                 <span>{getPlayerCount(country.country_id)}</span>
                             </div>
