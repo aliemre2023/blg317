@@ -1,6 +1,5 @@
 'use client';
 
-import './styles.scss';
 import React, { useState, useEffect } from 'react';
 import GridView from '@/components/GridView';
 import { Button } from 'primereact/button';

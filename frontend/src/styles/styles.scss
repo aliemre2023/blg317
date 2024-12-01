@@ -1,0 +1,168 @@
+.top {
+    margin-top: 20px;
+    top: 0;
+    font-size: 1.2em;
+    width: 100%;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    text-align: center;
+    overflow-y: auto;
+}
+
+.search-bar {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    padding-bottom: 10px;
+}
+
+.search-icon {
+    color: #333;
+    position: absolute;
+    right: 8px;
+
+    &:hover {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+.grid-view {
+    width: 80%;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    max-height: 70vh;
+    overflow-y: auto;
+    place-items: center;
+    margin: 1rem auto 0 auto;
+}
+
+.grid-card {
+    width: 200px !important;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px hsla(var(--primary-color-hsl), 0.5);
+    text-align: center;
+    background-color: var(--primary-color-light);
+    transition: transform 0.2s;
+    transition: background-color 0.6s;
+
+    img {
+        height: 70px !important;
+        border-radius: 4px;
+        margin-bottom: 10px;
+    }
+
+    p {
+        font-size: 1em;
+        color: var(--primary-color-text);
+        margin: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    &:hover {
+        transform: translateY(-5px);
+        background-color: var(--primary-color-text);
+
+        .country-info {
+            background-color: var(--primary-color);
+            color: var(--primary-color-text);
+        }
+
+        p {
+            color: var(--primary-color);
+        }
+    }
+}
+
+.country-info {
+    display: flex; /* row */
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--primary-color-text);
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    color: var(--primary-color);
+    margin: 0 20px 0 20px;
+    padding: 0 10px 0 10px;
+
+    .icon-container {
+        display: flex;
+        align-items: center;
+        gap: 1px;
+    }
+
+    img {
+        width: 2rem; /* fixed width */
+        height: 2rem;
+        object-fit: contain; /* keep aspect ratio */
+        margin: 0 1px 0 1px;
+    }
+}
+
+.pagination {
+    position: absolute;
+    bottom: 0;
+}
+
+.datatable .p-datatable-wrapper {
+    min-height: 60vh;
+}
+
+.datatable-wrapper {
+    margin: 0 auto;
+    text-align: center;
+    margin: 1rem auto 0 auto;
+    width: 80%;
+}
+
+.p-datatable-thead tr th,
+.p-datatable-striped tr:nth-child(even) {
+    background-color: var(--primary-color);
+    border: 0.5px solid var(--primary-color-text-darker); /* Light blue background for even rows */
+}
+
+/* Apply custom background color for odd rows */
+.p-datatable-striped tr:nth-child(odd) {
+    background-color: var(--surface-ground);
+    border: 0.5px solid var(--primary-color-text-darker); /* White background for odd rows */
+}
+
+/* Optionally, you can customize text color or other properties */
+.p-datatable-striped tr {
+    color: var(--primary-color-text); /* Text color for all rows */
+}
+
+/* Change the border color of the entire DataTable */
+.p-datatable {
+    border: 0.5px solid var(--primary-color-text-darker); /* Custom border color */
+}
+
+/* Change the border color of the table head */
+.p-datatable-thead > tr > th {
+    border-bottom: 0.5px solid var(--primary-color-text-darker); /* Custom border color */
+    color: var(--primary-color-text);
+}
+
+/* Change the border color of the table rows */
+.p-datatable-tbody > tr {
+    border-bottom: 0.5px solid var(--primary-color-text-darker); /* Custom border color */
+}
+
+/* Change the border color of footer (if applicable) */
+.p-datatable-tfoot > tr > td {
+    border-top: 0.5px solid var(--primary-color-text-darker); /* Custom border color */
+}
+
+/* Optionally, remove or change the border of individual cells */
+.p-datatable-tbody > tr > td {
+    border: 0.5px solid var(--primary-color-text-darker); /* Custom border color */
+}
