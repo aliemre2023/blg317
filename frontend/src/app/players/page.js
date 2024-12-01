@@ -2,9 +2,9 @@
 
 import './styles.scss';
 import React, { useState, useEffect } from 'react';
+import GridView from '@/components/GridView';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
-import { Paginator } from 'primereact/paginator';
 import { useRouter } from 'next/navigation';
 
 function Players() {
@@ -45,6 +45,24 @@ function Players() {
             .catch((error) => console.log('Error fetching players:', error));
     }, [currentPage, searchText]);
 
+    const gridCardTemplate = (optipns) => {
+        return (
+            <div className="grid-card" key={optipns.player_id}>
+                <div>
+                    <img
+                        src={'/player_images/' + optipns.png_name}
+                        alt={`image of ${optipns.player_id}`}
+                        onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = '/null_player.jpg';
+                        }}
+                    />
+                    <div>{`${optipns.first_name} ${optipns.last_name}`}</div>
+                </div>
+            </div>
+        );
+    };
+
     return (
         <div className="container">
             <div className="top">
@@ -73,38 +91,15 @@ function Players() {
                     <i className="search-icon fa-solid fa-magnifying-glass" onClick={searchPlayers}></i>
                 </div>
             </div>
-            <div className="grid-view">
-                {players.length > 0 ? (
-                    players.map((player) => (
-                        <div className="grid-card" key={player.player_id}>
-                            <div>
-                                <img
-                                    src={'/player_images/' + player.png_name}
-                                    alt={`image of ${player.player_id}`}
-                                    onError={(e) => {
-                                        e.target.onerror = null;
-                                        e.target.src = '/null_player.jpg';
-                                    }}
-                                />
-                                <div>{`${player.first_name} ${player.last_name}`}</div>
-                            </div>
-                        </div>
-                    ))
-                ) : (
-                    <p>No players match your search.</p>
-                )}
-            </div>
-            <Paginator
-                className="pagination w-full"
-                style={{ bottom: 0 }}
-                first={firstIndex}
-                rows={24}
+            <GridView
+                data={players}
                 totalRecords={totalPlayers}
-                onPageChange={(e) => {
-                    setFirstIndex(e.first);
-                    setCurrentPage(e.page + 1);
-                }}
-            ></Paginator>
+                first={firstIndex}
+                setFirst={setFirstIndex}
+                setCurrentPage={setCurrentPage}
+                gridCardTemplate={gridCardTemplate}
+                noMatchMessage={'No players match your search.'}
+            />
         </div>
     );
 }

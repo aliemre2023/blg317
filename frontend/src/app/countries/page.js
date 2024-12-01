@@ -2,9 +2,9 @@
 
 import './styles.scss';
 import React, { useState, useEffect } from 'react';
+import GridView from '@/components/GridView';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
-import { Paginator } from 'primereact/paginator';
 import { useRouter } from 'next/navigation';
 
 function Countries() {
@@ -74,6 +74,39 @@ function Countries() {
         return countryData ? countryData.player_count : 0;
     };
 
+    const gridCardTemplate = (options) => {
+        return (
+            <div
+                className="grid-card"
+                key={options.country_id}
+                onClick={() => {
+                    router.push(`countries/${options.country_id}`);
+                }}
+            >
+                <img
+                    src={options.flag_link}
+                    alt={`Flag of ${options.name}`}
+                    onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = 'https://image.milimaj.com/i/milliyet/75/869x477/5c8d865a45d2a05010d80795.jpg';
+                    }}
+                />
+                <p>{options.name}</p>
+                <div className="country-info">
+                    <div className="icon-container">
+                        <span>{getTeamCount(options.country_id)}</span>
+                        <img src="/default_team.png" alt="Team Icon" className="iconSize" />
+                    </div>
+
+                    <div className="icon-container">
+                        <img src="/default_player.png" alt="Player Icon" className="iconSize" />
+                        <span>{getPlayerCount(options.country_id)}</span>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
     return (
         <div className="container">
             <div className="top">
@@ -104,50 +137,15 @@ function Countries() {
                     <i className="search-icon fa-solid fa-magnifying-glass" onClick={searchFlags}></i>
                 </div>
             </div>
-            <div className="grid-view">
-                {countries.map((country, index) => (
-                    <div
-                        className="grid-card"
-                        key={index}
-                        onClick={() => {
-                            router.push(`countries/${country.country_id}`);
-                        }}
-                    >
-                        <img
-                            src={country.flag_link}
-                            alt={`Flag of ${country.name}`}
-                            onError={(e) => {
-                                e.target.onerror = null;
-                                e.target.src =
-                                    'https://image.milimaj.com/i/milliyet/75/869x477/5c8d865a45d2a05010d80795.jpg';
-                            }}
-                        />
-                        <p>{country.name}</p>
-                        <div className="country-info">
-                            <div className="icon-container">
-                                <span>{getTeamCount(country.country_id)}</span>
-                                <img src="/default_team.png" alt="Team Icon" className="iconSize" />
-                            </div>
-
-                            <div className="icon-container">
-                                <img src="/default_player.png" alt="Player Icon" className="iconSize" />
-                                <span>{getPlayerCount(country.country_id)}</span>
-                            </div>
-                        </div>
-                    </div>
-                ))}
-            </div>
-            <Paginator
-                className="pagination w-full"
-                style={{ bottom: 0 }}
-                first={firstIndex}
-                rows={24}
+            <GridView
+                data={countries}
                 totalRecords={totalCountries}
-                onPageChange={(e) => {
-                    setFirstIndex(e.first);
-                    setCurrentPage(e.page + 1);
-                }}
-            ></Paginator>
+                first={firstIndex}
+                setFirst={setFirstIndex}
+                setCurrentPage={setCurrentPage}
+                gridCardTemplate={gridCardTemplate}
+                noMatchMessage={'No countries match your search.'}
+            />
         </div>
     );
 }
