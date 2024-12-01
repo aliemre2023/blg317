@@ -54,8 +54,8 @@
         {
             "label": "Run Both Servers",
             "dependsOn": [
-                "Run Frontend (Next.js)",
-                "Run Backend (Flask)"
+                "Run Backend (Flask)",
+                "Run Frontend (Next.js)"
             ],
             "dependsOrder": "parallel",
             "problemMatcher": []

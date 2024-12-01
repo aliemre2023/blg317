@@ -4,6 +4,8 @@
 
 :root {
   --primary-color-text : #e9ae1c;
+  --primary-color-text-darker : #9e7610;
+  --primary-color-text-hsl : 43, 82%, 51%;
   --primary-color-hsl : 246, 21%, 9%;
   --primary-color : #14131d;
   --primary-color-light: #21202a;
@@ -68,6 +70,8 @@ button:focus-visible {
     --primary-color-light: #f1c044;
     --primary-color-hsl : 43, 82%, 51%;
     --primary-color-text : #14131d;
+    --primary-color-text-darker : #08080c;
+    --primary-color-text-hsl : 246, 21%, 9%;
     --surface-ground : #f1c044;
     --text-color : #14131d;
   }

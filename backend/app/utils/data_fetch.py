@@ -217,3 +217,78 @@ def get_countryTeams(query, page=1, per_page=24):
     total_count = cursor.fetchone()[0]
 
     return country_teams, total_count
+
+def get_activeRoster(teamid):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = """
+    SELECT 
+        t.name AS team_name,
+        p.player_id,
+        p.first_name,
+        p.last_name,
+        p.height,
+        p.weight,
+        p.birth_date,
+        p.college,
+        p.png_name,
+        pi.jersey,
+        pi.position,
+        pi.from_year,
+        pi.to_year,
+        pi.season_exp
+    FROM 
+        player_infos pi
+    JOIN 
+        players p ON pi.player_id = p.player_id
+    JOIN 
+        teams t ON pi.team_id = t.team_id
+    WHERE 
+        pi.is_active = 1
+        AND pi.team_id = ?
+    """
+    cursor.execute(query, (teamid,))
+    roster = cursor.fetchall()
+    conn.close()
+    return roster
+
+def get_teamInfo(teamid):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = """
+    SELECT 
+        t.team_id,
+        t.name AS team_name,
+        t.abbreviation,
+        t.nickname,
+        t.year_founded,
+        t.owner,
+        t.general_manager,
+        t.headcoach,
+        t.dleague_affiliation,
+        t.facebook,
+        t.instagram,
+        t.twitter,
+        t.logo_url,
+        c.name AS city_name,
+        c.abbreviation AS city_abbreviation,
+        c.coordinate_x,
+        c.coordinate_y,
+        s.name AS state_name,
+        a.name AS arena_name,
+        a.capacity AS arena_capacity
+    FROM 
+        teams t
+    LEFT JOIN 
+        cities c ON t.city_id = c.city_id
+    LEFT JOIN 
+        states s ON c.state_id = s.state_id
+    LEFT JOIN 
+        arenas a ON t.arena_id = a.arena_id
+    WHERE 
+        t.team_id = ?
+    """
+    cursor.execute(query, (teamid,))
+    team_info = cursor.fetchone()
+    conn.close()
+    return team_info
