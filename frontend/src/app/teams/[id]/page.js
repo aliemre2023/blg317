@@ -16,6 +16,7 @@ export default function TeamInfo({params}){
     const router = useRouter();
     const [teamRoster, setTeamRoster] = useState([]);
     const [teamInfo, setTeamInfo] = useState([]);
+    const [last5Games, setLast5Games] = useState([]);
     useEffect(() => {
         setTeamRoster([])
         setTeamInfo([])
@@ -24,6 +25,8 @@ export default function TeamInfo({params}){
             .then((data) => {
                 setTeamRoster(data.activeRoster);
                 setTeamInfo(data.teamInfo[0]);
+                setLast5Games(data.last5Games);
+                console.log(last5Games);
             })
             .catch((error) => console.log(error));
     }, [id] );
@@ -31,7 +34,7 @@ export default function TeamInfo({params}){
         <div className='w-screen'>
             <div className="w-screen">
                 <div className="grid mt-1 mx-auto w-10 bg-primary-reverse">
-                    <div className="col-1">
+                    <div className="col-2 md:col-1">
                         <Button
                             className="mt-0 bg-primary h-full w-full font-bold text-center w-full"
                             onClick={() => {
@@ -42,7 +45,7 @@ export default function TeamInfo({params}){
                             {''}
                         </Button>
                     </div>
-                    <div className="col-2">
+                    <div className="col-4 md:col-2">
                         <Button
                             className="mt-0 bg-primary h-full w-full font-bold text-center w-full"
                             onClick={() => {
@@ -53,14 +56,14 @@ export default function TeamInfo({params}){
                             {' '}
                         </Button>
                     </div>
-                    <div className="col-8">
-                        <div className="text-center p-3 border-round-sm font-bold">{teamInfo.teamName}</div>
+                    <div className="col-6 md:col-8">
+                        <div className="text-center p-3 border-round-sm font-bold">{teamInfo.teamName?.toUpperCase()}</div>
                     </div>
                     <div className="col-2"></div>
                 </div>
             </div>
             <div className='mt-4 w-10 mx-auto grid'>
-                <div className='col-7'>
+                <div className='col-12 lg:col-7'>
                     <div className='flex w-full flex-wrap'>
                         <div className='flex justify-content-center w-full'><Image src={teamInfo.logo}
                                 alt={`Logo of ${teamInfo.teamName}`}
@@ -112,7 +115,7 @@ export default function TeamInfo({params}){
                         </div>
                     </div>
                 </div>
-                <div className='col-5'>{/* table */}
+                <div className='col-12 lg:col-5'>{/* table */}
                 <div className='w-full text-center bg-primary-reverse font-semibold'>Roster</div>
                 <DataTable value={teamRoster} size='small' lazy stripedRows showGridlines>
                     <Column field="jerseyNumber" header="#"></Column>
@@ -120,6 +123,22 @@ export default function TeamInfo({params}){
                     <Column field="lastName" header="Surname"></Column>
                     <Column field="position" header="Position"></Column>
                     <Column field="height" header="Height"></Column>
+                </DataTable>
+                </div>
+                <div className='col-12'>
+                <div className='w-full text-center bg-primary-reverse font-semibold'>Last 5 Games of {teamInfo.teamName}</div>
+                <DataTable value={last5Games} size="small" stripedRows showGridlines style={{textAlign : 'center'}}>
+                    <Column field="date" header="DATE" headerStyle={{textAlign : 'center'}} style={{textAlign : 'center'}}></Column>
+                    <Column field="home_team_name" header="HOME" headerStyle={{textAlign : 'center'}} style={{textAlign : 'center'}}></Column>
+                    <Column 
+                        field="match_score" 
+                        header="MATCH" 
+                        body={(rowData) => `${rowData.home_team_score} - ${rowData.away_team_score}`}
+                        headerStyle={{textAlign : 'center'}}
+                        style={{textAlign : 'center'}}
+                    ></Column>
+                    <Column field="away_team_name" header="AWAY" headerStyle={{textAlign : 'center'}} style={{textAlign : 'center'}}></Column>
+                    <Column field="official_name" header="OFFICIAL" headerStyle={{textAlign : 'center'}} style={{textAlign : 'center'}}></Column>
                 </DataTable>
                 </div>
             </div>

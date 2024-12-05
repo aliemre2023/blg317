@@ -254,7 +254,7 @@ export default function Page({ params }) {
         <div className="container">
             <div className="top">
                 <div className="grid mt-1 mx-auto w-10 bg-primary-reverse">
-                    <div className="col">
+                    <div className="col-2 md:col-1">
                         <Button
                             className="mt-0 bg-primary h-full w-full font-bold text-center w-full"
                             onClick={() => {
@@ -265,7 +265,7 @@ export default function Page({ params }) {
                             {''}
                         </Button>
                     </div>
-                    <div className="col-3">
+                    <div className="col-4 md:col-2">
                         <Button
                             className="mt-0 bg-primary h-full w-full font-bold text-center w-full"
                             onClick={() => {
@@ -276,10 +276,9 @@ export default function Page({ params }) {
                             {' '}
                         </Button>
                     </div>
-                    <div className="col-8">
+                    <div className="col-6 md:col-9">
                         <div className="text-center p-3 border-round-sm font-bold">COUNTRIES</div>
                     </div>
-                    <div className="col-2"></div>
                 </div>
             </div>
             <div className="datatable-wrapper">{dataTable}</div>
