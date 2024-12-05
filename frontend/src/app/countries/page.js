@@ -90,7 +90,7 @@ function Countries() {
                         </Button>
                     </div>
                     <div className="col-4 md:col-8">
-                        <div className="text-center p-3 border-round-sm font-bold">COUNTRIES</div>  
+                        <div className="text-center p-3 border-round-sm font-bold">COUNTRIES</div>
                     </div>
                     <div className="col-4 md:col-2"></div>
                 </div>

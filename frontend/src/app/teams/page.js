@@ -77,10 +77,13 @@ function Teams() {
             <div className="flag_grid">
                 {teams.length > 0 ? (
                     teams.map((team) => (
-                        <div className="flag_card" key={team.team_id} 
-                        onClick={() => {
-                            router.push(`teams/${team.team_id}`);
-                        }}>
+                        <div
+                            className="flag_card"
+                            key={team.team_id}
+                            onClick={() => {
+                                router.push(`teams/${team.team_id}`);
+                            }}
+                        >
                             <img
                                 src={team.logo_url}
                                 alt={`Logo of ${team.nickname}`}
