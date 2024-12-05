@@ -34,7 +34,7 @@ export default function TeamInfo({params}){
         <div className='w-screen'>
             <div className="w-screen">
                 <div className="grid mt-1 mx-auto w-10 bg-primary-reverse">
-                    <div className="col-1">
+                    <div className="col-2 md:col-1">
                         <Button
                             className="mt-0 bg-primary h-full w-full font-bold text-center w-full"
                             onClick={() => {
@@ -45,7 +45,7 @@ export default function TeamInfo({params}){
                             {''}
                         </Button>
                     </div>
-                    <div className="col-2">
+                    <div className="col-4 md:col-2">
                         <Button
                             className="mt-0 bg-primary h-full w-full font-bold text-center w-full"
                             onClick={() => {
@@ -56,7 +56,7 @@ export default function TeamInfo({params}){
                             {' '}
                         </Button>
                     </div>
-                    <div className="col-8">
+                    <div className="col-6 md:col-8">
                         <div className="text-center p-3 border-round-sm font-bold">{teamInfo.teamName?.toUpperCase()}</div>
                     </div>
                     <div className="col-2"></div>
