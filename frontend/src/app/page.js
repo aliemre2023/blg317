@@ -11,7 +11,7 @@ function Page() {
 
     useEffect(() => {
         // Fetch the last games from the API
-        fetch('http://localhost:5000/api/getLastGames') // Adjust API endpoint if necessary
+        fetch('http://127.0.0.1:5000/api/getLastGames') // Adjust API endpoint if necessary
             .then((response) => response.json())
             .then((data) => {
                 setLastGames(data);
