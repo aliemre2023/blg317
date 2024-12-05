@@ -76,10 +76,16 @@ function Players() {
             <div className="player_grid">
                 {players.length > 0 ? (
                     players.map((player) => (
-                        <div className="player_card" key={player.player_id}>
+                        <div
+                            className="player_card"
+                            onClick={() => {
+                                router.push(`/players/${player.player_id}`);
+                            }}
+                            key={player.player_id}
+                        >
                             <div className="player_details">
                                 <img
-                                    src={"/player_images/" + player.png_name}
+                                    src={'/player_images/' + player.png_name}
                                     alt={`image of ${player.player_id}`}
                                     onError={(e) => {
                                         e.target.onerror = null;

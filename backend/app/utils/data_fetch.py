@@ -116,6 +116,42 @@ def get_players(query=None, page=1, per_page=24):
     conn.close()
     return players, total_count
 
+def get_playerInfo(playerid):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = """
+    SELECT
+        p.first_name,
+        p.last_name,
+        p.height,
+        p.weight,
+        p.birth_date,
+        p.college,
+        c.name as country_name,
+        c.flag_link,
+        p.png_name,
+        t.name as team_name,
+        t.logo_url,
+        pi.is_active,
+        pi.position,
+        pi.from_year,
+        pi.to_year,
+        pi.jersey,
+        d.season,
+        d.overall_pick,
+        p.country_id,
+        pi.team_id
+        FROM ((((players p
+        INNER JOIN player_infos pi ON p.player_id = pi.player_id)
+        LEFT JOIN drafts d ON p.player_id = d.player_id)
+        INNER JOIN countries c ON p.country_id = c.country_id)
+        INNER JOIN teams t ON pi.team_id = t.team_id)
+        WHERE p.player_id = ?;
+    """
+    cursor.execute(query,(playerid,))
+    playerinfos = cursor.fetchone()
+    conn.close()
+    return playerinfos
 
 def get_numberOfTeamsInCountry():
     team_number_in_country = fetch_from_sql_file("team_number_in_country.sql")
