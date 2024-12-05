@@ -125,7 +125,7 @@ def get_numberOfPlayersInCountry():
     player_number_in_country = fetch_from_sql_file("player_number_in_country.sql")
     return player_number_in_country
 
-def getLastGames(limit=5):
+def getLastGames(limit=5, team_id = None):
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -145,11 +145,18 @@ def getLastGames(limit=5):
         LEFT JOIN teams t2 ON g.away_team_id = t2.team_id
         LEFT JOIN officials o ON g.official_id = o.official_id
         LEFT JOIN game_stats gs ON g.game_id = gs.game_id
+    """
+    if team_id:
+        sql_query += """
+            WHERE t1.team_id = ? OR t2.team_id = ?
+        """
+        params = (team_id, team_id, limit)
+    else:
+        params = (limit,)
+    sql_query += """
         ORDER BY g.date DESC
         LIMIT ?
     """
-    params = (limit,)
-
     cursor.execute(sql_query, params)
     games = cursor.fetchall()
 
