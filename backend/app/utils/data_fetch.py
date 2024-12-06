@@ -2,6 +2,7 @@
 import os
 from .db_utils import get_db_connection
 import sqlite3
+from datetime import datetime
 
 # Function to load and execute a query from a specified SQL file
 def fetch_from_sql_file(filename):
@@ -347,3 +348,32 @@ def get_teamInfo(teamid):
     team_info = cursor.fetchone()
     conn.close()
     return team_info
+
+def get_userInfo(username, hashPassword):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    query="""
+    SELECT * FROM users
+    WHERE user_name = ? AND password = ?;
+    """
+
+    cursor.execute(query, (username, hashPassword,))
+    user_info = cursor.fetchone()
+    conn.close()
+    return user_info
+
+def update_last_login_of_user(user_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    current_date = datetime.now()
+    formatted_date = current_date.strftime('%Y-%m-%d')
+    query="""
+    UPDATE users
+    SET last_login = ?
+    WHERE user_id = ?
+    """
+
+    cursor.execute(query, (formatted_date, user_id,))
+    conn.close()
