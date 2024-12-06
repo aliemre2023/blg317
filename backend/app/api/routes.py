@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app.utils.data_fetch import *
 from app.api import generate_hashPassword
+import logging
 
 api_bp = Blueprint("api", __name__)
 
@@ -166,27 +167,24 @@ def teamInfo_api(teamid):
 def register_user():
     print("Request received for user registration.")
     try:
-        # Get the JSON data from the request
         # request already defined in flask 
         data = request.json
         print(data)
         if not data:
             return jsonify({'error': 'Request must be JSON'}), 400
 
-        # Extract user details from the data
         user_name = data.get('user_name')
         password = data.get('password')
         mail = data.get('mail')
         is_admin = data.get('is_admin', False)
 
-        # Validate required fields
         if not user_name or not password or not mail:
             return jsonify({'error': 'All fields (user_name, password, mail) are required'}), 400
 
-        # Hash the password
+        # hash the password
         hash_password = generate_hashPassword(password)
 
-        # Insert user into the database
+        # insert into database
         conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute("""
@@ -194,7 +192,6 @@ def register_user():
             VALUES (?, ?, ?, ?)
         """, (user_name, hash_password, mail, is_admin))
 
-        # Commit the transaction and close the connection
         conn.commit()
         conn.close()
 
@@ -205,6 +202,92 @@ def register_user():
 
     except Exception as e:
         return jsonify({'error': 'An unexpected error occurred', 'details': str(e)}), 500
+
+'''
+@api_bp.route('/login', methods=['POST'])
+def login_user():
+    logging.debug("Login request received.")
+
+    data = request.get_json()
+    logging.debug(f"Received data: {data}")
+    username = data.get('user_name')
+    password = data.get('password')
+    hashPassword = generate_hashPassword(password)
+
+    user_infos = get_userInfo(username, hashPassword)
+
+    #3,user_id
+    #1,user_name
+    #2,password
+    #3,mail
+    #4,is_admin
+    #5,last_login
+    #6,creation_date
+
+    update_last_login_of_user(user_infos[0][0])
+    
+    if user_infos[1] == username and user_infos[2] == password:
+        return jsonify({
+            "userInfo": [{
+                'user_id': user_info[0], 
+                'user_name': user_info[1], 
+                'password': user_info[2], 
+                'mail': user_info[3], 
+                'is_admin': user_info[4], 
+                'last_login': user_info[5], 
+                'creation_date': user_info[6]
+            } for user_info in user_infos]
+        })
+
+    else:
+        return jsonify({"error": "Invalid username or password"}), 401
+'''
+'''
+@api_bp.route('/login', methods=['GET'])
+def user_info(user_name, password):
+    hashPassword = generate_hashPassword(password)
+    user_info = get_userInfo(user_name, hashPassword)
+
+    if user_info[1] == user_name and user_info[2] == hashPassword:
+        return jsonify({
+            "userInfo": [{
+                'user_id': user_info[0], 
+                'user_name': user_info[1], 
+                'password': user_info[2], 
+                'mail': user_info[3], 
+                'is_admin': user_info[4], 
+                'last_login': user_info[5], 
+                'creation_date': user_info[6]
+            }]
+        }), 201
+
+    else:
+        return jsonify({"error": "Invalid username or password"}), 401
+'''
+
+@api_bp.route('/login', methods=['POST'])  # Changed to POST method
+def user_info():
+    data = request.get_json()  # Get JSON data from the request
+    user_name = data.get('user_name')
+    password = data.get('password')
+    hashPassword = generate_hashPassword(password)
+    user_info = get_userInfo(user_name, hashPassword)
+
+    if user_info and user_info[1] == user_name and user_info[2] == hashPassword:
+        return jsonify({
+            "userInfo": [{
+                'user_id': user_info[0], 
+                'user_name': user_info[1], 
+                'password': user_info[2], 
+                'mail': user_info[3], 
+                'is_admin': user_info[4], 
+                'last_login': user_info[5], 
+                'creation_date': user_info[6]
+            }]
+        }), 200  # Changed to HTTP status 200 for success
+    else:
+        return jsonify({"error": "Invalid username or password"}), 401
+
 
 
 if __name__ == '__main__':
