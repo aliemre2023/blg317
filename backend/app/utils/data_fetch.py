@@ -121,32 +121,33 @@ def get_playerInfo(playerid):
     cursor = conn.cursor()
     query = """
     SELECT
-        p.first_name,
-        p.last_name,
-        p.height,
-        p.weight,
-        p.birth_date,
-        p.college,
-        c.name as country_name,
-        c.flag_link,
-        p.png_name,
-        t.name as team_name,
-        t.logo_url,
-        pi.is_active,
-        pi.position,
-        pi.from_year,
-        pi.to_year,
-        pi.jersey,
-        d.season,
-        d.overall_pick,
-        p.country_id,
-        pi.team_id
-        FROM ((((players p
-        INNER JOIN player_infos pi ON p.player_id = pi.player_id)
-        LEFT JOIN drafts d ON p.player_id = d.player_id)
-        INNER JOIN countries c ON p.country_id = c.country_id)
-        INNER JOIN teams t ON pi.team_id = t.team_id)
-        WHERE p.player_id = ?;
+    COALESCE(p.first_name, 'Unknown') AS first_name,
+    COALESCE(p.last_name, 'Unknown') AS last_name,
+    COALESCE(p.height, 'Unknown') AS height,
+    COALESCE(p.weight, 'Unknown') AS weight,
+    COALESCE(p.birth_date, 'Unknown') AS birth_date,
+    COALESCE(p.college, 'Unknown') AS college,
+    COALESCE(c.name, 'Unknown') AS country_name,
+    COALESCE(c.flag_link, 'Unknown') AS country_flag,
+    COALESCE(p.png_name, 'Unknown') AS player_img,
+    COALESCE(t.name, 'Unknown') AS team_name,
+    COALESCE(t.logo_url, 'Unknown') AS team_logo,
+    COALESCE(pi.is_active, 'Unknown') AS active_player,
+    COALESCE(pi.position, 'Unknown') AS position,
+    COALESCE(pi.from_year, 'Unknown') AS start_year,
+    COALESCE(pi.to_year, 'Unknown') AS end_year,
+    COALESCE(pi.jersey, 'Unknown') AS jersey_number,
+    COALESCE(d.season, 'Unknown') AS draft_year,
+    COALESCE(d.overall_pick, 'Unknown') AS overall_pick,
+    COALESCE(p.country_id, 'Unknown') AS country_id,
+    COALESCE(pi.team_id, 'Unknown') AS team_id
+    FROM ((((players p
+    LEFT JOIN player_infos pi ON p.player_id = pi.player_id)
+    LEFT JOIN drafts d ON p.player_id = d.player_id)
+    LEFT JOIN countries c ON p.country_id = c.country_id)
+    LEFT JOIN teams t ON pi.team_id = t.team_id)
+    WHERE p.player_id = ?;
+
     """
     cursor.execute(query,(playerid,))
     playerinfos = cursor.fetchone()
