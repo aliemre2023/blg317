@@ -59,6 +59,47 @@ def players_api():
         'total_players': total_players
     })
 
+@api_bp.route('/games', methods=['GET'])
+def games_api():
+    # Retrieve query parameters
+    team_id = request.args.get("team_id", type=int)
+    start_date = request.args.get("start_date")  # Format: YYYY-MM-DD
+    end_date = request.args.get("end_date")  # Format: YYYY-MM-DD
+    official_name = request.args.get("official_name")  # Search across official names
+    page = int(request.args.get("page", 1))
+    per_page = int(request.args.get("per_page", 10))  # Default to 10 items per page
+
+    # Fetch games and total count using the backend function
+    games, total_games = get_games(
+        team_id=team_id,
+        start_date=start_date,
+        end_date=end_date,
+        official_name=official_name,
+        page=page,
+        per_page=per_page
+    )
+
+    # Return JSON response
+    return jsonify({
+        'games': [
+            {
+                'game_id': game[0],
+                'date': game[1],
+                'home_team_id': game[2],
+                'home_team_name': game[3],
+                'home_team_score': game[4],
+                'away_team_id': game[5],
+                'away_team_name': game[6],
+                'away_team_score': game[7],
+                'official_name': game[8]
+            }
+            for game in games
+        ],
+        'page': page,
+        'per_page': per_page,
+        'total_games': total_games
+    })
+
 @api_bp.route('/players/<int:player_id>', methods=["GET"])
 def playerInfo_api(player_id):
     player_infos = get_playerInfo(player_id)
