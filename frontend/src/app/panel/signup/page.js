@@ -65,6 +65,9 @@ export default function signup() {
 
                 const result = await response.json();
                 setSuccessMessage('Registration successful! Redirecting...');
+                setTimeout(() => {
+                    router.push('/panel/login'); // Redirect after successful login
+                }, 2000);
                 console.log('Registration successful:', result);
 
             } catch (error) {
