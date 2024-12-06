@@ -15,7 +15,7 @@ next:
 
 # Run Flask API
 flask:
-	cd $(FLASK_DIR) && python run.py
+	cd $(FLASK_DIR) && FLASK_APP=run.py flask run
 
 # Start both (parallel)
 startall:
