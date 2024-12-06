@@ -1,10 +1,9 @@
 'use client';
 
-import './styles.css';
 import React, { useState, useEffect } from 'react';
+import GridView from '@/components/GridView';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
-import { Paginator } from 'primereact/paginator';
 import { useRouter } from 'next/navigation';
 
 function Players() {
@@ -45,6 +44,30 @@ function Players() {
             .catch((error) => console.log('Error fetching players:', error));
     }, [currentPage, searchText]);
 
+    const gridCardTemplate = (options) => {
+        return (
+            <div
+                className="grid-card"
+                key={options.player_id}
+                onClick={() => {
+                    router.push(`/players/${options.player_id}`);
+                }}
+            >
+                <div>
+                    <img
+                        src={'/player_images/' + options.png_name}
+                        alt={`image of ${options.player_id}`}
+                        onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = '/null_player.jpg';
+                        }}
+                    />
+                    <div>{`${options.first_name} ${options.last_name}`}</div>
+                </div>
+            </div>
+        );
+    };
+
     return (
         <div className="container">
             <div className="top">
@@ -63,54 +86,25 @@ function Players() {
                     </div>
                     <div className="col-4 md:col-2"></div>
                 </div>
-                <div className="search_bar mt-3">
+                <div className="search-bar mt-3">
                     <InputText
                         className="p-inputtext-sm"
                         name="query"
                         placeholder="Search..."
                         onChange={handleInputChange}
                     />
-                    <i className="search_icon fa-solid fa-magnifying-glass" onClick={searchPlayers}></i>
+                    <i className="search-icon fa-solid fa-magnifying-glass" onClick={searchPlayers}></i>
                 </div>
             </div>
-            <div className="player_grid">
-                {players.length > 0 ? (
-                    players.map((player) => (
-                        <div
-                            className="player_card"
-                            onClick={() => {
-                                router.push(`/players/${player.player_id}`);
-                            }}
-                            key={player.player_id}
-                        >
-                            <div className="player_details">
-                                <img
-                                    src={'/player_images/' + player.png_name}
-                                    alt={`image of ${player.player_id}`}
-                                    onError={(e) => {
-                                        e.target.onerror = null;
-                                        e.target.src = '/null_player.jpg';
-                                    }}
-                                />
-                                <div>{`${player.first_name} ${player.last_name}`}</div>
-                            </div>
-                        </div>
-                    ))
-                ) : (
-                    <p>No players match your search.</p>
-                )}
-            </div>
-            <Paginator
-                className="pagination w-full"
-                style={{ bottom: 0 }}
-                first={firstIndex}
-                rows={24}
+            <GridView
+                data={players}
                 totalRecords={totalPlayers}
-                onPageChange={(e) => {
-                    setFirstIndex(e.first);
-                    setCurrentPage(e.page + 1);
-                }}
-            ></Paginator>
+                first={firstIndex}
+                setFirst={setFirstIndex}
+                setCurrentPage={setCurrentPage}
+                gridCardTemplate={gridCardTemplate}
+                noMatchMessage={'No players match your search.'}
+            />
         </div>
     );
 }

@@ -31,7 +31,7 @@ function Page() {
                 </div>
             </div>
             <div className="grid mt-0 w-10 mx-auto bg-primary-reverse">
-                <div className="mt-0 py-1 col-12 lg:col-2">
+                <div className="mt-0 py-1 col-12 lg:col-3">
                     <Button
                         className="mt-0 bg-primary h-full w-full font-bold text-center w-full"
                         onClick={() => {
@@ -40,7 +40,7 @@ function Page() {
                         label="Countries"
                     />
                 </div>
-                <div className="mt-0 py-1 col-12 lg:col-2">
+                <div className="mt-0 py-1 col-12 lg:col-3">
                     <Button
                         className="mt-0 bg-primary h-full w-full font-bold text-center w-full"
                         onClick={() => {
@@ -49,7 +49,7 @@ function Page() {
                         label="Teams"
                     />
                 </div>
-                <div className="mt-0 py-1 col-12 lg:col-2">
+                <div className="mt-0 py-1 col-12 lg:col-3">
                     <Button
                         className="mt-0 bg-primary h-full w-full font-bold text-center w-full"
                         onClick={() => {
@@ -58,35 +58,17 @@ function Page() {
                         label="Players"
                     />
                 </div>
-                <div className="mt-0 py-1 col-12 lg:col-2">
+                <div className="mt-0 py-1 col-12 lg:col-3">
                     <Button
                         className="mt-0 bg-primary h-full w-full font-bold text-center w-full"
                         onClick={() => {
-                            router.push('/countries');
+                            router.push('/games');
                         }}
-                        label="Countries"
-                    />
-                </div>
-                <div className="mt-0 py-1 col-12 lg:col-2">
-                    <Button
-                        className="mt-0 bg-primary h-full w-full font-bold text-center w-full"
-                        onClick={() => {
-                            router.push('/panel/signup');
-                        }}
-                        label="SignUp"
-                    />
-                </div>
-                <div className="mt-0 py-1 col-12 lg:col-2">
-                    <Button
-                        className="mt-0 bg-primary h-full w-full font-bold text-center w-full"
-                        onClick={() => {
-                            router.push('/panel/login');
-                        }}
-                        label="LogIn"
+                        label="Games"
                     />
                 </div>
             </div>
-            <div className="prime-flex h-30rem mt-2 w-10 mx-auto justify-content-center align-content-center fadeindown animation-ease-in animation-duration-1000 surface-ground">
+            <div className="flex h-30rem mt-2 w-10 mx-auto justify-content-center align-content-center fadeindown animation-ease-in animation-duration-1000 surface-ground">
                 <div className="w-full">
                     <h2 className="text-4xl mb-4 text-center">Last 5 Games</h2>
                     {loading ? (

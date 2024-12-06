@@ -1,10 +1,9 @@
 'use client';
 
-import './styles.css';
 import React, { useState, useEffect } from 'react';
+import GridView from '@/components/GridView';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
-import { Paginator } from 'primereact/paginator';
 import { useRouter } from 'next/navigation';
 
 function Teams() {
@@ -46,6 +45,28 @@ function Teams() {
             .catch((error) => console.log('Error fetching teams:', error));
     }, [currentPage, searchText]);
 
+    const gridCardTemplate = (options) => {
+        return (
+            <div
+                className="grid-card"
+                key={options.team_id}
+                onClick={() => {
+                    router.push(`teams/${options.team_id}`);
+                }}
+            >
+                <img
+                    src={options.logo_url}
+                    alt={`Logo of ${options.nickname}`}
+                    onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = '/null_team.png';
+                    }}
+                />
+                <div>{options.nickname}</div>
+            </div>
+        );
+    };
+
     return (
         <div className="container">
             <div className="top">
@@ -64,52 +85,25 @@ function Teams() {
                     </div>
                     <div className="col-4 md:col-2"></div>
                 </div>
-                <div className="search_bar mt-3">
+                <div className="search-bar mt-3">
                     <InputText
                         className="p-inputtext-sm"
                         name="query"
                         placeholder="Search..."
                         onChange={handleInputChange}
                     />
-                    <i className="search_icon fa-solid fa-magnifying-glass" onClick={searchTeams}></i>
+                    <i className="search-icon fa-solid fa-magnifying-glass" onClick={searchTeams}></i>
                 </div>
             </div>
-            <div className="flag_grid">
-                {teams.length > 0 ? (
-                    teams.map((team) => (
-                        <div
-                            className="flag_card"
-                            key={team.team_id}
-                            onClick={() => {
-                                router.push(`teams/${team.team_id}`);
-                            }}
-                        >
-                            <img
-                                src={team.logo_url}
-                                alt={`Logo of ${team.nickname}`}
-                                onError={(e) => {
-                                    e.target.onerror = null;
-                                    e.target.src = '/null_team.png';
-                                }}
-                            />
-                            <div>{team.nickname}</div>
-                        </div>
-                    ))
-                ) : (
-                    <p>No teams match your search.</p>
-                )}
-            </div>
-            <Paginator
-                className="pagination w-full"
-                style={{ bottom: 0 }}
-                first={firstIndex}
-                rows={24}
+            <GridView
+                data={teams}
                 totalRecords={totalTeams}
-                onPageChange={(e) => {
-                    setFirstIndex(e.first);
-                    setCurrentPage(e.page + 1);
-                }}
-            ></Paginator>
+                first={firstIndex}
+                setFirst={setFirstIndex}
+                setCurrentPage={setCurrentPage}
+                gridCardTemplate={gridCardTemplate}
+                noMatchMessage={'No teams match your search.'}
+            />
         </div>
     );
 }

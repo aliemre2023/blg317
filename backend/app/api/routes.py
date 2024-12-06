@@ -64,25 +64,33 @@ def players_api():
 @api_bp.route('/players/<int:player_id>', methods=["GET"])
 def playerInfo_api(player_id):
     player_infos = get_playerInfo(player_id)
-    return jsonify({'name' : player_infos[0]+" "+player_infos[1],
-                    'height' : player_infos[2],
-                    'weight' : player_infos[3],
-                    'birthDate' : player_infos[4],
-                    'college' : player_infos[5],
-                    'country' : player_infos[6],
-                    'country_flag' : player_infos[7],
-                    'player_img' : player_infos[8],
-                    'team_name' : player_infos[9],
-                    'team_logo' : player_infos[10],
-                    'active_player' : player_infos[11],
-                    'position' : player_infos[12],
-                    'start_year' : player_infos[13],
-                    'end_year' : player_infos[14],
-                    'jersey_number' : player_infos[15],
-                    'draft_year' : player_infos[16],
-                    'overall_pick' : player_infos[17],
-                    'country_id' : player_infos[18],
-                    'team_id' : player_infos[19]})
+    return jsonify({
+        'name': player_infos[0] + " " + player_infos[1],
+        'height': player_infos[2],
+        'weight': player_infos[3],
+        'birthDate': player_infos[4],
+        'college': player_infos[5],
+        'country': player_infos[6],
+        'country_flag': player_infos[7],
+        'player_img': player_infos[8],
+        'active_team_id': player_infos[9],
+        'active_team_name': player_infos[10],
+        'active_team_logo': player_infos[11],
+        'drafted_team_id': player_infos[12],
+        'drafted_team_name': player_infos[13],
+        'drafted_team_logo': player_infos[14],
+        'active_player': player_infos[15],
+        'position': player_infos[16],
+        'start_year': player_infos[17],
+        'end_year': player_infos[18],
+        'jersey_number': player_infos[19],
+        'draft_year': player_infos[20],
+        'overall_pick': player_infos[21],
+        'country_id': player_infos[22],
+        'team_id': player_infos[23]
+    })
+
+
 
 
 @api_bp.route('/numberOfTeams', methods=['GET'])

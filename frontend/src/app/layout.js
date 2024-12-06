@@ -2,7 +2,8 @@ import { PrimeReactProvider } from 'primereact/api';
 import classNames from 'classnames';
 
 import localFont from 'next/font/local';
-import './globals.css';
+import '@/styles/globals.css';
+import '@/styles/styles.scss';
 
 const geistSans = localFont({
     src: './fonts/GeistVF.woff',

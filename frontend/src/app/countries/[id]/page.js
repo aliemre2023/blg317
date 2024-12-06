@@ -1,6 +1,5 @@
 'use client';
 
-import './styles.css';
 import React, { useState, useEffect } from 'react';
 import { Button } from 'primereact/button';
 import { Dropdown } from 'primereact/dropdown';

@@ -1,9 +1,6 @@
 'use client';
 
-import './styles.css';
 import React, { useState, useEffect } from 'react';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { useRouter } from 'next/navigation';
 import { Image } from 'primereact/image';
@@ -122,24 +119,44 @@ export default function playerInfo({ params }) {
                                     {playerInfo.country}
                                 </div>
                                 <div className="w-4 mt-2 bg-primary-reverse font-medium align-items-center justify-content-center flex">
-                                    Team
+                                    Active Team
                                 </div>
                                 <div
                                     onClick={() => {
-                                        router.push(`/teams/${playerInfo.team_id}`);
+                                        router.push(`/teams/${playerInfo.active_team_id}`);
                                     }}
                                     className="w-4 ml-8 flex justify-content-center align-items-center bg-primary-reverse mt-2  bg-primary-reverse"
                                 >
                                     <img
-                                        src={playerInfo.team_logo}
+                                        src={playerInfo.active_team_logo}
                                         style={{ width: '5%' }}
                                         onError={(e) => {
                                             e.target.onerror = null;
                                             e.target.src = '/null_team.png';
                                         }}
-                                        alt={'Flag of' + playerInfo.team_name}
+                                        alt={'Flag of' + playerInfo.active_team_name}
                                     />
-                                    {playerInfo.team_name}
+                                    {playerInfo.active_team_name}
+                                </div>
+                                <div className="w-4 mt-2 bg-primary-reverse font-medium align-items-center justify-content-center flex">
+                                    Drafted Team
+                                </div>
+                                <div
+                                    onClick={() => {
+                                        router.push(`/teams/${playerInfo.drafted_team_id}`);
+                                    }}
+                                    className="w-4 ml-8 flex justify-content-center align-items-center bg-primary-reverse mt-2  bg-primary-reverse"
+                                >
+                                    <img
+                                        src={playerInfo.drafted_team_logo}
+                                        style={{ width: '5%' }}
+                                        onError={(e) => {
+                                            e.target.onerror = null;
+                                            e.target.src = '/null_team.png';
+                                        }}
+                                        alt={'Flag of' + playerInfo.drafted_team_name}
+                                    />
+                                    {playerInfo.drafted_team_name}
                                 </div>
                                 <div className="w-4 mt-2 bg-primary-reverse font-medium align-items-center justify-content-center flex">
                                     College
