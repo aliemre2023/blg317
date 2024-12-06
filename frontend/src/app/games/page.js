@@ -23,7 +23,7 @@ function Games() {
         end_date: null,
         official_name: '',
     });
-    
+
     const [games, setGames] = useState([]);
 
     const handleFilterChange = (e) => {
@@ -68,7 +68,6 @@ function Games() {
     useEffect(() => {
         fetchGames(); // Fetch games when filters or currentPage changes
     }, [currentPage, limit]); // This hook will run whenever filters or currentPage change
-    
 
     const formatDate = (date) => {
         return new Date(date).toLocaleDateString();
@@ -242,11 +241,7 @@ function Games() {
                             />
                         </div>
                     </div>
-                    <Button
-                        className="mt-3 bg-primary"
-                        label="Apply Filters"
-                        onClick={applyFilters}
-                    />
+                    <Button className="mt-3 bg-primary" label="Apply Filters" onClick={applyFilters} />
                 </div>
             </div>
 
