@@ -1,5 +1,6 @@
 'use client';
 
+import { Button } from 'primereact/button';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import './styles.css';
@@ -13,6 +14,10 @@ export default function signup() {
     const [successMessage, setSuccessMessage] = useState('');
     const [formData, setFormData] = useState(null);
     const router = useRouter();
+
+    const goToLogIn = () => {
+        router.push('/panel/login');  
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -73,11 +78,29 @@ export default function signup() {
 
     return (
         <div className="container">
-            <h1 className="title">Sign Up</h1>
+            <div className="top">
+                <div className="grid mt-1 mx-auto w-10 bg-primary-reverse">
+                    <div className="col-4 md:col-2">
+                        <Button
+                            className="mt-0 bg-primary h-full w-full font-bold text-center w-full"
+                            onClick={() => {
+                                router.replace('/');
+                            }}
+                            label="Home"
+                        >
+                            {' '}
+                        </Button>
+                    </div>
+                    <div className="col-4 md:col-8">
+                        <div className="text-center p-3 border-round-sm font-bold">SIGN UP</div>
+                    </div>
+                    <div className="col-4 md:col-2"></div>
+                </div>
+            </div>
             <form onSubmit={handleSubmit} className="form" method='POST'>
                              
                 <div className="field">
-                    <label htmlFor="user_name">Username</label>
+                    <label htmlFor="user_name" className="col-12 mb-2 md:col-2 md:mb-0">Username</label>
                     <input
                         id="user_name"
                         type="text"
@@ -88,7 +111,7 @@ export default function signup() {
                 </div>
 
                 <div className="field">
-                    <label htmlFor="email">Email</label>
+                    <label htmlFor="email" className="col-12 mb-2 md:col-2 md:mb-0">Email</label>
                     <input
                         id="email"
                         type="email"
@@ -99,7 +122,7 @@ export default function signup() {
                 </div>
 
                 <div className="field">
-                    <label htmlFor="password">Password</label>
+                    <label htmlFor="password" className="col-12 mb-2 md:col-2 md:mb-0">Password</label>
                     <input
                         id="password"
                         type="password"
@@ -110,7 +133,7 @@ export default function signup() {
                 </div>
 
                 <div className="field">
-                    <label htmlFor="confirm_password">Confirm Password</label>
+                    <label htmlFor="confirm_password" className="col-12 mb-2 md:col-2 md:mb-0">Confirm Password</label>
                     <input
                         id="confirm_password"
                         type="password"
@@ -125,6 +148,15 @@ export default function signup() {
 
                 <button type="submit" className="submit-btn">Sign Up</button>
             </form>
+
+            <div>
+                <button onClick={goToLogIn} className="text-base p-2 bg-primary text-white rounded-md">
+                    Do you have an account 
+                    <img src='/mousydog.png' className='w-2rem' alt="mousydog"/>
+                    , Come to log
+                    <img src='/coolface.png' className='w-2rem' alt="coolface"/>
+                </button>
+            </div>
         </div>
     );
 }
