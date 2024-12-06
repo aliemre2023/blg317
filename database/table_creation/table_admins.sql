@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS admins (
+    admin_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username VARCHAR(100) UNIQUE NOT NULL,
+    password_hash VARCHAR(60) NOT NULL
+);
