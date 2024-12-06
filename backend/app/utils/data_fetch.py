@@ -347,3 +347,22 @@ def get_teamInfo(teamid):
     team_info = cursor.fetchone()
     conn.close()
     return team_info
+
+def get_admin(username): 
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    query = """
+    SELECT 
+       username, password_hash
+    FROM 
+        admins
+    WHERE 
+        username = ?
+    """
+
+    cursor.execute(query, (username,))
+    admin_info = cursor.fetchone()
+
+    conn.close()
+    return admin_info

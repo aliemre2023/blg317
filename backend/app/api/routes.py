@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app.utils.data_fetch import *
+from app.utils.credential_utils import check_credentials, get_token
 
 api_bp = Blueprint("api", __name__)
 
@@ -88,9 +89,6 @@ def playerInfo_api(player_id):
         'team_id': player_infos[23]
     })
 
-
-
-
 @api_bp.route('/numberOfTeams', methods=['GET'])
 def numberOfTeams_api():
     table = get_numberOfTeamsInCountry()
@@ -152,7 +150,7 @@ def countryTeams_api(country_id):
     table, total_countryTeams = get_countryTeams(country_id, page, limit)
 
     return jsonify({
-        'counrtyTeams': [{'team_id': row[0], 'name': row[1], 'owner': row[2], 'general_manager': row[3], 'headcoach': row[4], 'city_name': row[5], 'arena_name': row[6], 'year_founded': row[7], 'instagram': row[8]} for row in table],
+        'counrtyTeams': [{'team_id': row[0], 'name': row[1], 'owner': row[2], 'general_manager': row[3], 'headcoach': row[4], 'city_name': row[5], 'arena_name': row[6], 'year_founded': row[7]} for row in table],
         'page': page,
         'totalCountryTeams': total_countryTeams
     })
@@ -167,6 +165,22 @@ def teamInfo_api(teamid):
         'activeRoster' : [{'jerseyNumber' : row[9], 'firstName' : row[2], 'lastName' : row[3], 'position' : row[10], 'height' : row[4]} for row in roster],
         'last5Games' : [{'date' : game[1], 'home_team_name' : game[3], 'home_team_score' : game[4], 'away_team_name' : game[6], 'away_team_score' : game[7], 'official_name' : game[8]} for game in last5Games]
     })
+
+@api_bp.route('/login', methods = ['POST'])
+def admin_login():
+    data = request.get_json()
+
+    if not data or 'username' not in data or 'password' not in data:
+        return jsonify({"error": "Missing username or password"}), 400
+
+    username = data['username']
+    password = data['password']
+
+    if (check_credentials(username, password)):
+        token = get_token(username)
+        return jsonify({'message': 'Login successful', 'token': token}), 200
+    
+    return jsonify({'error': 'Invalid credentials'}), 401
 
 if __name__ == '__main__':
     app.run(debug=True)
