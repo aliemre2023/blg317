@@ -117,6 +117,92 @@ def get_players(query=None, page=1, per_page=24):
     conn.close()
     return players, total_count
 
+def get_games(team_id=None, start_date=None, end_date=None, official_name=None, page=1, per_page=10):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    sql_query = """
+        SELECT
+            g.game_id,
+            g.date,
+            g.home_team_id,
+            t1.name AS home_team_name,
+            gs.home_team_score AS home_team_score,
+            g.away_team_id,
+            t2.name AS away_team_name,
+            gs.away_team_score AS away_team_score,
+            o.first_name || ' ' || o.last_name AS official_name
+        FROM games g
+        LEFT JOIN teams t1 ON g.home_team_id = t1.team_id
+        LEFT JOIN teams t2 ON g.away_team_id = t2.team_id
+        LEFT JOIN officials o ON g.official_id = o.official_id
+        LEFT JOIN game_stats gs ON g.game_id = gs.game_id
+        WHERE 1 = 1
+    """
+
+    # Add filters dynamically based on provided parameters
+    params = []
+
+    if team_id:
+        sql_query += " AND (g.home_team_id = ? OR g.away_team_id = ?)"
+        params.extend([team_id, team_id])
+    
+    if start_date:
+        sql_query += " AND g.date >= ?"
+        params.append(start_date)
+    
+    if end_date:
+        sql_query += " AND g.date <= ?"
+        params.append(end_date)
+    
+    if official_name:
+        sql_query += " AND (o.first_name || ' ' || o.last_name) LIKE ?"
+        params.append(f"%{official_name}%")
+
+    # Add pagination
+    sql_query += """
+        ORDER BY g.date DESC
+        LIMIT ? OFFSET ?
+    """
+    params.extend([per_page, (page - 1) * per_page])
+
+    # Execute the query
+    cursor.execute(sql_query, params)
+    games = cursor.fetchall()
+
+    # Count total games for the filters
+    count_query = """
+        SELECT COUNT(*)
+        FROM games g
+        LEFT JOIN teams t1 ON g.home_team_id = t1.team_id
+        LEFT JOIN teams t2 ON g.away_team_id = t2.team_id
+        LEFT JOIN officials o ON g.official_id = o.official_id
+        WHERE 1 = 1
+    """
+    count_params = []
+
+    if team_id:
+        count_query += " AND (g.home_team_id = ? OR g.away_team_id = ?)"
+        count_params.extend([team_id, team_id])
+    
+    if start_date:
+        count_query += " AND g.date >= ?"
+        count_params.append(start_date)
+    
+    if end_date:
+        count_query += " AND g.date <= ?"
+        count_params.append(end_date)
+    
+    if official_name:
+        count_query += " AND (o.first_name || ' ' || o.last_name) LIKE ?"
+        count_params.append(f"%{official_name}%")
+    
+    cursor.execute(count_query, count_params)
+    total_count = cursor.fetchone()[0]
+
+    conn.close()
+    return games, total_count
+
 def get_playerInfo(playerid):
     conn = get_db_connection()
     cursor = conn.cursor()
