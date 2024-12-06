@@ -44,19 +44,25 @@ function Players() {
             .catch((error) => console.log('Error fetching players:', error));
     }, [currentPage, searchText]);
 
-    const gridCardTemplate = (optipns) => {
+    const gridCardTemplate = (options) => {
         return (
-            <div className="grid-card" key={optipns.player_id}>
+            <div
+                className="grid-card"
+                key={options.player_id}
+                onClick={() => {
+                    router.push(`/players/${options.player_id}`);
+                }}
+            >
                 <div>
                     <img
-                        src={'/player_images/' + optipns.png_name}
-                        alt={`image of ${optipns.player_id}`}
+                        src={'/player_images/' + options.png_name}
+                        alt={`image of ${options.player_id}`}
                         onError={(e) => {
                             e.target.onerror = null;
                             e.target.src = '/null_player.jpg';
                         }}
                     />
-                    <div>{`${optipns.first_name} ${optipns.last_name}`}</div>
+                    <div>{`${options.first_name} ${options.last_name}`}</div>
                 </div>
             </div>
         );
