@@ -121,38 +121,49 @@ def get_playerInfo(playerid):
     cursor = conn.cursor()
     query = """
     SELECT
-    COALESCE(p.first_name, 'Unknown') AS first_name,
-    COALESCE(p.last_name, 'Unknown') AS last_name,
-    COALESCE(p.height, 'Unknown') AS height,
-    COALESCE(p.weight, 'Unknown') AS weight,
-    COALESCE(p.birth_date, 'Unknown') AS birth_date,
-    COALESCE(p.college, 'Unknown') AS college,
-    COALESCE(c.name, 'Unknown') AS country_name,
-    COALESCE(c.flag_link, 'Unknown') AS country_flag,
-    COALESCE(p.png_name, 'Unknown') AS player_img,
-    COALESCE(t.name, 'Unknown') AS team_name,
-    COALESCE(t.logo_url, 'Unknown') AS team_logo,
-    COALESCE(pi.is_active, 'Unknown') AS active_player,
-    COALESCE(pi.position, 'Unknown') AS position,
-    COALESCE(pi.from_year, 'Unknown') AS start_year,
-    COALESCE(pi.to_year, 'Unknown') AS end_year,
-    COALESCE(pi.jersey, 'Unknown') AS jersey_number,
-    COALESCE(d.season, 'Unknown') AS draft_year,
-    COALESCE(d.overall_pick, 'Unknown') AS overall_pick,
-    COALESCE(p.country_id, 'Unknown') AS country_id,
-    COALESCE(pi.team_id, 'Unknown') AS team_id
-    FROM ((((players p
-    LEFT JOIN player_infos pi ON p.player_id = pi.player_id)
-    LEFT JOIN drafts d ON p.player_id = d.player_id)
-    LEFT JOIN countries c ON p.country_id = c.country_id)
-    LEFT JOIN teams t ON pi.team_id = t.team_id)
+        COALESCE(p.first_name, 'Unknown') AS first_name,
+        COALESCE(p.last_name, 'Unknown') AS last_name,
+        COALESCE(p.height, 'Unknown') AS height,
+        COALESCE(p.weight, 'Unknown') AS weight,
+        COALESCE(p.birth_date, 'Unknown') AS birth_date,
+        COALESCE(p.college, 'Unknown') AS college,
+        COALESCE(c.name, 'Unknown') AS country_name,
+        COALESCE(c.flag_link, 'Unknown') AS country_flag,
+        COALESCE(p.png_name, 'Unknown') AS player_img,
+        COALESCE(active_team.team_id, 'Unknown') AS active_team_id,
+        COALESCE(active_team.name, 'Unknown') AS active_team_name,
+        COALESCE(active_team.logo_url, 'Unknown') AS active_team_logo,
+        COALESCE(drafted_team.team_id, 'Unknown') AS drafted_team_id,
+        COALESCE(drafted_team.name, 'Unknown') AS drafted_team_name,
+        COALESCE(drafted_team.logo_url, 'Unknown') AS drafted_team_logo,
+        COALESCE(pi.is_active, 'Unknown') AS active_player,
+        COALESCE(pi.position, 'Unknown') AS position,
+        COALESCE(pi.from_year, 'Unknown') AS start_year,
+        COALESCE(pi.to_year, 'Unknown') AS end_year,
+        COALESCE(pi.jersey, 'Unknown') AS jersey_number,
+        COALESCE(d.season, 'Unknown') AS draft_year,
+        COALESCE(d.overall_pick, 'Unknown') AS overall_pick,
+        COALESCE(p.country_id, 'Unknown') AS country_id,
+        COALESCE(pi.team_id, 'Unknown') AS team_id
+    FROM players p
+    LEFT JOIN player_infos pi ON p.player_id = pi.player_id
+    LEFT JOIN drafts d ON p.player_id = d.player_id
+    LEFT JOIN teams active_team ON pi.team_id = active_team.team_id AND pi.is_active = 1
+    LEFT JOIN teams drafted_team ON d.team_id = drafted_team.team_id
+    LEFT JOIN countries c ON p.country_id = c.country_id
     WHERE p.player_id = ?;
-
     """
-    cursor.execute(query,(playerid,))
+    cursor.execute(query, (playerid,))
     playerinfos = cursor.fetchone()
     conn.close()
     return playerinfos
+
+    cursor.execute(query, (playerid,))
+    playerinfos = cursor.fetchone()
+    conn.close()
+    return playerinfos
+
+
 
 def get_numberOfTeamsInCountry():
     team_number_in_country = fetch_from_sql_file("team_number_in_country.sql")
