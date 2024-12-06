@@ -31,7 +31,7 @@ function Page() {
                 </div>
             </div>
             <div className="grid mt-0 w-10 mx-auto bg-primary-reverse">
-                <div className="mt-0 py-1 col-12 lg:col-3">
+                <div className="mt-0 py-1 col-12 lg:col-2">
                     <Button
                         className="mt-0 bg-primary h-full w-full font-bold text-center w-full"
                         onClick={() => {
@@ -40,7 +40,7 @@ function Page() {
                         label="Countries"
                     />
                 </div>
-                <div className="mt-0 py-1 col-12 lg:col-3">
+                <div className="mt-0 py-1 col-12 lg:col-2">
                     <Button
                         className="mt-0 bg-primary h-full w-full font-bold text-center w-full"
                         onClick={() => {
@@ -49,7 +49,7 @@ function Page() {
                         label="Teams"
                     />
                 </div>
-                <div className="mt-0 py-1 col-12 lg:col-3">
+                <div className="mt-0 py-1 col-12 lg:col-2">
                     <Button
                         className="mt-0 bg-primary h-full w-full font-bold text-center w-full"
                         onClick={() => {
@@ -58,13 +58,31 @@ function Page() {
                         label="Players"
                     />
                 </div>
-                <div className="mt-0 py-1 col-12 lg:col-3">
+                <div className="mt-0 py-1 col-12 lg:col-2">
                     <Button
                         className="mt-0 bg-primary h-full w-full font-bold text-center w-full"
                         onClick={() => {
                             router.push('/games');
                         }}
                         label="Games"
+                    />
+                </div>
+                <div className="mt-0 py-1 col-12 lg:col-2">
+                    <Button
+                        className="mt-0 bg-primary h-full w-full font-bold text-center w-full"
+                        onClick={() => {
+                            router.push('/panel/signup');
+                        }}
+                        label="SignUp"
+                    />
+                </div>
+                <div className="mt-0 py-1 col-12 lg:col-2">
+                    <Button
+                        className="mt-0 bg-primary h-full w-full font-bold text-center w-full"
+                        onClick={() => {
+                            router.push('/panel/login');
+                        }}
+                        label="LogIn"
                     />
                 </div>
             </div>
