@@ -77,7 +77,7 @@ function Page() {
                     />
                 </div>
             </div>
-            <div className="prime-flex h-30rem mt-2 w-10 mx-auto justify-content-center align-content-center fadeindown animation-ease-in animation-duration-1000 surface-ground">
+            <div className="flex h-30rem mt-2 w-10 mx-auto justify-content-center align-content-center fadeindown animation-ease-in animation-duration-1000 surface-ground">
                 <div className="w-full">
                     <h2 className="text-4xl mb-4 text-center">Last 5 Games</h2>
                     {loading ? (
