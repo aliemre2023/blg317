@@ -71,7 +71,7 @@ function Page() {
                     <Button
                         className="mt-0 bg-primary h-full w-full font-bold text-center w-full"
                         onClick={() => {
-                            router.push('/panel/signup');
+                            router.push('/admin/signup');
                         }}
                         label="SignUp"
                     />
@@ -80,7 +80,7 @@ function Page() {
                     <Button
                         className="mt-0 bg-primary h-full w-full font-bold text-center w-full"
                         onClick={() => {
-                            router.push('/panel/login');
+                            router.push('/admin/login');
                         }}
                         label="LogIn"
                     />

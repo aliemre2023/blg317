@@ -170,3 +170,21 @@
 .p-column-header-content {
     display: block;
 }
+
+.p-inputgroup .p-inputwrapper {
+    width: 100% !important;
+}
+
+.p-inputgroup .p-inputtext,
+.p-fluid .p-inputgroup .p-inputtext {
+    width: 100% !important;
+}
+
+.link {
+    color: #3a7bf7;
+    cursor: pointer;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}

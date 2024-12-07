@@ -1,2 +1,5 @@
 Flask==3.1.0
 Flask_Cors==5.0.0
+bcrypt==4.2.1
+pyjwt==2.10.1
+python-dotenv==1.0.1

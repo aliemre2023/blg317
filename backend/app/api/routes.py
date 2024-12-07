@@ -1,7 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app.utils.data_fetch import *
-from app.api import generate_hashPassword
-import logging
+from app.utils.credential_utils import check_credentials, get_token, hash_password
 
 api_bp = Blueprint("api", __name__)
 
@@ -131,9 +130,6 @@ def playerInfo_api(player_id):
         'team_id': player_infos[23]
     })
 
-
-
-
 @api_bp.route('/numberOfTeams', methods=['GET'])
 def numberOfTeams_api():
     table = get_numberOfTeamsInCountry()
@@ -195,7 +191,7 @@ def countryTeams_api(country_id):
     table, total_countryTeams = get_countryTeams(country_id, page, limit)
 
     return jsonify({
-        'counrtyTeams': [{'team_id': row[0], 'name': row[1], 'owner': row[2], 'general_manager': row[3], 'headcoach': row[4], 'city_name': row[5], 'arena_name': row[6], 'year_founded': row[7], 'instagram': row[8]} for row in table],
+        'counrtyTeams': [{'team_id': row[0], 'name': row[1], 'owner': row[2], 'general_manager': row[3], 'headcoach': row[4], 'city_name': row[5], 'arena_name': row[6], 'year_founded': row[7]} for row in table],
         'page': page,
         'totalCountryTeams': total_countryTeams
     })
@@ -211,133 +207,65 @@ def teamInfo_api(teamid):
         'last5Games' : [{'date' : game[1], 'home_team_name' : game[3], 'home_team_score' : game[4], 'away_team_name' : game[6], 'away_team_score' : game[7], 'official_name' : game[8]} for game in last5Games]
     })
 
-
-@api_bp.route('/register', methods=['POST'])
-def register_user():
-    print("Request received for user registration.")
+@api_bp.route('/signup', methods=['POST'])
+def admin_signup():
     try:
-        # request already defined in flask 
-        data = request.json
-        print(data)
-        if not data:
-            return jsonify({'error': 'Request must be JSON'}), 400
+        data = request.get_json()
+        
+        if not data or 'username' not in data or 'password' not in data:
+            return jsonify({"error": "Missing username or password"}), 400
 
-        user_name = data.get('user_name')
+        username = data.get('username')
         password = data.get('password')
-        mail = data.get('mail')
-        is_admin = data.get('is_admin', False)
 
-        if not user_name or not password or not mail:
-            return jsonify({'error': 'All fields (user_name, password, mail) are required'}), 400
+        password_hash = hash_password(password)
 
-        # hash the password
-        hash_password = generate_hashPassword(password)
-
-        # insert into database
         conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute("""
-            INSERT INTO users (user_name, password, mail, is_admin)
-            VALUES (?, ?, ?, ?)
-        """, (user_name, hash_password, mail, is_admin))
+            INSERT INTO admins (username, password_hash, creation_date)
+            VALUES (?, ?, CURRENT_TIMESTAMP)
+        """, (username, password_hash))
 
         conn.commit()
         conn.close()
 
-        return jsonify({'message': 'User registered successfully'}), 201
+        return jsonify({'message': 'User registered successfully'}), 200
 
     except sqlite3.IntegrityError as e:
+        conn.close()
         return jsonify({'error': 'User already exists or invalid data provided', 'details': str(e)}), 400
 
     except Exception as e:
+        conn.close()
         return jsonify({'error': 'An unexpected error occurred', 'details': str(e)}), 500
 
-'''
-@api_bp.route('/login', methods=['POST'])
-def login_user():
-    logging.debug("Login request received.")
-
+@api_bp.route('/login', methods = ['POST'])
+def admin_login():
     data = request.get_json()
-    logging.debug(f"Received data: {data}")
-    username = data.get('user_name')
-    password = data.get('password')
-    hashPassword = generate_hashPassword(password)
 
-    user_infos = get_userInfo(username, hashPassword)
+    if not data or 'username' not in data or 'password' not in data:
+        return jsonify({"error": "Missing username or password"}), 400
 
-    #3,user_id
-    #1,user_name
-    #2,password
-    #3,mail
-    #4,is_admin
-    #5,last_login
-    #6,creation_date
+    username = data['username']
+    password = data['password']
 
-    update_last_login_of_user(user_infos[0][0])
+    if (check_credentials(username, password)):
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+        UPDATE admins 
+        SET last_login = CURRENT_TIMESTAMP
+        WHERE username = ?
+    """, (username,))
     
-    if user_infos[1] == username and user_infos[2] == password:
-        return jsonify({
-            "userInfo": [{
-                'user_id': user_info[0], 
-                'user_name': user_info[1], 
-                'password': user_info[2], 
-                'mail': user_info[3], 
-                'is_admin': user_info[4], 
-                'last_login': user_info[5], 
-                'creation_date': user_info[6]
-            } for user_info in user_infos]
-        })
+        conn.commit()
+        conn.close()
 
-    else:
-        return jsonify({"error": "Invalid username or password"}), 401
-'''
-'''
-@api_bp.route('/login', methods=['GET'])
-def user_info(user_name, password):
-    hashPassword = generate_hashPassword(password)
-    user_info = get_userInfo(user_name, hashPassword)
-
-    if user_info[1] == user_name and user_info[2] == hashPassword:
-        return jsonify({
-            "userInfo": [{
-                'user_id': user_info[0], 
-                'user_name': user_info[1], 
-                'password': user_info[2], 
-                'mail': user_info[3], 
-                'is_admin': user_info[4], 
-                'last_login': user_info[5], 
-                'creation_date': user_info[6]
-            }]
-        }), 201
-
-    else:
-        return jsonify({"error": "Invalid username or password"}), 401
-'''
-
-@api_bp.route('/login', methods=['POST'])  # Changed to POST method
-def user_info():
-    data = request.get_json()  # Get JSON data from the request
-    user_name = data.get('user_name')
-    password = data.get('password')
-    hashPassword = generate_hashPassword(password)
-    user_info = get_userInfo(user_name, hashPassword)
-
-    if user_info and user_info[1] == user_name and user_info[2] == hashPassword:
-        return jsonify({
-            "userInfo": [{
-                'user_id': user_info[0], 
-                'user_name': user_info[1], 
-                'password': user_info[2], 
-                'mail': user_info[3], 
-                'is_admin': user_info[4], 
-                'last_login': user_info[5], 
-                'creation_date': user_info[6]
-            }]
-        }), 200  # Changed to HTTP status 200 for success
-    else:
-        return jsonify({"error": "Invalid username or password"}), 401
-
-
+        token = get_token(username)
+        return jsonify({'message': 'Login successful', 'token': token}), 200
+    
+    return jsonify({'error': 'Invalid credentials'}), 401
 
 if __name__ == '__main__':
     app.run(debug=True)
