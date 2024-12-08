@@ -16,6 +16,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "classnames": "^2.5.1",
+    "formik": "^2.4.6",
     "jose": "^5.9.6",
     "next": "^15.0.3",
     "primeflex": "^3.3.1",
@@ -23,7 +24,8 @@
     "primereact": "^10.8.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "sass": "^1.81.0"
+    "sass": "^1.81.0",
+    "yup": "^1.5.0"
   },
   "devDependencies": {
     "eslint": "^8",
