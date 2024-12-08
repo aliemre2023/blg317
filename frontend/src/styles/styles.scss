@@ -188,3 +188,8 @@
         text-decoration: underline;
     }
 }
+
+.gametable .p-datatable-tbody > tr:hover {
+    background-color: #d4edda; 
+    transition: background-color 0.3s ease; 
+}
