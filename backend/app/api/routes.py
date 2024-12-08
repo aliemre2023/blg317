@@ -130,6 +130,40 @@ def playerInfo_api(player_id):
         'team_id': player_infos[23]
     })
 
+@api_bp.route('/games/<int:game_id>', methods=["GET"])
+def gameInfo_api(game_id):
+    game_infos = get_gameInfo(game_id)
+    return jsonify({
+        'game_id': game_infos[0],
+        'date': game_infos[1],
+        'home_team_id': game_infos[2],
+        'home_team_name': game_infos[3],
+        'away_team_id': game_infos[4],
+        'away_team_name': game_infos[5],
+        'official_name': game_infos[6],
+        'season': game_infos[7],
+        'home_team_score': game_infos[8],
+        'away_team_score': game_infos[9],
+        'home_qtr1_points': game_infos[10],
+        'home_qtr2_points': game_infos[11],
+        'home_qtr3_points': game_infos[12],
+        'home_qtr4_points': game_infos[13],
+        'away_qtr1_points': game_infos[14],
+        'away_qtr2_points': game_infos[15],
+        'away_qtr3_points': game_infos[16],
+        'away_qtr4_points': game_infos[17],
+        'home_rebounds': game_infos[18],
+        'home_blocks': game_infos[19],
+        'home_steals': game_infos[20],
+        'away_rebounds': game_infos[21],
+        'away_blocks': game_infos[22],
+        'away_steals': game_infos[23],
+        'home_team_logo': game_infos[24],
+        'away_team_logo': game_infos[25]     
+    })
+
+
+
 @api_bp.route('/numberOfTeams', methods=['GET'])
 def numberOfTeams_api():
     table = get_numberOfTeamsInCountry()

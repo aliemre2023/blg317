@@ -244,12 +244,49 @@ def get_playerInfo(playerid):
     conn.close()
     return playerinfos
 
-    cursor.execute(query, (playerid,))
-    playerinfos = cursor.fetchone()
+def get_gameInfo(gameid):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = """
+    SELECT
+        COALESCE(g.game_id, 'Unknown') AS game_id,
+        COALESCE(g.date, 'Unknown') AS date,
+        COALESCE(g.home_team_id, 'Unknown') AS home_team_id,
+        COALESCE(t1.name, 'Unknown') AS home_team_name,
+        COALESCE(g.away_team_id, 'Unknown') AS away_team_id,
+        COALESCE(t2.name, 'Unknown') AS away_team_name,
+        COALESCE(o.first_name || ' ' || o.last_name, 'Unknown') AS official_name,
+        COALESCE(gs.season, 'Unknown') AS season,
+        COALESCE(gs.home_team_score, 'Unknown') AS home_team_score,
+        COALESCE(gs.away_team_score, 'Unknown') AS away_team_score,
+        COALESCE(gs.home_qtr1_points, 'Unknown') AS home_qtr1_points,
+        COALESCE(gs.home_qtr2_points, 'Unknown') AS home_qtr2_points,
+        COALESCE(gs.home_qtr3_points, 'Unknown') AS home_qtr3_points,
+        COALESCE(gs.home_qtr4_points, 'Unknown') AS home_qtr4_points,
+        COALESCE(gs.away_qtr1_points, 'Unknown') AS away_qtr1_points,
+        COALESCE(gs.away_qtr2_points, 'Unknown') AS away_qtr2_points,
+        COALESCE(gs.away_qtr3_points, 'Unknown') AS away_qtr3_points,
+        COALESCE(gs.away_qtr4_points, 'Unknown') AS away_qtr4_points,
+        COALESCE(gs.home_rebounds, 'Unknown') AS home_rebounds,
+        COALESCE(gs.home_blocks, 'Unknown') AS home_blocks,
+        COALESCE(gs.home_steals, 'Unknown') AS home_steals,
+        COALESCE(gs.away_rebounds, 'Unknown') AS away_rebounds,
+        COALESCE(gs.away_blocks, 'Unknown') AS away_blocks,
+        COALESCE(gs.away_steals, 'Unknown') AS away_steals,
+        COALESCE(t1.logo_url, 'Unknown') AS home_team_logo,
+        COALESCE(t2.logo_url, 'Unknown') AS away_team_logo
+
+    FROM games g
+    LEFT JOIN game_stats gs ON g.game_id = gs.game_id
+    LEFT JOIN teams t1 ON g.home_team_id = t1.team_id
+    LEFT JOIN teams t2 ON g.away_team_id = t2.team_id
+    LEFT JOIN officials o ON g.official_id = o.official_id
+    WHERE g.game_id = ?;
+    """
+    cursor.execute(query, (gameid,))
+    gameinfos = cursor.fetchone()
     conn.close()
-    return playerinfos
-
-
+    return gameinfos
 
 def get_numberOfTeamsInCountry():
     team_number_in_country = fetch_from_sql_file("team_number_in_country.sql")
