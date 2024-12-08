@@ -68,7 +68,7 @@ def games_api():
     end_date = request.args.get("end_date")  # Format: YYYY-MM-DD
     official_name = request.args.get("official_name")  # Search across official names
     page = int(request.args.get("page", 1))
-    per_page = int(request.args.get("per_page", 10))  # Default to 10 items per page
+    per_page = int(request.args.get("limit", 10))  # Default to 10 items per page
 
     # Fetch games and total count using the backend function
     games, total_games = get_games(

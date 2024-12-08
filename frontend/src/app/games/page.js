@@ -16,6 +16,7 @@ function Games() {
 
     const [currentPage, setCurrentPage] = useState(1);
     const [reportPage, setReportPage] = useState(1);
+    const [firstIndex, setFirstIndex] = useState(0);
     const [totalGames, setTotalGames] = useState(0);
     const [limit, setLimit] = useState(10);
     const [filters, setFilters] = useState({
@@ -50,7 +51,7 @@ function Games() {
     const fetchGames = () => {
         const queryParams = new URLSearchParams({
             page: currentPage,
-            rows: limit,
+            limit: limit,
             ...(filters.team_id && { team_id: filters.team_id }),
             ...(filters.start_date && { start_date: filters.start_date.toISOString().split('T')[0] }),
             ...(filters.end_date && { end_date: filters.end_date.toISOString().split('T')[0] }),
@@ -207,8 +208,8 @@ function Games() {
                     <div className="col-4 md:col-2"></div>
                 </div>
 
-                <div className="filters mt-3">
-                    <div className="grid">
+                <div className="flex flex-column align-items-center mt-3">
+                    <div className="flex justify-content-around" style={{ width: '80%' }}>
                         <div className="col-12 md:col-3">
                             <InputText
                                 name="team_id"
@@ -252,26 +253,30 @@ function Games() {
                 </div>
             </div>
 
-            <div className="games-table mt-5">
+            <div className="datatable-wrapper mt-5">
                 <div className="w-full text-center bg-primary-reverse font-semibold">
                     {filters.team_id ? `Games for Team ${filters.team_id}` : 'All Games'}
                 </div>
                 <DataTable
-                    className="gametable"
+                    className="datatable"
                     value={games}
                     lazy
                     paginator
                     paginatorTemplate={dataTablePaginatorTamplate}
                     page={currentPage}
+                    first={firstIndex}
                     rows={limit}
                     totalRecords={totalGames}
                     rowsPerPageOptions={[10, 25, 50]}
                     onPage={(e) => {
                         setLimit(e.rows);
+                        setFirstIndex(e.first);
                         setReportPage(e.page + 1);
                         setCurrentPage(e.page + 1);
                     }}
                     size="small"
+                    scrollable
+                    scrollHeight="60vh"
                     stripedRows
                     showGridlines
                     style={{ textAlign: 'center' , cursor: 'pointer'}}
