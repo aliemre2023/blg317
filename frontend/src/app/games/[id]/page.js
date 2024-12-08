@@ -109,7 +109,7 @@ export default function gameInfo({ params }) {
 
                                 <div className='w-12 flex justify-content-center pt-6'>
                                     <div className="w-6 text-xl bg-primary-reverse font-medium align-items-center justify-content-center border-round-md">
-                                        QTR POINTS
+                                        QUARTER POINTS
                                     </div>
                                 </div>
                                 <div className='w-12  flex justify-content-center align-items-center'>
@@ -117,7 +117,7 @@ export default function gameInfo({ params }) {
                                         {gameInfo.home_qtr1_points}
                                     </div>
                                     <div className="w-3 mt-2 bg-primary-reverse ml-4 align-items-center justify-content-center flex">
-                                        qtr1
+                                        1st Quarter
                                     </div>
                                     <div className="w-1 mt-2 bg-primary-reverse ml-4 align-items-center justify-content-center flex">
                                         {gameInfo.away_qtr1_points}
@@ -129,7 +129,7 @@ export default function gameInfo({ params }) {
                                         {gameInfo.home_qtr2_points}
                                     </div>
                                     <div className="w-3 mt-2 bg-primary-reverse ml-4 align-items-center justify-content-center flex">
-                                        qtr2
+                                        2nd Quarter
                                     </div>
                                     <div className="w-1 mt-2 bg-primary-reverse ml-4 align-items-center justify-content-center flex">
                                         {gameInfo.away_qtr2_points}
@@ -141,7 +141,7 @@ export default function gameInfo({ params }) {
                                         {gameInfo.home_qtr3_points}
                                     </div>
                                     <div className="w-3 mt-2 bg-primary-reverse ml-4 align-items-center justify-content-center flex">
-                                        qtr3
+                                        3th Quarter
                                     </div>
                                     <div className="w-1 mt-2 bg-primary-reverse ml-4 align-items-center justify-content-center flex">
                                         {gameInfo.away_qtr3_points}
@@ -153,7 +153,7 @@ export default function gameInfo({ params }) {
                                         {gameInfo.home_qtr4_points}
                                     </div>
                                     <div className="w-3 mt-2 bg-primary-reverse ml-4 align-items-center justify-content-center flex">
-                                        qtr4
+                                        4th Quarter
                                     </div>
                                     <div className="w-1 mt-2 bg-primary-reverse ml-4 align-items-center justify-content-center flex">
                                         {gameInfo.away_qtr4_points}
@@ -164,7 +164,7 @@ export default function gameInfo({ params }) {
 
                                 <div className='w-12 flex justify-content-center pt-6'>
                                     <div className="w-6 text-xl bg-primary-reverse font-medium align-items-center justify-content-center border-round-md">
-                                        REBOUNT / BLOCK / STEAL
+                                        REBOUND / BLOCK / STEAL
                                     </div>
                                 </div>
 
@@ -173,7 +173,7 @@ export default function gameInfo({ params }) {
                                         {gameInfo.home_rebounds}
                                     </div>
                                     <div className="w-3 mt-2 bg-primary-reverse ml-4 align-items-center justify-content-center flex">
-                                        rebound
+                                        Rebound
                                     </div>
                                     <div className="w-1 mt-2 bg-primary-reverse ml-4 align-items-center justify-content-center flex">
                                         {gameInfo.away_rebounds}
@@ -185,7 +185,7 @@ export default function gameInfo({ params }) {
                                         {gameInfo.home_blocks}
                                     </div>
                                     <div className="w-3 mt-2 bg-primary-reverse ml-4 align-items-center justify-content-center flex">
-                                        block
+                                        Block
                                     </div>
                                     <div className="w-1 mt-2 bg-primary-reverse ml-4 align-items-center justify-content-center flex">
                                         {gameInfo.away_blocks}
@@ -197,7 +197,7 @@ export default function gameInfo({ params }) {
                                         {gameInfo.home_steals}
                                     </div>
                                     <div className="w-3 mt-2 bg-primary-reverse ml-4 align-items-center justify-content-center flex">
-                                        steal
+                                        Steal
                                     </div>
                                     <div className="w-1 mt-2 bg-primary-reverse ml-4 align-items-center justify-content-center flex">
                                         {gameInfo.away_steals}
