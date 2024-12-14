@@ -37,8 +37,12 @@ function Page() {
             });
     }, []);
 
-    const handleClick = (player_id) => {
+    const handleClick_player = (player_id) => {
         router.push(`/players/${player_id}`); 
+    };
+
+    const handleClick_game= (game_id) => {
+        router.push(`/games/${game_id}`); 
     };
 
     return (
@@ -114,7 +118,7 @@ function Page() {
                             e.target.onerror = null;
                             e.target.src = '/coolface.png';
                         }}
-                        onClick={() => handleClick(quote.player_id)}
+                        onClick={() => handleClick_player(quote.player_id)}
                     />
                     <p className='w-full text-center text-xl font-semibold'>
                         "{quote.quote}"
@@ -138,10 +142,10 @@ function Page() {
                                     <th className="border border-gray-300 col-2 py-2">Official</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody >
                                 {lastGames.map((game) => (
-                                    <tr key={game.game_id} className="text-center">
-                                        <td className="border border-gray-300 col-2 py-2">{game.date}</td>
+                                    <tr key={game.game_id} className="text-center cursor-pointer" onClick={() => handleClick_game(game.game_id)}>
+                                        <td className="border border-gray-300 col-2 py-2">{game.date.split(' ')[0]}</td>
                                         <td className="border border-gray-300 col-2 py-2">{game.home_team_name}</td>
                                         <td className="border border-gray-300 col-2 py-2">
                                             {game.home_team_score} - {game.away_team_score}
