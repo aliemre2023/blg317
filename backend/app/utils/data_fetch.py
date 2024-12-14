@@ -2,6 +2,7 @@
 import os
 from .db_utils import get_db_connection
 import sqlite3
+import random
 
 # Function to load and execute a query from a specified SQL file
 def fetch_from_sql_file(filename):
@@ -520,3 +521,21 @@ def query_to_sql(query):
         sql = sql.rstrip("WHERE ")
 
     return sql
+
+def get_random_quote():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    query = """
+    SELECT q.*,
+        p.first_name || " " || p.last_name AS player_name,
+        p.png_name AS png_name
+    FROM quotes q
+    LEFT JOIN players p ON p.player_id = q.player_id
+    ORDER BY RANDOM() LIMIT 1;
+    """
+
+    cursor.execute(query)
+    quote_info = cursor.fetchone()
+    conn.close()
+    return quote_info

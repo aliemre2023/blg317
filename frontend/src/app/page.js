@@ -8,6 +8,7 @@ function Page() {
     const router = useRouter();
     const [lastGames, setLastGames] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [quote, setQuote] = useState({});
 
     useEffect(() => {
         // Fetch the last games from the API
@@ -22,6 +23,23 @@ function Page() {
                 setLoading(false);
             });
     }, []);
+
+    useEffect(() => {
+        fetch('http://127.0.0.1:5000/api/randomQuote')
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data.quote[0])
+                setQuote(data.quote[0])
+                console.log(quote)
+            })
+            .catch((error) => {
+                console.error("Quote Fetching Error", error);
+            });
+    }, []);
+
+    const handleClick = (player_id) => {
+        router.push(`/players/${player_id}`); 
+    };
 
     return (
         <div className="h-auto">
@@ -86,8 +104,26 @@ function Page() {
                     />
                 </div>
             </div>
-            <div className="flex h-30rem mt-2 w-10 mx-auto justify-content-center align-content-center fadeindown animation-ease-in animation-duration-1000 surface-ground">
-                <div className="w-full">
+            <div className="lg:flex h-auto mt-2 w-10 mx-auto justify-content-center align-content-center fadeindown animation-ease-in animation-duration-1000 surface-ground pl-2 pt-2 pb-2 pr-2">
+                <div className='lg:col-4 md:col-8 sm:col-8 my-auto mx-auto bg-primary border-2 border-yellow-300 p-4 border-round-md'>
+                    <img 
+                        className="w-full h-40 object-cover rounded-lg mb-4 bg-primary-reverse border-round-md cursor-pointer" 
+                        src={"player_images/" + quote.png_name} 
+                        alt={quote.player_name}
+                        onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = '/coolface.png';
+                        }}
+                        onClick={() => handleClick(quote.player_id)}
+                    />
+                    <p className='w-full text-center text-xl font-semibold'>
+                        "{quote.quote}"
+                    </p>
+                    <p className='w-full text-center text-lg bg-primary-reverse mt-2 border-round-md'>
+                        - {quote.player_name}
+                    </p>
+                </div>
+                <div className="lg:col-8">             
                     <h2 className="text-4xl mb-4 text-center">Last 5 Games</h2>
                     {loading ? (
                         <div className="text-center">Loading...</div>
@@ -95,23 +131,23 @@ function Page() {
                         <table className="table-auto border-collapse border border-gray-300 w-full">
                             <thead>
                                 <tr className="bg-primary-reverse text-center">
-                                    <th className="border border-gray-300 px-4 py-2">Date</th>
-                                    <th className="border border-gray-300 px-4 py-2">Home Team</th>
-                                    <th className="border border-gray-300 px-4 py-2">Score</th>
-                                    <th className="border border-gray-300 px-4 py-2">Away Team</th>
-                                    <th className="border border-gray-300 px-4 py-2">Official</th>
+                                    <th className="border border-gray-300 col-2 py-2">Date</th>
+                                    <th className="border border-gray-300 col-2 py-2">Home Team</th>
+                                    <th className="border border-gray-300 col-2 py-2">Score</th>
+                                    <th className="border border-gray-300 col-2 py-2">Away Team</th>
+                                    <th className="border border-gray-300 col-2 py-2">Official</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {lastGames.map((game) => (
                                     <tr key={game.game_id} className="text-center">
-                                        <td className="border border-gray-300 px-4 py-2">{game.date}</td>
-                                        <td className="border border-gray-300 px-4 py-2">{game.home_team_name}</td>
-                                        <td className="border border-gray-300 px-4 py-2">
+                                        <td className="border border-gray-300 col-2 py-2">{game.date}</td>
+                                        <td className="border border-gray-300 col-2 py-2">{game.home_team_name}</td>
+                                        <td className="border border-gray-300 col-2 py-2">
                                             {game.home_team_score} - {game.away_team_score}
                                         </td>
-                                        <td className="border border-gray-300 px-4 py-2">{game.away_team_name}</td>
-                                        <td className="border border-gray-300 px-4 py-2">{game.official_name}</td>
+                                        <td className="border border-gray-300 col-2 py-2">{game.away_team_name}</td>
+                                        <td className="border border-gray-300 col-2 py-2">{game.official_name}</td>
                                     </tr>
                                 ))}
                             </tbody>

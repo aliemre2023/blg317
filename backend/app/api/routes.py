@@ -322,5 +322,18 @@ def admin_login():
     
     return jsonify({'error': 'Invalid credentials'}), 401
 
+@api_bp.route('/randomQuote', methods=['GET'])
+def random_quote():
+    quote = get_random_quote()
+
+    # LIMIT make quote only one row there is no need to traverse with for loop
+    return jsonify({
+        'quote': [{'quote_id': quote[0], 
+                   'player_id': quote[1], 
+                   'quote': quote[2], 
+                   'player_name': quote[3], 
+                   'png_name': quote[4]}]
+    })
+
 if __name__ == '__main__':
     app.run(debug=True)
