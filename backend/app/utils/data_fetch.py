@@ -90,6 +90,7 @@ def get_players(query=None, page=1, per_page=24):
             SELECT player_id, first_name, last_name, height, weight, birth_date, college, country_id, png_name
             FROM players
             WHERE first_name LIKE ? OR last_name LIKE ?
+            ORDER BY png_name DESC
             LIMIT ? OFFSET ?
         """
         params = (f"{query}%", f"{query}%", per_page, (page - 1) * per_page)
@@ -97,6 +98,7 @@ def get_players(query=None, page=1, per_page=24):
         sql_query = """
             SELECT player_id, first_name, last_name, height, weight, birth_date, college, country_id, png_name
             FROM players
+            ORDER BY png_name DESC
             LIMIT ? OFFSET ?
         """
         params = (per_page, (page - 1) * per_page)
