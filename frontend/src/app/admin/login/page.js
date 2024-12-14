@@ -57,8 +57,8 @@ export default function AdminLogin() {
             .then((data) => {
                 if (data.success) {
                     toast.current.show({
-                        severity: 'succes',
-                        summary: 'Succes',
+                        severity: 'success',
+                        summary: 'Success',
                         detail: 'Successfully logged in',
                         life: 3000,
                     });
