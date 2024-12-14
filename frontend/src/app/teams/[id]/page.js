@@ -25,6 +25,15 @@ export default function TeamInfo({ params }) {
             })
             .catch((error) => console.log(error));
     }, [id]);
+
+    const handleClick_player = (player_id) => {
+        router.push(`/players/${player_id}`); 
+    };
+    const handleClick_game = (game_id) => {
+        console.log(game_id);
+        router.push(`/games/${game_id}`); 
+    };
+
     return (
         <div className="w-screen">
             <div className="w-screen">
@@ -121,7 +130,7 @@ export default function TeamInfo({ params }) {
                 <div className="col-12 lg:col-5">
                     {/* table */}
                     <div className="w-full text-center bg-primary-reverse font-semibold">Roster</div>
-                    <DataTable value={teamRoster} size="small" lazy stripedRows showGridlines>
+                    <DataTable value={teamRoster} size="small" lazy stripedRows showGridlines onRowClick={(e) => handleClick_player(e.data.player_id)} className='cursor-pointer' >
                         <Column field="jerseyNumber" header="#"></Column>
                         <Column field="firstName" header="Name"></Column>
                         <Column field="lastName" header="Surname"></Column>
@@ -139,6 +148,8 @@ export default function TeamInfo({ params }) {
                         stripedRows
                         showGridlines
                         style={{ textAlign: 'center' }}
+                        onRowClick={(e) => handleClick_game(e.data.game_id)}
+                        className='cursor-pointer'
                     >
                         <Column
                             field="date"
