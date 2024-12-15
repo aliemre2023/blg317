@@ -63,7 +63,7 @@ def players_api():
 @api_bp.route('/games', methods=['GET'])
 def games_api():
     # Retrieve query parameters
-    team_id = request.args.get("team_id", type=int)
+    team_nickname = request.args.get("team_nickname")  # Filter by team nickname
     start_date = request.args.get("start_date")  # Format: YYYY-MM-DD
     end_date = request.args.get("end_date")  # Format: YYYY-MM-DD
     official_name = request.args.get("official_name")  # Search across official names
@@ -72,7 +72,7 @@ def games_api():
 
     # Fetch games and total count using the backend function
     games, total_games = get_games(
-        team_id=team_id,
+        team_nickname=team_nickname,
         start_date=start_date,
         end_date=end_date,
         official_name=official_name,
@@ -100,6 +100,7 @@ def games_api():
         'per_page': per_page,
         'total_games': total_games
     })
+
 
 @api_bp.route('/players/<int:player_id>', methods=["GET"])
 def playerInfo_api(player_id):

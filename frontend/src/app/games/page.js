@@ -20,7 +20,7 @@ function Games() {
     const [totalGames, setTotalGames] = useState(0);
     const [limit, setLimit] = useState(10);
     const [filters, setFilters] = useState({
-        team_id: '',
+        nickname: '',
         start_date: null,
         end_date: null,
         official_name: '',
@@ -52,7 +52,7 @@ function Games() {
         const queryParams = new URLSearchParams({
             page: currentPage,
             limit: limit,
-            ...(filters.team_id && { team_id: filters.team_id }),
+            ...(filters.nickname && { team_nickname: filters.nickname }), // Use nickname instead of team_id
             ...(filters.start_date && { start_date: filters.start_date.toISOString().split('T')[0] }),
             ...(filters.end_date && { end_date: filters.end_date.toISOString().split('T')[0] }),
             ...(filters.official_name && { official_name: filters.official_name }),
@@ -211,9 +211,9 @@ function Games() {
                     <div className="flex justify-content-around" style={{ width: '80%' }}>
                         <div className="col-12 md:col-3">
                             <InputText
-                                name="team_id"
-                                placeholder="Team ID"
-                                value={filters.team_id}
+                                name="nickname"
+                                placeholder="Nickname"
+                                value={filters.nickname}
                                 onChange={handleFilterChange}
                             />
                         </div>
@@ -250,7 +250,7 @@ function Games() {
 
             <div className="datatable-wrapper mt-5">
                 <div className="w-full text-center bg-primary-reverse font-semibold">
-                    {filters.team_id ? `Games for Team ${filters.team_id}` : 'All Games'}
+                    {filters.nickname ? `Games for Nickname ${filters.nickname}` : 'All Games'}
                 </div>
                 <DataTable
                     className="datatable"
