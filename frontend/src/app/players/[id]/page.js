@@ -26,7 +26,7 @@ export default function playerInfo({ params }) {
                         <Button
                             className="mt-0 bg-primary h-3rem md:min-h-full w-full font-bold text-center w-full"
                             onClick={() => {
-                                router.replace('/players');
+                                router.back();
                             }}
                             icon="pi pi-angle-left"
                         >

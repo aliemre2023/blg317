@@ -32,7 +32,7 @@ export default function gameInfo({ params }) {
                         <Button
                             className="mt-0 bg-primary h-3rem md:min-h-full w-full font-bold text-center w-full"
                             onClick={() => {
-                                router.replace('/games');
+                                router.back();
                             }}
                             icon="pi pi-angle-left"
                         >

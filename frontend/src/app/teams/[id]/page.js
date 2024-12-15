@@ -42,7 +42,7 @@ export default function TeamInfo({ params }) {
                         <Button
                             className="mt-0 bg-primary h-full w-full font-bold text-center w-full"
                             onClick={() => {
-                                router.replace('/teams');
+                                router.back();
                             }}
                             icon="pi pi-angle-left"
                         >
