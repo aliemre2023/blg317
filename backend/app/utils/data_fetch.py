@@ -118,7 +118,7 @@ def get_players(query=None, page=1, per_page=24):
     conn.close()
     return players, total_count
 
-def get_games(team_id=None, start_date=None, end_date=None, official_name=None, page=1, per_page=10):
+def get_games(team_nickname=None, start_date=None, end_date=None, official_name=None, page=1, per_page=10):
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -144,18 +144,22 @@ def get_games(team_id=None, start_date=None, end_date=None, official_name=None, 
     # Add filters dynamically based on provided parameters
     params = []
 
-    if team_id:
-        sql_query += " AND (g.home_team_id = ? OR g.away_team_id = ?)"
-        params.extend([team_id, team_id])
-    
+    # Filter by team nickname
+    if team_nickname:
+        sql_query += " AND (t1.nickname = ? OR t2.nickname = ?)"
+        params.extend([team_nickname, team_nickname])
+
+    # Filter by start date
     if start_date:
         sql_query += " AND g.date >= ?"
         params.append(start_date)
-    
+
+    # Filter by end date
     if end_date:
         sql_query += " AND g.date <= ?"
         params.append(end_date)
-    
+
+    # Filter by official name
     if official_name:
         sql_query += " AND (o.first_name || ' ' || o.last_name) LIKE ?"
         params.append(f"%{official_name}%")
@@ -182,27 +186,32 @@ def get_games(team_id=None, start_date=None, end_date=None, official_name=None, 
     """
     count_params = []
 
-    if team_id:
-        count_query += " AND (g.home_team_id = ? OR g.away_team_id = ?)"
-        count_params.extend([team_id, team_id])
-    
+    # Count filter by team nickname
+    if team_nickname:
+        count_query += " AND (t1.nickname = ? OR t2.nickname = ?)"
+        count_params.extend([team_nickname, team_nickname])
+
+    # Count filter by start date
     if start_date:
         count_query += " AND g.date >= ?"
         count_params.append(start_date)
-    
+
+    # Count filter by end date
     if end_date:
         count_query += " AND g.date <= ?"
         count_params.append(end_date)
-    
+
+    # Count filter by official name
     if official_name:
         count_query += " AND (o.first_name || ' ' || o.last_name) LIKE ?"
         count_params.append(f"%{official_name}%")
-    
+
     cursor.execute(count_query, count_params)
     total_count = cursor.fetchone()[0]
 
     conn.close()
     return games, total_count
+
 
 def get_playerInfo(playerid):
     conn = get_db_connection()
