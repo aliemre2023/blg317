@@ -162,8 +162,6 @@ def gameInfo_api(game_id):
         'away_team_logo': game_infos[25]     
     })
 
-
-
 @api_bp.route('/numberOfTeams', methods=['GET'])
 def numberOfTeams_api():
     table = get_numberOfTeamsInCountry()
@@ -179,7 +177,6 @@ def numberOfPlayers_api():
     return jsonify({
         'numberOfPlayers': [{'country_id': row[0], 'country_name': row[1], 'player_count': row[2]} for row in table],
     })
-
 
 @api_bp.route('/getLastGames', methods=['GET'])
 def getLastGames_api():
@@ -213,7 +210,7 @@ def countryPlayers_api(country_id):
     query['country_id'] = {
         "operator": "and",
         "constraints": [
-            {"value": f"{country_id}", "mode": "="}
+            {"value": f"{country_id}", "operator": "="}
         ]
     }
 
@@ -235,10 +232,10 @@ def countryTeams_api(country_id):
     query.pop("limit")
 
     query = request.get_json();
-    query['country_id'] = {
+    query['cout.country_id'] = {
         "operator": "and",
         "constraints": [
-            {"value": f"{country_id}", "mode": "="}
+            {"value": f"{country_id}", "operator": "="}
         ]
     }
 
