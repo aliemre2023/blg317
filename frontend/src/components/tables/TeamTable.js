@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import TeamModal from '@/components/modals/TeamModal';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
@@ -17,6 +18,10 @@ export default function TeamTable() {
     const [data, setData] = useState([]);
     const [filters, setFilters] = useState(null);
     const [lazyFilters, setLazyFilters] = useState(null);
+
+    const [modalVisible, setModalVisible] = useState(false);
+    const [modalData, setModalData] = useState({});
+    const [modalType, setModalType] = useState('');
 
     useEffect(() => {
         setData([]);
@@ -256,7 +261,24 @@ export default function TeamTable() {
     const actionsTemplate = (options) => {
         return (
             <div className="flex flex-row">
-                <span className="pi pi-pen-to-square mx-3" style={{ cursor: 'pointer' }}></span>
+                <span
+                    className="pi pi-pen-to-square mx-3"
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => {
+                        const links = data
+                            .filter((team) => team.team_id === options.team_id)
+                            .map((team) => ({
+                                facebook: team.facebook,
+                                instagram: team.instagram,
+                                twitter: team.twitter,
+                                logo_url: team.logo_url,
+                            }));
+
+                        setModalType('edit');
+                        setModalData({ ...options, ...links[0] });
+                        setModalVisible(true);
+                    }}
+                ></span>
                 <span className="pi pi-trash mx-3" style={{ cursor: 'pointer' }}></span>
             </div>
         );
@@ -328,6 +350,12 @@ export default function TeamTable() {
                 <Column field="year_founded" filter dataType="numeric" header="Founded Year"></Column>
                 <Column body={(rowData) => actionsTemplate(rowData)}></Column>
             </DataTable>
+            <TeamModal
+                {...(modalType === 'edit' ? modalData : {})}
+                visible={modalVisible}
+                setVisible={setModalVisible}
+                type={modalType}
+            />
         </div>
     );
 }

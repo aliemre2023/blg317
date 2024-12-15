@@ -186,6 +186,22 @@
 }
 
 .gametable .p-datatable-tbody > tr:hover {
-    background-color: #d4edda; 
-    transition: background-color 0.3s ease; 
+    background-color: #d4edda;
+    transition: background-color 0.3s ease;
+}
+
+.p-sidebar-header {
+    display: none !important;
+}
+
+.modal-header {
+    width: inherit;
+    padding: 1.5rem;
+    z-index: 1;
+}
+
+.modal-content-container {
+    margin-top: 2rem !important;
+    padding: 0 2rem;
+    overflow: auto;
 }
