@@ -511,6 +511,52 @@ def get_admin(username):
     conn.close()
     return admin_info
 
+def get_adminTeams(query, page=1, per_page=24):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    if 'name' in query:
+        query['t.name'] = query.pop('name')
+
+    if 'abbreviation' in query:
+        query['t.abbreviation'] = query.pop('abbreviation')
+
+    sql_query = f"""
+        SELECT t.team_id, t.name, t.abbreviation, t.owner, t.general_manager, t.headcoach, c.name as city_name, c.city_id, a.name as arena_name, a.arena_id, t.year_founded, t.facebook, t.instagram, t.twitter, t.logo_url
+        FROM teams t
+        JOIN arenas a ON t.arena_id = a.arena_id
+        JOIN cities c ON t.city_id = c.city_id
+        JOIN states s ON c.state_id = s.state_id
+        JOIN countries cout ON s.country_id = cout.country_id
+        {query_to_sql(query)}
+        LIMIT ? OFFSET ?
+    """
+    params = (per_page, (page - 1) * per_page)
+
+    cursor.execute(sql_query, params)
+    country_teams = cursor.fetchall()
+
+    if 'city_name' in query:
+        query['c.name'] = query.pop('city_name')
+
+    if 'arena_name' in query:
+        query['a.name'] = query.pop('arena_name')
+
+    sql_query = f"""
+        SELECT COUNT(*)
+        FROM teams t
+        JOIN arenas a ON t.arena_id = a.arena_id
+        JOIN cities c ON t.city_id = c.city_id
+        JOIN states s ON c.state_id = s.state_id
+        JOIN countries cout ON s.country_id = cout.country_id
+        {query_to_sql(query)}
+    """
+
+    cursor.execute(sql_query)
+    total_count = cursor.fetchone()[0]
+
+    return country_teams, total_count
+
 
 def query_to_sql(query):
     sql = "WHERE "

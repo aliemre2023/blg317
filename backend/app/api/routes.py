@@ -333,5 +333,24 @@ def random_quote():
                    'png_name': quote[4]}]
     })
 
+@api_bp.route('/admin/teams', methods=['POST'])
+def admin_teams():
+    page = int(request.args.get("page", 1))
+    limit = int(request.args.get("limit", 10))
+
+    query = request.args.to_dict(flat=False)
+    query.pop("page")
+    query.pop("limit")
+
+    query = request.get_json();
+
+    table, total_teams = get_adminTeams(query, page, limit)
+
+    return jsonify({
+        'teams': [{'team_id': row[0], 'name': row[1], 'abbreviation': row[2], 'owner': row[3], 'general_manager': row[4], 'headcoach': row[5], 'city_name': row[6], 'city_id': row[7], 'arena_name': row[8], 'arena_id': row[9], 'year_founded': row[10], 'facebook': row[11], 'instagram': row[12], 'twitter': row[13], 'logo_url': row[14]} for row in table],
+        'page': page,
+        'totalTeams': total_teams
+    })
+
 if __name__ == '__main__':
     app.run(debug=True)
