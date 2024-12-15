@@ -254,8 +254,8 @@ def teamInfo_api(teamid):
     last5Games = getLastGames(5, teamid)
     return jsonify({
         'teamInfo' : [{'teamName' : teamInfo[1], 'abbreviation' : teamInfo[2] , 'foundedYear' : teamInfo[4], 'owner' : teamInfo[5], 'generalMan' : teamInfo[6], 'headCoach' : teamInfo[7], 'dTeam' : teamInfo[8], 'facebook' : teamInfo[9], 'instagram' : teamInfo[10], 'twitter' : teamInfo[11], 'logo' : teamInfo[12], 'city' : teamInfo[13], 'state' : teamInfo[17], 'arenaName' : teamInfo[18], 'arenaCapacity' : teamInfo[19]}],
-        'activeRoster' : [{'jerseyNumber' : row[9], 'firstName' : row[2], 'lastName' : row[3], 'position' : row[10], 'height' : row[4]} for row in roster],
-        'last5Games' : [{'date' : game[1], 'home_team_name' : game[3], 'home_team_score' : game[4], 'away_team_name' : game[6], 'away_team_score' : game[7], 'official_name' : game[8]} for game in last5Games]
+        'activeRoster' : [{'jerseyNumber' : row[9], 'firstName' : row[2], 'lastName' : row[3], 'position' : row[10], 'height' : row[4], 'player_id' : row[1]} for row in roster],
+        'last5Games' : [{'date' : game[1], 'home_team_name' : game[3], 'home_team_score' : game[4], 'away_team_name' : game[6], 'away_team_score' : game[7], 'official_name' : game[8], 'game_id' : game[0]} for game in last5Games]
     })
 
 @api_bp.route('/signup', methods=['POST'])
@@ -318,6 +318,19 @@ def admin_login():
         return jsonify({'message': 'Login successful', 'token': token}), 200
     
     return jsonify({'error': 'Invalid credentials'}), 401
+
+@api_bp.route('/randomQuote', methods=['GET'])
+def random_quote():
+    quote = get_random_quote()
+
+    # LIMIT make quote only one row there is no need to traverse with for loop
+    return jsonify({
+        'quote': [{'quote_id': quote[0], 
+                   'player_id': quote[1], 
+                   'quote': quote[2], 
+                   'player_name': quote[3], 
+                   'png_name': quote[4]}]
+    })
 
 if __name__ == '__main__':
     app.run(debug=True)
