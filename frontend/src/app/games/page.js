@@ -208,7 +208,7 @@ function Games() {
                 </div>
 
                 <div className="flex flex-column align-items-center mt-3">
-                    <div className="flex justify-content-around" style={{ width: '80%' }}>
+                    <div className="grid justify-content-around" style={{ width: '80%' }}>
                         <div className="col-12 md:col-3">
                             <InputText
                                 name="nickname"

@@ -55,7 +55,7 @@ export default function gameInfo({ params }) {
                             {gameInfo.home_team_name?.toUpperCase()} VS {gameInfo.away_team_name?.toUpperCase()}
                         </div>
                     </div>
-                    <div className="col-2"></div>
+                    <div className="col-0 md:col-2"></div>
                 </div>
             </div>
             
@@ -211,7 +211,7 @@ export default function gameInfo({ params }) {
                                 </div>
 
                                 <div className='w-12  flex justify-content-center align-items-center'>
-                                    <div className="w-1 mt-2 bg-primary-reverse align-items-center justify-content-center flex">
+                                    <div className="w-2 md:w-1 mt-2 bg-primary-reverse align-items-center justify-content-center flex">
                                         Official
                                     </div> 
                                     <div className="w-2 mt-2 bg-primary-reverse ml-4 align-items-center justify-content-center flex">
@@ -220,7 +220,7 @@ export default function gameInfo({ params }) {
                                 </div>
 
                                 <div className='w-12  flex justify-content-center align-items-center'>
-                                    <div className="w-1 mt-2 bg-primary-reverse align-items-center justify-content-center flex">
+                                    <div className="w-2 md:w-1 mt-2 bg-primary-reverse align-items-center justify-content-center flex">
                                         Season
                                     </div> 
                                     <div className="w-2 mt-2 bg-primary-reverse ml-4 align-items-center justify-content-center flex">
@@ -229,10 +229,10 @@ export default function gameInfo({ params }) {
                                 </div>
 
                                 <div className='w-12  flex justify-content-center align-items-center'>
-                                    <div className="w-1 mt-2 bg-primary-reverse align-items-center justify-content-center flex">
+                                    <div className="w-2 md:w-1 mt-2 bg-primary-reverse align-items-center justify-content-center flex">
                                         Date
                                     </div> 
-                                    <div className="w-2 mt-2 bg-primary-reverse ml-4 align-items-center justify-content-center flex">
+                                    <div className="w-2 mt-2 bg-primary-reverse ml-4 align-items-center justify-content-center flex flex-wrap">
                                         {gameInfo.date && gameInfo.date.split(' ')[0]}
                                     </div> 
                                 </div>

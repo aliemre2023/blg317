@@ -49,7 +49,7 @@ export default function playerInfo({ params }) {
                             {playerInfo.name?.toUpperCase()}
                         </div>
                     </div>
-                    <div className="col-2"></div>
+                    <div className="col-0 md:col-1"></div>
                 </div>
             </div>
             <div className="w-screen">

@@ -65,7 +65,7 @@ export default function TeamInfo({ params }) {
                             {teamInfo.teamName?.toUpperCase()}
                         </div>
                     </div>
-                    <div className="col-2"></div>
+                    <div className="col-0 md:col-1"></div>
                 </div>
             </div>
             <div className="mt-4 w-10 mx-auto grid">
