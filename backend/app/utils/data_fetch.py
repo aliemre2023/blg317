@@ -386,6 +386,12 @@ def get_countryTeams(query, page=1, per_page=24):
     cursor.execute(sql_query, params)
     country_teams = cursor.fetchall()
 
+    if 'city_name' in query:
+        query['c.name'] = query.pop('city_name')
+
+    if 'arena_name' in query:
+        query['a.name'] = query.pop('arena_name')
+
     sql_query = f"""
         SELECT COUNT(*)
         FROM teams t
