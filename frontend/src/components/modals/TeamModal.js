@@ -90,6 +90,7 @@ export default function TeamModal({
             formik.resetForm();
         },
     });
+    const { values, initialValues } = formik;
 
     const isFormFieldValid = (name) => {
         const nameParts = name.split('.');
@@ -111,6 +112,23 @@ export default function TeamModal({
             setVisible(false);
         } else {
             setWarningVisible(false);
+        }
+    };
+
+    const checkForChanges = () => {
+        const changes = Object.keys(values).reduce((acc, key) => {
+            if (values[key] !== initialValues[key]) {
+                acc[key] = values[key];
+            }
+            return acc;
+        }, {});
+
+        if (Object.keys(changes).length > 0) {
+            setVisible(true);
+            setWarningVisible(true);
+        } else {
+            setVisible(false);
+            formik.resetForm();
         }
     };
 
@@ -168,6 +186,9 @@ export default function TeamModal({
             <UseUnsavedChangesWarning visible={warningVisible} declareUserDecision={declareUserDecision} />
             <Sidebar
                 visible={visible}
+                onHide={() => {
+                    checkForChanges();
+                }}
                 position="right"
                 style={{ width: '35rem' }}
             >
@@ -176,7 +197,7 @@ export default function TeamModal({
                         <i
                             className="pi pi-chevron-left mr-2 text-2xl text-primary"
                             style={{ cursor: 'pointer' }}
-                            onClick={() => setVisible(false)}
+                            onClick={() => checkForChanges()}
                         ></i>
 
                         <h2 className="m-0 font-bold">{type === 'add' ? 'Add Team' : 'Edit Team'}</h2>
