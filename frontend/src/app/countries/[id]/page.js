@@ -380,6 +380,7 @@ export default function Page({ params }) {
                     setReportPage(e.page + 1);
                     setCurrentPage(e.page + 1);
                 }}
+                onRowClick={(e) => router.replace(`/teams/${e.data.team_id}`)}
                 size="small"
                 scrollable
                 scrollHeight="60vh"
@@ -416,6 +417,7 @@ export default function Page({ params }) {
                     setReportPage(e.page + 1);
                     setCurrentPage(e.page + 1);
                 }}
+                onRowClick={(e) => router.replace(`/players/${e.data.player_id}`)}
                 size="small"
                 scrollable
                 scrollHeight="60vh"
