@@ -24,8 +24,7 @@ export default function GridView({
                 </div>
             )}
             <Paginator
-                className="pagination w-full"
-                style={{ bottom: 0 }}
+                className="w-full"
                 first={first}
                 rows={24}
                 totalRecords={totalRecords}
