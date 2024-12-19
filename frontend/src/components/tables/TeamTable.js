@@ -57,6 +57,10 @@ export default function TeamTable() {
                 operator: FilterOperator.AND,
                 constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
             },
+            nickname: {
+                operator: FilterOperator.AND,
+                constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+            },
             abbreviation: {
                 operator: FilterOperator.AND,
                 constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
@@ -93,6 +97,11 @@ export default function TeamTable() {
                 type: 'Integer',
             },
             name: {
+                operator: FilterOperator.AND,
+                constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+                type: 'String',
+            },
+            nickname: {
                 operator: FilterOperator.AND,
                 constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
                 type: 'String',
@@ -341,6 +350,7 @@ export default function TeamTable() {
             >
                 <Column field="team_id" filter dataType="numeric" header="#"></Column>
                 <Column field="name" filter header="Team Name"></Column>
+                <Column field="nickname" filter header="Nickname"></Column>
                 <Column field="abbreviation" filter header="Abrv"></Column>
                 <Column field="owner" filter header="Owner"></Column>
                 <Column field="general_manager" filter header="General Manager"></Column>

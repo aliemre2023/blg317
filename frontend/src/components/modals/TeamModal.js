@@ -13,6 +13,7 @@ import classNames from 'classnames';
 export default function TeamModal({
     team_id,
     name,
+    nickname,
     abbreviation,
     owner,
     general_manager,
@@ -32,7 +33,8 @@ export default function TeamModal({
     const [warningVisible, setWarningVisible] = useState(false);
 
     const fields = [
-        { name: 'team_name', type: 'text', label: 'Team Name' },
+        { name: 'name', type: 'text', label: 'Team Name' },
+        { name: 'nickname', type: 'text', label: 'Nickname' },
         { name: 'abbreviation', type: 'text', label: 'Abbreviation' },
         { name: 'owner', type: 'text', label: 'Owner' },
         { name: 'general_manager', type: 'text', label: 'General Manager' },
@@ -47,22 +49,23 @@ export default function TeamModal({
     ];
 
     const validationSchema = Yup.object().shape({
-        teamName: Yup.string().required("Team Name can't be empty."),
+        name: Yup.string().required("Team Name can't be empty."),
+        nickname: Yup.string().required("Nickname can't be empty."),
         abbreviation: Yup.string().required("Abbreviation can't be empty."),
         owner: Yup.string().required("Owner can't be empty."),
-        generalManager: Yup.string().required("General Manager can't be empty."),
+        general_manager: Yup.string().required("General Manager can't be empty."),
         headcoach: Yup.string().required("Headcoach can't be empty."),
-        cityId: Yup.number()
+        city_id: Yup.number()
             .required("City can't be empty.")
             .test('test-city', 'City can not be 0.', function (value) {
                 return value !== 0;
             }),
-        arenaId: Yup.number()
+        arena_id: Yup.number()
             .required("Arena can't be empty.")
             .test('test-arena', 'Arena can not be 0.', function (value) {
                 return value !== 0;
             }),
-        yearFounded: Yup.number()
+        year_founded: Yup.number()
             .required("Year Founded can't be empty.")
             .test('test-year', 'Year Founded can not be 0.', function (value) {
                 return value !== 0;
@@ -71,7 +74,8 @@ export default function TeamModal({
 
     const formik = useFormik({
         initialValues: {
-            team_name: name || '',
+            name: name || '',
+            nickname: nickname || '',
             abbreviation: abbreviation || '',
             owner: owner || '',
             general_manager: general_manager || '',
@@ -92,17 +96,17 @@ export default function TeamModal({
     });
     const { values, initialValues } = formik;
 
-    const isFormFieldValid = (name) => {
-        const nameParts = name.split('.');
+    const isFormFieldValid = (fieldName) => {
+        const nameParts = fieldName.split('.');
         const touchedField = nameParts.reduce((acc, part) => acc?.[part], formik.touched);
         const errorField = nameParts.reduce((acc, part) => acc?.[part], formik.errors);
 
         return !!(touchedField && errorField);
     };
-    const getFormErrorMessage = (name) => {
-        const nameParts = name.split('.');
+    const getFormErrorMessage = (fieldName) => {
+        const nameParts = fieldName.split('.');
         const errorField = nameParts.reduce((acc, part) => acc?.[part], formik.errors);
-        return isFormFieldValid(name) && <small className="p-error">{errorField}</small>;
+        return isFormFieldValid(fieldName) && <small className="p-error">{errorField}</small>;
     };
 
     const declareUserDecision = (userDecision) => {

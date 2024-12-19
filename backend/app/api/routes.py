@@ -339,7 +339,7 @@ def admin_teams():
     table, total_teams = get_adminTeams(query, page, limit)
 
     return jsonify({
-        'teams': [{'team_id': row[0], 'name': row[1], 'abbreviation': row[2], 'owner': row[3], 'general_manager': row[4], 'headcoach': row[5], 'city_name': row[6], 'city_id': row[7], 'arena_name': row[8], 'arena_id': row[9], 'year_founded': row[10], 'facebook': row[11], 'instagram': row[12], 'twitter': row[13], 'logo_url': row[14]} for row in table],
+        'teams': [{'team_id': row[0], 'name': row[1], 'nickname': row[2], 'abbreviation': row[3], 'owner': row[4], 'general_manager': row[5], 'headcoach': row[6], 'city_name': row[7], 'city_id': row[8], 'arena_name': row[9], 'arena_id': row[10], 'year_founded': row[11], 'facebook': row[12], 'instagram': row[13], 'twitter': row[14], 'logo_url': row[15]} for row in table],
         'page': page,
         'totalTeams': total_teams
     })
