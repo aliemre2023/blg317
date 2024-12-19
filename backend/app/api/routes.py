@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app.utils.data_fetch import *
+from app.utils.data_update import *
 from app.utils.credential_utils import check_credentials, get_token, hash_password
 
 api_bp = Blueprint("api", __name__)
@@ -343,6 +344,24 @@ def admin_teams():
         'page': page,
         'totalTeams': total_teams
     })
+
+@api_bp.route('/admin/teams/<int:team_id>', methods=['PUT', 'DELETE'])
+def admin_manageTeams(team_id):
+    if request.method == 'PUT':
+        data = request.get_json();
+        if not data:
+            return jsonify({'success': False, 'error': 'No data provided'}), 400
+
+        if team_id == 0:
+            add_team(data)
+            return jsonify({'success': True, 'message': 'Team added successfully'}), 201
+        else:
+            update_team(team_id, data)
+            return jsonify({'success': True, 'message': 'Team updated successfully'}), 200
+
+    elif request.method == 'DELETE':
+        delete_team(team_id)
+        return jsonify({'success': True, 'message': 'Team deleted successfully'}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)

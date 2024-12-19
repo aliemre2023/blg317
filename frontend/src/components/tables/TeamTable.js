@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import TeamModal from '@/components/modals/TeamModal';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -6,9 +6,12 @@ import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 import { FilterOperator, FilterMatchMode } from 'primereact/api';
+import { Toast } from 'primereact/toast';
 import lazyLoad from '@/lib/lazyLoadFilters';
 
 export default function TeamTable() {
+    const toast = useRef(null);
+
     const [currentPage, setCurrentPage] = useState(1);
     const [reportPage, setReportPage] = useState(1);
     const [firstIndex, setFirstIndex] = useState(0);
@@ -146,6 +149,17 @@ export default function TeamTable() {
 
     const clearFilter = () => {
         initFilters();
+    };
+
+    const deleteTeam = (team_id) => () => {
+        fetch(`http://127.0.0.1:5000/api/admin/teams/${team_id}`, { method: 'DELETE' })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.success)
+                    toast.current.show({ severity: 'success', summary: 'Success', detail: data.message, life: 3000 });
+                else toast.current.show({ severity: 'error', summary: 'Error', detail: data.error, life: 3000 });
+            })
+            .catch((error) => console.log(error));
     };
 
     const renderHeader = () => {
@@ -288,7 +302,11 @@ export default function TeamTable() {
                         setModalVisible(true);
                     }}
                 ></span>
-                <span className="pi pi-trash mx-3" style={{ cursor: 'pointer' }}></span>
+                <span
+                    className="pi pi-trash mx-3"
+                    style={{ cursor: 'pointer' }}
+                    onClick={deleteTeam(options.team_id)}
+                ></span>
             </div>
         );
     };
@@ -366,6 +384,7 @@ export default function TeamTable() {
                 setVisible={setModalVisible}
                 type={modalType}
             />
+            <Toast ref={toast} />
         </div>
     );
 }

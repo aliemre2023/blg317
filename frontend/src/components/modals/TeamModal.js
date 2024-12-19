@@ -91,10 +91,49 @@ export default function TeamModal({
         validationSchema: validationSchema,
         enableReinitialize: true,
         onSubmit: (data) => {
-            formik.resetForm();
+            handleSubmit(data);
         },
     });
     const { values, initialValues } = formik;
+
+    const handleSubmit = (data) => {
+        const changedData = Object.keys(data).reduce((acc, key) => {
+            if (data[key] !== initialValues[key]) {
+                acc[key] = data[key];
+            }
+            return acc;
+        }, {});
+
+        fetch(`http://127.0.0.1:5000/api/admin/teams/${team_id || 0}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(changedData),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.success)
+                    toast.current.show({
+                        severity: 'success',
+                        summary: 'Success',
+                        detail: data.message,
+                        life: 3000,
+                    });
+                else
+                    toast.current.show({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: 'An error occurred while deleting team',
+                        life: 3000,
+                    });
+            })
+            .catch((error) => console.log(error))
+            .finally(() => {
+                formik.resetForm();
+                setVisible(false);
+            });
+    };
 
     const isFormFieldValid = (fieldName) => {
         const nameParts = fieldName.split('.');
