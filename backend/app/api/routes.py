@@ -228,10 +228,6 @@ def countryTeams_api(country_id):
     page = int(request.args.get("page", 1))
     limit = int(request.args.get("limit", 10))
 
-    query = request.args.to_dict(flat=False)
-    query.pop("page")
-    query.pop("limit")
-
     query = request.get_json();
     query['cout.country_id'] = {
         "operator": "and",
@@ -337,10 +333,6 @@ def random_quote():
 def admin_teams():
     page = int(request.args.get("page", 1))
     limit = int(request.args.get("limit", 10))
-
-    query = request.args.to_dict(flat=False)
-    query.pop("page")
-    query.pop("limit")
 
     query = request.get_json();
 
