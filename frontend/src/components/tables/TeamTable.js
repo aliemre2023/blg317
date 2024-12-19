@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Fragment } from 'react';
 import TeamModal from '@/components/modals/TeamModal';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
+import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
@@ -25,6 +26,10 @@ export default function TeamTable() {
     const [modalVisible, setModalVisible] = useState(false);
     const [modalData, setModalData] = useState({});
     const [modalType, setModalType] = useState('');
+
+    const [deleteItemModalVisible, setDeleteItemModalVisible] = useState(false);
+    const [deleteButtonDisabled, setDeleteButtonDisabled] = useState(true);
+    const [itemToDelete, setItemToDelete] = useState('');
 
     useEffect(() => {
         setData([]);
@@ -159,7 +164,11 @@ export default function TeamTable() {
                     toast.current.show({ severity: 'success', summary: 'Success', detail: data.message, life: 3000 });
                 else toast.current.show({ severity: 'error', summary: 'Error', detail: data.error, life: 3000 });
             })
-            .catch((error) => console.log(error));
+            .catch((error) => console.log(error))
+            .finally(() => {
+                setDeleteButtonDisabled(true);
+                setDeleteItemModalVisible(false);
+            });
     };
 
     const renderHeader = () => {
@@ -305,11 +314,50 @@ export default function TeamTable() {
                 <span
                     className="pi pi-trash mx-3"
                     style={{ cursor: 'pointer' }}
-                    onClick={deleteTeam(options.team_id)}
+                    onClick={() => {
+                        setItemToDelete(options);
+                        setDeleteItemModalVisible(true);
+                    }}
                 ></span>
             </div>
         );
     };
+
+    const deleteItemDialogFooter = (
+        <Fragment>
+            <div className="flex justify-content-center">
+                <InputText
+                    type="text"
+                    onChange={(e) => {
+                        if (itemToDelete.name === e.target.value) setDeleteButtonDisabled(false);
+                        else setDeleteButtonDisabled(true);
+                    }}
+                    className="p-inputtext-lg p-d-block mb-5 col-10 text-center p-invalid"
+                    placeholder="Type item name to confirm delete"
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !deleteButtonDisabled) {
+                            deleteTeam(itemToDelete.team_id);
+                        }
+                    }}
+                />
+            </div>
+            <div className="flex justify-content-center">
+                <Button
+                    label="No"
+                    icon="pi pi-times"
+                    className="p-button-danger delete-button-no w-3"
+                    onClick={() => setDeleteItemModalVisible(false)}
+                />
+                <Button
+                    label="Yes"
+                    disabled={deleteButtonDisabled}
+                    icon="pi pi-check"
+                    className="p-button-danger delete-button-yes w-3"
+                    onClick={deleteTeam(itemToDelete.team_id)}
+                />
+            </div>
+        </Fragment>
+    );
 
     const onPageInputKeyDown = (event, options) => {
         if (event.key === 'Enter') {
@@ -384,6 +432,24 @@ export default function TeamTable() {
                 setVisible={setModalVisible}
                 type={modalType}
             />
+            <Dialog
+                visible={deleteItemModalVisible}
+                style={{ width: '40rem' }}
+                modal
+                closable={false}
+                footer={deleteItemDialogFooter}
+                onHide={() => setDeleteItemModalVisible(false)}
+            >
+                <div className="flex align-items-center justify-content-center text-xl">
+                    <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem', color: 'tomato' }} />
+                    {itemToDelete && (
+                        <span>
+                            {'To delete item, please type the name' + ' '}
+                            <b>{itemToDelete.name}</b>
+                        </span>
+                    )}
+                </div>
+            </Dialog>
             <Toast ref={toast} />
         </div>
     );
