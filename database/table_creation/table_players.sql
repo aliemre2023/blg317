@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS players (
     college VARCHAR,
     country_id INTEGER,
 
-    FOREIGN KEY (country_id) REFERENCES countries(country_id)
+    FOREIGN KEY (country_id) REFERENCES countries(country_id) ON DELETE SET NULL
 );
 
 ATTACH DATABASE '/Users/aliemre2023/Downloads/archive (8)/nba.sqlite' AS nba_original;
