@@ -39,8 +39,9 @@ def teams_api():
 def players_api():
     query = request.args.get("name")  # !! Search across first_name and last_name
     page = int(request.args.get("page", 1))
+    active = request.args.get("is_active")
 
-    players, total_players = get_players(query, page)
+    players, total_players = get_players(query, active, page)
 
     return jsonify({
         'players': [
@@ -54,6 +55,7 @@ def players_api():
                 'college': player[6],
                 'country_id': player[7],
                 'png_name' : player[8],
+                'is_active' : player[9],
             }
             for player in players
         ],

@@ -5,6 +5,7 @@ import GridView from '@/components/GridView';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { useRouter } from 'next/navigation';
+import { Checkbox } from 'primereact/checkbox';
 
 function Players() {
     const router = useRouter();
@@ -15,6 +16,7 @@ function Players() {
     const [firstIndex, setFirstIndex] = useState(0);
     const [searchText, setSearchText] = useState('');
     const [tempText, setTempText] = useState('');
+    const [isActive, setIsActive] = useState(false);
 
     // debounce logic
     const handleInputChange = (event) => {
@@ -33,16 +35,24 @@ function Players() {
         setSearchText(tempText.trim());
     };
 
+    const activePlayersCheckbox = (e) => {
+        setIsActive(e.checked);
+    }
+
     // Fetch players based on search and pagination
     useEffect(() => {
-        fetch(`http://127.0.0.1:5000/api/players?page=${currentPage}&name=${searchText}`)
+        let url = `http://127.0.0.1:5000/api/players?page=${currentPage}&name=${searchText}`;
+        if (isActive) {
+            url += "&is_active=1";
+        }
+        fetch(url)
             .then((response) => response.json())
             .then((data) => {
                 setTotalPlayers(data.total_players);
                 setPlayers(data.players);
             })
             .catch((error) => console.log('Error fetching players:', error));
-    }, [currentPage, searchText]);
+    }, [currentPage, searchText, isActive]);
 
     const gridCardTemplate = (options) => {
         return (
@@ -87,6 +97,18 @@ function Players() {
                     <div className="col-4 md:col-2"></div>
                 </div>
                 <div className="search-bar mt-3">
+                    <div className='align-items-center items-center mr-4'>
+                        <div className='text-xs bg-primary -mb-2'>Only Active</div>
+
+                        <Checkbox
+                            className = "bg-reverse"
+                            inputId="isActive"
+                            checked={isActive}
+                            onChange={activePlayersCheckbox}
+                            label="Active Players"
+                        />
+                        
+                    </div>
                     <InputText
                         className="p-inputtext-sm"
                         name="query"
