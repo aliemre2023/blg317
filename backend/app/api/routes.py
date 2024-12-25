@@ -350,7 +350,7 @@ def admin_teams():
 @api_bp.route('/admin/teams/<int:team_id>', methods=['PUT', 'DELETE'])
 def admin_manageTeams(team_id):
     if request.method == 'PUT':
-        data = request.get_json();
+        data = request.get_json()
         if not data:
             return jsonify({'success': False, 'error': 'No data provided'}), 400
 
@@ -364,6 +364,16 @@ def admin_manageTeams(team_id):
     elif request.method == 'DELETE':
         delete_team(team_id)
         return jsonify({'success': True, 'message': 'Team deleted successfully'}), 200
+
+
+@api_bp.route('/teams_win_rate', methods=["GET"])
+def teams_win_rate_api():
+    team_id = request.args.get("id")
+    year = request.args.get("year")
+
+    win_rate = teams_win_rate(year, team_id)
+    
+    return jsonify(win_rate)
 
 if __name__ == '__main__':
     app.run(debug=True)

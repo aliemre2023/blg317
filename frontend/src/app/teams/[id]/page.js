@@ -6,6 +6,7 @@ import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { useRouter } from 'next/navigation';
 import { Image } from 'primereact/image';
+import { InputText } from 'primereact/inputtext';
 
 export default function TeamInfo({ params }) {
     const { id } = React.use(params);
@@ -13,6 +14,9 @@ export default function TeamInfo({ params }) {
     const [teamRoster, setTeamRoster] = useState([]);
     const [teamInfo, setTeamInfo] = useState([]);
     const [last5Games, setLast5Games] = useState([]);
+    const [year, setYear] = useState(2020);
+    const [winRate, setWinRate] = useState(null);
+
     useEffect(() => {
         setTeamRoster([]);
         setTeamInfo([]);
@@ -26,12 +30,29 @@ export default function TeamInfo({ params }) {
             .catch((error) => console.log(error));
     }, [id]);
 
+    useEffect(() => {
+        if (year) {
+            fetch(`http://127.0.0.1:5000/api/teams_win_rate?id=${id}&year=${year}`)
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(data[0])
+                    setWinRate((data[0].win_rate * 100).toFixed(2));
+                })
+                .catch((error) => console.log(error));
+        }
+    }, [year, id]);
+
     const handleClick_player = (player_id) => {
         router.push(`/players/${player_id}`); 
     };
     const handleClick_game = (game_id) => {
         console.log(game_id);
         router.push(`/games/${game_id}`); 
+    };
+    const handle_YearChange = (event) => {
+        console.log(event.target);
+        setWinRate(null);
+        setYear(event.target.value);
     };
 
     return (
@@ -123,6 +144,28 @@ export default function TeamInfo({ params }) {
                                         onClick={() => window.open(teamInfo.twitter, '_blank')}
                                     ></i>
                                 </div>
+                            </div>
+                        </div>
+                        <div className="w-full grid text-center mt-2">
+                            <div className="col-4 bg-primary-reverse text-weight-semibold">
+                                Win Rate
+                            </div>
+                            <div className="col-7 col-offset-1 bg-primary-reverse">
+                                Win rate after 
+                                <InputText
+                                    className='ml-2 mr-2, -mt-2 -mb-2'
+                                    name="year"
+                                    placeholder="year"
+                                    value={year}
+                                    onChange={handle_YearChange}
+                                    style={{ height: '30px' , width: '65px'}}
+                                    maxLength={4}
+                                />
+                                :
+                                {(year && winRate !== null) && (String(year).length === 4)
+                                    ? ` ${winRate}%`
+                                    : ' Enter a year'}
+                                
                             </div>
                         </div>
                     </div>

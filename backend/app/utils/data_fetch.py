@@ -628,3 +628,40 @@ def get_random_quote():
     quote_info = cursor.fetchone()
     conn.close()
     return quote_info
+
+def teams_win_rate(year, team_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    query = """
+    SELECT
+        g.home_team_id AS team_id,
+        t.name,
+        CAST(SUM(CASE
+                WHEN gs.home_team_score > gs.away_team_score
+                    THEN 1
+                    ELSE 0
+                END) AS FLOAT) /
+        NULLIF(SUM(CASE
+                    WHEN gs.home_team_score > gs.away_team_score
+                        THEN 1
+                        ELSE 0
+                    END) +
+                SUM(CASE
+                    WHEN gs.home_team_score < gs.away_team_score
+                        THEN 1
+                            ELSE 0 
+                    END), 0) AS win_rate
+    FROM games g
+    LEFT JOIN game_stats gs ON g.game_id = gs.game_id
+    LEFT JOIN teams t ON g.home_team_id = t.team_id
+    WHERE (t.name IS NOT NULL) AND (g.date >= ? || '-01-01 00:00:00') AND (t.team_id = ?)
+    GROUP BY g.home_team_id
+    ORDER BY win_rate DESC;
+    """
+
+    cursor.execute(query, (year, team_id,))
+    teams_win_rate = cursor.fetchall()
+    conn.close()
+    return [{"team_id": row[0], "team_name": row[1], "win_rate": row[2]} for row in teams_win_rate]
+
