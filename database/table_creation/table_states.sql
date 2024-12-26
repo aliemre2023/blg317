@@ -2,12 +2,13 @@ PRAGMA foreign_keys = ON;
 
 CREATE TABLE IF NOT EXISTS states (
     state_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name  varchar NOT NULL,
+    name VARCHAR NOT NULL CHECK (length(trim(name)) > 0), -- Ensure state name is not empty or only spaces
     country_id INTEGER,
 
     FOREIGN KEY (country_id) REFERENCES countries(country_id)
         ON DELETE CASCADE
 );
+
 
 INSERT INTO states (name, country_id)
 VALUES

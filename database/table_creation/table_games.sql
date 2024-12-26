@@ -1,3 +1,5 @@
+ATTACH DATABASE '/Users/aliemre2023/Downloads/archive (8)/nba.sqlite' AS nba_original;
+
 CREATE TABLE IF NOT EXISTS games(
     game_id INT PRIMARY KEY,
     date DATE,
@@ -9,8 +11,6 @@ CREATE TABLE IF NOT EXISTS games(
     FOREIGN KEY (away_team_id) REFERENCES teams(team_id) ON DELETE SET NULL,
     FOREIGN KEY (official_id) REFERENCES officials(official_id) ON DELETE SET NULL
 );
-
-ATTACH DATABASE '/Users/kickm/Downloads/archive/nba.sqlite' AS nba_original;
 
 INSERT INTO games (game_id, date, home_team_id, away_team_id, official_id)
 SELECT

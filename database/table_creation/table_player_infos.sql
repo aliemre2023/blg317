@@ -1,15 +1,14 @@
 ATTACH DATABASE '/Users/aliemre2023/Downloads/archive (8)/nba.sqlite' AS nba_original;
 
 CREATE TABLE IF NOT EXISTS player_infos (
-    --stat_id INTEGER PRIMARY KEY,
     player_id INTEGER,
     team_id INTEGER,
-    is_active INTEGER,
-    position INTEGER,
-    from_year INTEGER,
-    to_year INTEGER,
-    jersey INTEGER,
-    season_exp INTEGER,
+    is_active INTEGER CHECK (is_active IN (0,1)), -- Ensure is_active is either 0 or 1
+    position INTEGER CHECK (position > 0), -- Ensure position is a positive number
+    from_year INTEGER CHECK (from_year > 1900), -- Ensure from_year is after 1900
+    to_year INTEGER CHECK (to_year >= from_year), -- Ensure to_year is greater than or equal to from_year
+    jersey INTEGER CHECK (jersey > 0 AND jersey <= 99), -- Ensure jersey is between 1 and 99
+    season_exp INTEGER CHECK (season_exp >= 0), -- Ensure season_exp is non-negative
 
     FOREIGN KEY (player_id) REFERENCES players(player_id),
     FOREIGN KEY (team_id) REFERENCES teams(team_id)

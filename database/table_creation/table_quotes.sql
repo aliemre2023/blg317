@@ -3,7 +3,7 @@ PRAGMA foreign_keys = ON;
 CREATE TABLE IF NOT EXISTS quotes (
     quote_id INTEGER PRIMARY KEY AUTOINCREMENT,
     player_id INTEGER,
-    quote TEXT,
+    quote TEXT CHECK (length(trim(quote)) > 0), -- Ensure the quote is not empty or only spaces
     FOREIGN KEY (player_id) REFERENCES players(player_id)
         ON DELETE CASCADE
 );

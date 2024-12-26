@@ -1,18 +1,18 @@
--- PLAYERS TABLE
+ATTACH DATABASE '/Users/aliemre2023/Downloads/archive (8)/nba.sqlite' AS nba_original;
+
 CREATE TABLE IF NOT EXISTS players (
     player_id INTEGER PRIMARY KEY,
-    first_name VARCHAR NOT NULL,
-    last_name VARCHAR NOT NULL,
-    height TEXT,
-    weight TEXT,
-    birth_date TIMESTAMP,
-    college VARCHAR,
+    first_name VARCHAR NOT NULL CHECK (length(trim(first_name)) > 0), -- Ensure first_name is not empty or only spaces
+    last_name VARCHAR NOT NULL CHECK (length(trim(last_name)) > 0), -- Ensure last_name is not empty or only spaces
+    height TEXT CHECK (CAST(REPLACE(height, '"', '') AS DECIMAL) > 0), -- Ensure height is a positive value
+    weight TEXT CHECK (CAST(REPLACE(weight, ' lbs.', '') AS DECIMAL) > 0), -- Ensure weight is a positive value
+    birth_date TIMESTAMP CHECK (birth_date > '1900-01-01'), -- Ensure birth_date is after 1900-01-01
+    college VARCHAR, 
     country_id INTEGER,
+    png_name TEXT NOT NULL DEFAULT '', -- Ensure png_name is not NULL
 
     FOREIGN KEY (country_id) REFERENCES countries(country_id) ON DELETE SET NULL
 );
-
-ATTACH DATABASE '/Users/aliemre2023/Downloads/archive (8)/nba.sqlite' AS nba_original;
 
 INSERT INTO players (player_id, first_name, last_name, height, weight, birth_date, college, country_id)
 SELECT
@@ -102,7 +102,7 @@ DETACH DATABASE nba_original;
 ATTACH DATABASE '/Users/aliemre2023/Desktop/archive_players/players.sqlite' AS player_images;
 
 ALTER TABLE players
-    ADD COLUMN png_name TEXT NOT NULL DEFAULT '';
+    ADD COLUMN png_name TEXT NOT NULL DEFAULT ''; -- Ensure png_name is added to the table
 
 UPDATE players
 SET png_name = (

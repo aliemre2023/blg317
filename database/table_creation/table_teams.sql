@@ -1,18 +1,21 @@
 ATTACH DATABASE '/Users/aliemre2023/Downloads/archive (8)/nba.sqlite' AS nba_original;
+
 CREATE TABLE IF NOT EXISTS teams (
     team_id INTEGER PRIMARY KEY,
-    abbreviation VARCHAR NOT NULL,
-    nickname VARCHAR NOT NULL,
-    year_founded TIMESTAMP,
+    abbreviation VARCHAR NOT NULL CHECK (length(abbreviation) = 3), -- Ensure abbreviation is 3 characters long
+    nickname VARCHAR NOT NULL CHECK (length(trim(nickname)) > 0), -- Ensure nickname is not empty or only spaces
+    name TEXT NOT NULL DEFAULT '' CHECK (length(trim(name)) > 0), -- Ensure name is not empty or only spaces
+    year_founded TIMESTAMP CHECK (year_founded > '1900-01-01'), -- Ensure year founded is after 1900
     city_id INTEGER,
     arena_id INTEGER,
     owner TEXT,
-    general_manager TEXT,
+    general_manager TEXT, 
     headcoach TEXT,
     dleague_affiliation TEXT,
     facebook TEXT,
     instagram TEXT,
     twitter TEXT,
+    logo_url TEXT,
 
     FOREIGN KEY (city_id) REFERENCES cities(city_id),
     FOREIGN KEY (arena_id) REFERENCES arenas(arena_id)
@@ -33,7 +36,6 @@ SELECT
     twitter,
     (SELECT city_id FROM cities WHERE name = t.city) AS city_id,
     (SELECT arena_id FROM arenas WHERE name = t.arena) AS arena_id
-
 FROM
     nba_original.team_details t;
 
