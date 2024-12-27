@@ -629,39 +629,44 @@ def get_random_quote():
     conn.close()
     return quote_info
 
+
 def teams_win_rate(year, team_id):
     conn = get_db_connection()
     cursor = conn.cursor()
 
     query = """
     SELECT
-        g.home_team_id AS team_id,
+        t.team_id,
         t.name,
         CAST(SUM(CASE
-                WHEN gs.home_team_score > gs.away_team_score
-                    THEN 1
-                    ELSE 0
-                END) AS FLOAT) /
+            WHEN (gs.home_team_score > gs.away_team_score AND t.team_id = g.home_team_id) OR
+                 (gs.away_team_score > gs.home_team_score AND t.team_id = g.away_team_id)
+            THEN 1
+            ELSE 0
+        END) AS FLOAT) /
         NULLIF(SUM(CASE
-                    WHEN gs.home_team_score > gs.away_team_score
-                        THEN 1
-                        ELSE 0
-                    END) +
-                SUM(CASE
-                    WHEN gs.home_team_score < gs.away_team_score
-                        THEN 1
-                            ELSE 0 
-                    END), 0) AS win_rate
+            WHEN gs.home_team_score > gs.away_team_score OR gs.home_team_score < gs.away_team_score
+            THEN 1
+            ELSE 0
+        END), 0) AS win_rate
     FROM games g
     LEFT JOIN game_stats gs ON g.game_id = gs.game_id
-    LEFT JOIN teams t ON g.home_team_id = t.team_id
-    WHERE (t.name IS NOT NULL) AND (g.date >= ? || '-01-01 00:00:00') AND (t.team_id = ?)
-    GROUP BY g.home_team_id
-    ORDER BY win_rate DESC;
+    LEFT JOIN teams t ON t.team_id IN (g.home_team_id, g.away_team_id)
+    WHERE t.name IS NOT NULL
+      AND g.date >= ? 
+      AND t.team_id = ?
+    GROUP BY t.team_id, t.name;
     """
 
-    cursor.execute(query, (year, team_id,))
-    teams_win_rate = cursor.fetchall()
-    conn.close()
-    return [{"team_id": row[0], "team_name": row[1], "win_rate": row[2]} for row in teams_win_rate]
+    # Construct the date parameter
+    date_param = f"{year}-01-01 00:00:00"
 
+    # Execute the query with parameters
+    cursor.execute(query, (date_param, team_id))
+    teams_win_rate = cursor.fetchall()
+
+    # Close the connection
+    conn.close()
+
+    # Return formatted results
+    return [{"team_id": row[0], "team_name": row[1], "win_rate": row[2]} for row in teams_win_rate]
