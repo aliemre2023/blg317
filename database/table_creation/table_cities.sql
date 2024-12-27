@@ -1,12 +1,12 @@
 PRAGMA foreign_keys = ON;
 
 CREATE TABLE IF NOT EXISTS cities (
-    city_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name VARCHAR NOT NULL CHECK(TRIM(name) != '' AND LENGTH(name) <= 100), -- Non-empty and reasonable length.
-    abbreviation VARCHAR NOT NULL CHECK(LENGTH(abbreviation) BETWEEN 2 AND 5), -- 2-5 characters long.
+    city_id INTEGER PRIMARY KEY AUTOINCREMENT ,
+    name VARCHAR NOT NULL,
+    abbreviation VARCHAR NOT NULL,
     state_id INTEGER,
-    coordinate_x DOUBLE PRECISION CHECK(coordinate_x BETWEEN -90 AND 90), -- Valid latitude range.
-    coordinate_y DOUBLE PRECISION CHECK(coordinate_y BETWEEN -180 AND 180), -- Valid longitude range.
+    coordinate_x DOUBLE PRECISION(10, 4),
+    coordinate_y DOUBLE PRECISION(10, 4),
 
     FOREIGN KEY (state_id) REFERENCES states(state_id)
         ON DELETE CASCADE

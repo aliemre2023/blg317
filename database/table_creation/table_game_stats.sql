@@ -1,4 +1,4 @@
-ATTACH DATABASE '/Users/aliemre2023/Downloads/archive (8)/nba.sqlite' AS nba_original;
+ATTACH DATABASE 'C:\Users\umut\Desktop\nba.sqlite' AS nba_original;
 
 CREATE TABLE IF NOT EXISTS game_stats (
     game_id INTEGER,

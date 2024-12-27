@@ -2,9 +2,10 @@ ATTACH DATABASE '/Users/aliemre2023/Downloads/archive (8)/nba.sqlite' AS nba_ori
 
 CREATE TABLE IF NOT EXISTS arenas (
     arena_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name VARCHAR CHECK(TRIM(name) != '' AND LENGTH(name) <= 100), -- Ensures name is non-empty and up to 100 characters.
-    capacity INTEGER CHECK(capacity > 0) -- Ensures capacity is positive.
+    name VARCHAR,
+    capacity INTEGER
 );
+
 
 INSERT INTO arenas (name, capacity)
 SELECT DISTINCT

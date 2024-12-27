@@ -1,7 +1,8 @@
+-- COUNTRIES TABLE
 CREATE TABLE IF NOT EXISTS countries (
     country_id INT PRIMARY KEY,
     name VARCHAR(100),
-    abbreviation VARCHAR(10) UNIQUE,  -- Ensures each abbreviation is unique
+    abbreviation VARCHAR(10),
     flag_link VARCHAR(255)
 );
 
