@@ -16,6 +16,7 @@ export default function TeamInfo({ params }) {
     const [last5Games, setLast5Games] = useState([]);
     const [year, setYear] = useState(2020);
     const [winRate, setWinRate] = useState(null);
+    const [averageRosterAge, setAverageRosterAge] = useState(null);
 
     useEffect(() => {
         setTeamRoster([]);
@@ -41,6 +42,18 @@ export default function TeamInfo({ params }) {
                 .catch((error) => console.log(error));
         }
     }, [year, id]);
+
+    useEffect(() => {
+        fetch("http://127.0.0.1:5000/api/averageRosterAge")
+            .then((response) => response.json())
+            .then((data) => {
+                //console.log(data);
+                //console.log(data.averageRosterAge);
+                const team = data.averageRosterAge.find((team) => team.team_id === parseInt(id));
+                setAverageRosterAge(team.average_roster_age);  
+            })
+            .catch((error) => console.log(error));
+    }, [id]);
 
     const handleClick_player = (player_id) => {
         router.push(`/players/${player_id}`); 
@@ -180,6 +193,9 @@ export default function TeamInfo({ params }) {
                         <Column field="position" header="Position"></Column>
                         <Column field="height" header="Height"></Column>
                     </DataTable>
+                    <div className="w-full text-center bg-primary-reverse">
+                        Average age of the Roster: {averageRosterAge != null && averageRosterAge > 10 ? averageRosterAge : "NULL"}
+                    </div>
                 </div>
                 <div className="col-12">
                     <div className="w-full text-center bg-primary-reverse font-semibold">

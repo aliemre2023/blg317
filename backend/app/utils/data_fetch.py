@@ -670,3 +670,7 @@ def teams_win_rate(year, team_id):
 
     # Return formatted results
     return [{"team_id": row[0], "team_name": row[1], "win_rate": row[2]} for row in teams_win_rate]
+
+def average_roster_age_perTeam():
+    average_roster_age = fetch_from_sql_file("average_roster_age.sql")
+    return average_roster_age

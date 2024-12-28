@@ -375,5 +375,17 @@ def teams_win_rate_api():
     
     return jsonify(win_rate)
 
+@api_bp.route('/averageRosterAge', methods=['GET'])
+def averageRosterAge_api():
+    table = average_roster_age_perTeam()
+
+    return jsonify({
+        'averageRosterAge': [{
+            'team_id': row[0], 
+            'team_name': row[1], 
+            'average_roster_age': row[2]} for row in table],
+    })
+
+
 if __name__ == '__main__':
     app.run(debug=True)
