@@ -520,6 +520,69 @@ def get_teamInfo(teamid):
     conn.close()
     return team_info
 
+def get_random_quote():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    query = """
+    SELECT q.*,
+        p.first_name || " " || p.last_name AS player_name,
+        p.png_name AS png_name
+    FROM quotes q
+    LEFT JOIN players p ON p.player_id = q.player_id
+    ORDER BY RANDOM() LIMIT 1;
+    """
+
+    cursor.execute(query)
+    quote_info = cursor.fetchone()
+    conn.close()
+    return quote_info
+
+def teams_win_rate(year, team_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    query = """
+    SELECT
+        t.team_id,
+        t.name,
+        CAST(SUM(CASE
+            WHEN (gs.home_team_score > gs.away_team_score AND t.team_id = g.home_team_id) OR
+                 (gs.away_team_score > gs.home_team_score AND t.team_id = g.away_team_id)
+            THEN 1
+            ELSE 0
+        END) AS FLOAT) /
+        NULLIF(SUM(CASE
+            WHEN gs.home_team_score > gs.away_team_score OR gs.home_team_score < gs.away_team_score
+            THEN 1
+            ELSE 0
+        END), 0) AS win_rate
+    FROM games g
+    LEFT JOIN game_stats gs ON g.game_id = gs.game_id
+    LEFT JOIN teams t ON t.team_id IN (g.home_team_id, g.away_team_id)
+    WHERE t.name IS NOT NULL
+      AND g.date >= ? 
+      AND t.team_id = ?
+    GROUP BY t.team_id, t.name;
+    """
+
+    # Construct the date parameter
+    date_param = f"{year}-01-01 00:00:00"
+
+    # Execute the query with parameters
+    cursor.execute(query, (date_param, team_id))
+    teams_win_rate = cursor.fetchall()
+
+    # Close the connection
+    conn.close()
+
+    # Return formatted results
+    return [{"team_id": row[0], "team_name": row[1], "win_rate": row[2]} for row in teams_win_rate]
+
+def average_roster_age_perTeam():
+    average_roster_age = fetch_from_sql_file("average_roster_age.sql")
+    return average_roster_age
+
 def get_admin(username): 
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -585,6 +648,47 @@ def get_adminTeams(query, page=1, per_page=24):
 
     return admin_teams, total_count
 
+def get_adminPlayers(query, page=1, per_page=24):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    if 'player_id' in query:
+        query['p.player_id'] = query.pop('player_id')
+
+    if 'country_name' in query:
+        query['c.name'] = query.pop('country_name')
+
+    if 'team_name' in query:
+        query['t.name'] = query.pop('team_name')
+
+    sql_query = f"""
+        SELECT p.player_id, p.first_name, p.last_name, p.height, p.weight, p.birth_date, p.college, c.name as country_name, c.country_id as country_id, t.name as team_name, t.team_id as team_id, pi.is_active, pi.position, pi.from_year, pi.to_year, pi.jersey
+        FROM players p
+        LEFT JOIN player_infos pi ON p.player_id = pi.player_id
+        LEFT JOIN teams t ON t.team_id = pi.team_id
+        LEFT JOIN countries c ON c.country_id = p.country_id
+        {query_to_sql(query)}
+        LIMIT ? OFFSET ?
+    """
+    params = (per_page, (page - 1) * per_page)
+
+    cursor.execute(sql_query, params)
+    admin_players = cursor.fetchall()
+
+    sql_query = f"""
+        SELECT COUNT(*)
+        FROM players p
+        LEFT JOIN player_infos pi ON p.player_id = pi.player_id
+        LEFT JOIN teams t ON t.team_id = pi.team_id
+        LEFT JOIN countries c ON c.country_id = p.country_id
+        {query_to_sql(query)}
+    """
+
+    cursor.execute(sql_query)
+    total_count = cursor.fetchone()[0]
+
+    return admin_players, total_count
+
 
 def query_to_sql(query):
     sql = "WHERE "
@@ -610,67 +714,3 @@ def query_to_sql(query):
         sql = sql.rstrip("WHERE ")
 
     return sql
-
-def get_random_quote():
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
-    query = """
-    SELECT q.*,
-        p.first_name || " " || p.last_name AS player_name,
-        p.png_name AS png_name
-    FROM quotes q
-    LEFT JOIN players p ON p.player_id = q.player_id
-    ORDER BY RANDOM() LIMIT 1;
-    """
-
-    cursor.execute(query)
-    quote_info = cursor.fetchone()
-    conn.close()
-    return quote_info
-
-
-def teams_win_rate(year, team_id):
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
-    query = """
-    SELECT
-        t.team_id,
-        t.name,
-        CAST(SUM(CASE
-            WHEN (gs.home_team_score > gs.away_team_score AND t.team_id = g.home_team_id) OR
-                 (gs.away_team_score > gs.home_team_score AND t.team_id = g.away_team_id)
-            THEN 1
-            ELSE 0
-        END) AS FLOAT) /
-        NULLIF(SUM(CASE
-            WHEN gs.home_team_score > gs.away_team_score OR gs.home_team_score < gs.away_team_score
-            THEN 1
-            ELSE 0
-        END), 0) AS win_rate
-    FROM games g
-    LEFT JOIN game_stats gs ON g.game_id = gs.game_id
-    LEFT JOIN teams t ON t.team_id IN (g.home_team_id, g.away_team_id)
-    WHERE t.name IS NOT NULL
-      AND g.date >= ? 
-      AND t.team_id = ?
-    GROUP BY t.team_id, t.name;
-    """
-
-    # Construct the date parameter
-    date_param = f"{year}-01-01 00:00:00"
-
-    # Execute the query with parameters
-    cursor.execute(query, (date_param, team_id))
-    teams_win_rate = cursor.fetchall()
-
-    # Close the connection
-    conn.close()
-
-    # Return formatted results
-    return [{"team_id": row[0], "team_name": row[1], "win_rate": row[2]} for row in teams_win_rate]
-
-def average_roster_age_perTeam():
-    average_roster_age = fetch_from_sql_file("average_roster_age.sql")
-    return average_roster_age
