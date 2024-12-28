@@ -1,43 +1,30 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+This is an ITU BLG317 course database project. Developed with Next.js, Flask and SQLite.
 
-## Dependencies
 
-Install Dependencies with these commands.
-
-```bash
-pip install -r "requirements.txt"
-make build
-```
-''
 ## Getting Started
 
-You can use the make file to run project
+Install Dependencies with these commands.
+```bash
+make build
+```
 
+Run project with these commands.
 ```bash
 make startall   #Runs both frontend and backend servers
-# or
-make next       #Runs only frontend server
-# or
-make flask      #Runs only backend server
-# or
+```
+
+Stop project with this command.
+```bash
 make stopall
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result after starting the frontend server.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Check the api from [http://127.0.0.1:5000/api](http://127.0.0.1:5000/api)  with your browser to see the result after starting the backend server.
 
-## Learn More
+You can find alternative commands in makefile and .vscode file.
 
-To learn more about Next.js, take a look at the following resources:
+## Database
+The database created based on [https://www.kaggle.com/datasets/wyattowalsh/basketball](https://www.kaggle.com/datasets/wyattowalsh/basketball), but we change this database much. This is our database schema:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+<p align="center"><img src="https://github.com/user-attachments/assets/2000cea9-aca1-488b-b7b5-ba45ad70bbcf" width="600px"></p>

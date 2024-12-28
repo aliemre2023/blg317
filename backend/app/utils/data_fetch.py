@@ -82,38 +82,66 @@ def get_teams(query=None, page=1, per_page=24):
     conn.close()
     return teams, total_count
 
-def get_players(query=None, page=1, per_page=24):
+def get_players(query=None, active=0, page=1, per_page=24):
     conn = get_db_connection()
     cursor = conn.cursor()
 
+    sql_query = """
+            SELECT p.player_id,
+                p.first_name,
+                p.last_name,
+                p.height,
+                p.weight,
+                p.birth_date,
+                p.college,
+                p.country_id,
+                p.png_name,
+                pi.is_active
+            FROM players p
+            LEFT JOIN player_infos pi ON p.player_id = pi.player_id
+    """
+    if active:
+        sql_query += "WHERE pi.is_active = 1"
     if query:
-        sql_query = """
-            SELECT player_id, first_name, last_name, height, weight, birth_date, college, country_id, png_name
-            FROM players
-            WHERE first_name LIKE ? OR last_name LIKE ?
-            ORDER BY png_name DESC
-            LIMIT ? OFFSET ?
-        """
+        if active:
+            sql_query += " AND (p.first_name LIKE ? OR p.last_name LIKE ?)\n"
+        else:   
+            sql_query += "WHERE p.first_name LIKE ? OR p.last_name LIKE ?\n"
+
+    #ORDER BY p.png_name DESC
+    sql_query += """
+        LIMIT ? OFFSET ?
+    """
+   
+    if query:
         params = (f"{query}%", f"{query}%", per_page, (page - 1) * per_page)
     else:
-        sql_query = """
-            SELECT player_id, first_name, last_name, height, weight, birth_date, college, country_id, png_name
-            FROM players
-            ORDER BY png_name DESC
-            LIMIT ? OFFSET ?
-        """
         params = (per_page, (page - 1) * per_page)
 
     cursor.execute(sql_query, params)
     players = cursor.fetchall()
 
-    if query:
-        count_query = "SELECT COUNT(*) FROM players WHERE first_name LIKE ? OR last_name LIKE ?"
-        cursor.execute(count_query, (f"{query}%", f"{query}%"))
-    else:
-        count_query = "SELECT COUNT(*) FROM players"
-        cursor.execute(count_query)
+    count_query = """
+        SELECT COUNT(*)
+        FROM players p
+        LEFT JOIN player_infos pi ON p.player_id = pi.player_id
+    """
 
+    if active:
+        count_query += "WHERE pi.is_active = 1"
+    if query:
+        if active:
+            count_query += " AND (p.first_name LIKE ? OR p.last_name LIKE ?)\n"
+        else:   
+            count_query += "WHERE p.first_name LIKE ? OR p.last_name LIKE ?\n"
+
+    # count query
+    if query:
+        count_params = (f"{query}%", f"{query}%")
+    else:
+        count_params = ()
+
+    cursor.execute(count_query, count_params)
     total_count = cursor.fetchone()[0]
 
     conn.close()
@@ -600,3 +628,49 @@ def get_random_quote():
     quote_info = cursor.fetchone()
     conn.close()
     return quote_info
+
+
+def teams_win_rate(year, team_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    query = """
+    SELECT
+        t.team_id,
+        t.name,
+        CAST(SUM(CASE
+            WHEN (gs.home_team_score > gs.away_team_score AND t.team_id = g.home_team_id) OR
+                 (gs.away_team_score > gs.home_team_score AND t.team_id = g.away_team_id)
+            THEN 1
+            ELSE 0
+        END) AS FLOAT) /
+        NULLIF(SUM(CASE
+            WHEN gs.home_team_score > gs.away_team_score OR gs.home_team_score < gs.away_team_score
+            THEN 1
+            ELSE 0
+        END), 0) AS win_rate
+    FROM games g
+    LEFT JOIN game_stats gs ON g.game_id = gs.game_id
+    LEFT JOIN teams t ON t.team_id IN (g.home_team_id, g.away_team_id)
+    WHERE t.name IS NOT NULL
+      AND g.date >= ? 
+      AND t.team_id = ?
+    GROUP BY t.team_id, t.name;
+    """
+
+    # Construct the date parameter
+    date_param = f"{year}-01-01 00:00:00"
+
+    # Execute the query with parameters
+    cursor.execute(query, (date_param, team_id))
+    teams_win_rate = cursor.fetchall()
+
+    # Close the connection
+    conn.close()
+
+    # Return formatted results
+    return [{"team_id": row[0], "team_name": row[1], "win_rate": row[2]} for row in teams_win_rate]
+
+def average_roster_age_perTeam():
+    average_roster_age = fetch_from_sql_file("average_roster_age.sql")
+    return average_roster_age
