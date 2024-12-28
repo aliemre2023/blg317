@@ -418,5 +418,38 @@ def admin_managePlayers(player_id):
         delete_player(player_id)
         return jsonify({'success': True, 'message': 'Player deleted successfully'}), 200
 
+@api_bp.route('/admin/games', methods=['POST'])
+def admin_games():
+    page = int(request.args.get("page", 1))
+    limit = int(request.args.get("limit", 10))
+
+    query = request.get_json();
+
+    table, total_games = get_adminGames(query, page, limit)
+
+    return jsonify({
+        'games': [{'game_id': row[0], 'date': row[1], 'home_team_name': row[2], 'home_team_id': row[3], 'away_team_name': row[4], 'away_team_id': row[5], 'official_name': row[6], 'official_id': row[7], 'season': row[8], 'home_team_score': row[9], 'away_team_score': row[10], 'home_qtr1_points': row[11], 'home_qtr2_points': row[12], 'home_qtr3_points': row[13], 'home_qtr4_points': row[14], 'away_qtr1_points': row[15], 'away_qtr2_points': row[16], 'away_qtr3_points': row[17], 'away_qtr4_points': row[18], 'home_rebounds': row[19], 'home_blocks': row[20], 'home_steals': row[21], 'away_rebounds': row[22], 'away_blocks': row[23], 'away_steals': row[24]} for row in table],
+        'page': page,
+        'totalGames': total_games
+    })
+
+@api_bp.route('/admin/games/<int:game_id>', methods=['PUT', 'DELETE'])
+def admin_manageGames(game_id):
+    if request.method == 'PUT':
+        data = request.get_json();
+        if not data:
+            return jsonify({'success': False, 'error': 'No data provided'}), 400
+
+        if game_id == 0:
+            add_game(data)
+            return jsonify({'success': True, 'message': 'Game added successfully'}), 201
+        else:
+            update_game(game_id, data)
+            return jsonify({'success': True, 'message': 'Game updated successfully'}), 200
+
+    elif request.method == 'DELETE':
+        delete_game(game_id)
+        return jsonify({'success': True, 'message': 'Game deleted successfully'}), 200
+
 if __name__ == '__main__':
     app.run(debug=True)

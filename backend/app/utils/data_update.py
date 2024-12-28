@@ -67,6 +67,45 @@ def delete_player(player_id):
     conn.commit()
     conn.close()
 
+def add_game(data):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    sql_query = f"INSERT INTO games {generate_insert_query(data["game"])}"
+    cursor.execute(sql_query)
+    new_id = cursor.lastrowid
+
+    data["game_stat"]["game_id"] = new_id
+    sql_query = f"INSERT INTO game_stats {generate_insert_query(data["game_stat"])}"
+    cursor.execute(sql_query)
+
+    conn.commit()
+    conn.close()
+
+def update_game(game_id, data):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    if 'game' in data:
+        sql_query = f"UPDATE games SET {generate_updae_query(data["game"])} WHERE game_id = {game_id}"
+        cursor.execute(sql_query)
+
+    if 'game_stat' in data:
+        sql_query = f"UPDATE game_stats SET {generate_updae_query(data["game_stat"])} WHERE game_id = {game_id}"
+        cursor.execute(sql_query)
+
+    conn.commit()
+    conn.close()
+
+def delete_game(game_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    sql_query = f"DELETE FROM games WHERE game_id = {game_id}"
+    cursor.execute(sql_query)
+    conn.commit()
+    conn.close()
+
 
 def generate_insert_query(data):
     keys = ', '.join(data.keys())

@@ -689,6 +689,73 @@ def get_adminPlayers(query, page=1, per_page=24):
 
     return admin_players, total_count
 
+def get_adminGames(query, page=1, per_page=24):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    if 'game_id' in query:
+        query['g.game_id'] = query.pop('game_id')
+
+    if 'home_team_name' in query:
+        query['t1.nickname'] = query.pop('home_team_name')
+
+    if 'away_team_name' in query:
+        query['t2.nickname'] = query.pop('away_team_name')
+
+    sql_query = f"""
+        SELECT g.game_id,
+        g.date,
+        t1.nickname AS home_team_name,
+        t1.team_id AS home_team_id,
+        t2.nickname AS away_team_name,
+        t2.team_id AS away_team_id,
+        o.first_name || ' ' || o.last_name AS official_name,
+        o.official_id,
+        gs.season,
+        gs.home_team_score,
+        gs.away_team_score,
+        gs.home_qtr1_points,
+        gs.home_qtr2_points,
+        gs.home_qtr3_points,
+        gs.home_qtr4_points,
+        gs.away_qtr1_points,
+        gs.away_qtr2_points,
+        gs.away_qtr3_points,
+        gs.away_qtr4_points,
+        gs.home_rebounds,
+        gs.home_blocks,
+        gs.home_steals,
+        gs.away_rebounds,
+        gs.away_blocks,
+        gs.away_steals
+        FROM games g
+        LEFT JOIN game_stats gs ON g.game_id = gs.game_id
+        LEFT JOIN teams t1 ON t1.team_id = g.home_team_id
+        LEFT JOIN teams t2 ON t2.team_id = g.away_team_id
+        LEFT JOIN officials o ON o.official_id = g.official_id
+        {query_to_sql(query)}
+        LIMIT ? OFFSET ?
+    """
+    params = (per_page, (page - 1) * per_page)
+
+    cursor.execute(sql_query, params)
+    admin_games = cursor.fetchall()
+
+    sql_query = f"""
+        SELECT COUNT(*), o.first_name || ' ' || o.last_name AS official_name
+        FROM games g
+        LEFT JOIN game_stats gs ON g.game_id = gs.game_id
+        LEFT JOIN teams t1 ON t1.team_id = g.home_team_id
+        LEFT JOIN teams t2 ON t2.team_id = g.away_team_id
+        LEFT JOIN officials o ON o.official_id = g.official_id
+        {query_to_sql(query)}
+    """
+
+    cursor.execute(sql_query)
+    total_count = cursor.fetchone()[0]
+
+    return admin_games, total_count
+
 
 def query_to_sql(query):
     sql = "WHERE "
