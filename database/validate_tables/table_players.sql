@@ -3,7 +3,7 @@ ALTER TABLE players RENAME TO players_old;
 
 -- Create the new table with data validations
 CREATE TABLE IF NOT EXISTS players (
-    player_id INTEGER PRIMARY KEY,
+    player_id INTEGER PRIMARY KEY AUTOINCREMENT,
     first_name VARCHAR NOT NULL CHECK (length(trim(first_name)) > 0),
     last_name VARCHAR NOT NULL CHECK (length(trim(last_name)) > 0),
     height INTEGER CHECK (height >= 0),

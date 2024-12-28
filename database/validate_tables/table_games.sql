@@ -3,7 +3,7 @@ ALTER TABLE games RENAME TO games_old;
 
 -- Create the new table with the same structure
 CREATE TABLE IF NOT EXISTS games (
-    game_id INT PRIMARY KEY,
+    game_id INT PRIMARY KEY AUTOINCREMENT,
     date DATE,
     home_team_id INT,
     away_team_id INT,
