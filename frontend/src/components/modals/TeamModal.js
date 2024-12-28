@@ -124,7 +124,7 @@ export default function TeamModal({
                     toast.current.show({
                         severity: 'error',
                         summary: 'Error',
-                        detail: 'An error occurred while deleting team',
+                        detail: data.error,
                         life: 3000,
                     });
             })

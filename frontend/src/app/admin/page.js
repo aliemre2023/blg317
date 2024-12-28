@@ -2,15 +2,16 @@
 
 import React, { useState } from 'react';
 import TeamTable from '@/components/tables/TeamTable';
+import PlayerTable from '@/components/tables/PlayerTable';
+import GameTable from '@/components/tables/GameTable';
 import { Dropdown } from 'primereact/dropdown';
 
 export default function Admin() {
-    const [selectedTable, setSelectedTable] = useState('countries');
+    const [selectedTable, setSelectedTable] = useState('players');
 
     const tables = [
-        { name: 'Countries', value: 'countries' },
-        { name: 'Teams', value: 'teams' },
         { name: 'Players', value: 'players' },
+        { name: 'Teams', value: 'teams' },
         { name: 'Games', value: 'games' },
     ];
 
@@ -26,7 +27,9 @@ export default function Admin() {
                     placeholder="Select a Table"
                 />
             </div>
+            {selectedTable === 'players' && <PlayerTable />}
             {selectedTable === 'teams' && <TeamTable />}
+            {selectedTable === 'games' && <GameTable />}
         </div>
     );
 }

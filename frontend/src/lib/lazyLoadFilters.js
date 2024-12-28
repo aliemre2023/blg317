@@ -164,6 +164,16 @@ export default function lazyLoad(filters) {
                 }
                 break;
             }
+            case 'Boolean': {
+                if (value.value !== null && value.value !== '') {
+                    console.log('value', value);
+                    queries[filterKey] = {
+                        operator: 'and',
+                        constraints: [{ value: value.value ? 1 : 0, operator: '=' }],
+                    };
+                }
+                break;
+            }
             case 'Date': {
                 const constraints = value.constraints
                     .map((filterItem) => {

@@ -520,97 +520,6 @@ def get_teamInfo(teamid):
     conn.close()
     return team_info
 
-def get_admin(username): 
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
-    query = """
-    SELECT 
-       username, password_hash
-    FROM 
-        admins
-    WHERE 
-        username = ?
-    """
-
-    cursor.execute(query, (username,))
-    admin_info = cursor.fetchone()
-
-    conn.close()
-    return admin_info
-
-def get_adminTeams(query, page=1, per_page=24):
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
-    if 'name' in query:
-        query['t.name'] = query.pop('name')
-
-    if 'abbreviation' in query:
-        query['t.abbreviation'] = query.pop('abbreviation')
-
-    sql_query = f"""
-        SELECT t.team_id, t.name, t.nickname, t.abbreviation, t.owner, t.general_manager, t.headcoach, c.name as city_name, c.city_id, a.name as arena_name, a.arena_id, t.year_founded, t.facebook, t.instagram, t.twitter, t.logo_url
-        FROM teams t
-        JOIN arenas a ON t.arena_id = a.arena_id
-        JOIN cities c ON t.city_id = c.city_id
-        JOIN states s ON c.state_id = s.state_id
-        JOIN countries cout ON s.country_id = cout.country_id
-        {query_to_sql(query)}
-        LIMIT ? OFFSET ?
-    """
-    params = (per_page, (page - 1) * per_page)
-
-    cursor.execute(sql_query, params)
-    country_teams = cursor.fetchall()
-
-    if 'city_name' in query:
-        query['c.name'] = query.pop('city_name')
-
-    if 'arena_name' in query:
-        query['a.name'] = query.pop('arena_name')
-
-    sql_query = f"""
-        SELECT COUNT(*)
-        FROM teams t
-        JOIN arenas a ON t.arena_id = a.arena_id
-        JOIN cities c ON t.city_id = c.city_id
-        JOIN states s ON c.state_id = s.state_id
-        JOIN countries cout ON s.country_id = cout.country_id
-        {query_to_sql(query)}
-    """
-
-    cursor.execute(sql_query)
-    total_count = cursor.fetchone()[0]
-
-    return country_teams, total_count
-
-
-def query_to_sql(query):
-    sql = "WHERE "
-    conditions = []
-
-    for key, value in query.items():
-        if isinstance(value, dict) and "constraints" in value:
-            operator = value.get("operator", "and").upper()
-            constraint_conditions = []
-
-            for constraint in value["constraints"]:
-                filterValue = constraint.get("value")
-                constraint_operator = constraint.get("operator")
-                if filterValue is not None and constraint_operator is not None:
-                    constraint_conditions.append(f"{key} {constraint_operator} {filterValue}")
-                    
-            if constraint_conditions:
-                conditions.append(f" ({f' {operator} '.join(constraint_conditions)}) ")
-
-    if conditions:
-        sql += " AND ".join(conditions)
-    else:
-        sql = sql.rstrip("WHERE ")
-
-    return sql
-
 def get_random_quote():
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -628,7 +537,6 @@ def get_random_quote():
     quote_info = cursor.fetchone()
     conn.close()
     return quote_info
-
 
 def teams_win_rate(year, team_id):
     conn = get_db_connection()
@@ -674,3 +582,202 @@ def teams_win_rate(year, team_id):
 def average_roster_age_perTeam():
     average_roster_age = fetch_from_sql_file("average_roster_age.sql")
     return average_roster_age
+
+def get_admin(username): 
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    query = """
+    SELECT 
+       username, password_hash
+    FROM 
+        admins
+    WHERE 
+        username = ?
+    """
+
+    cursor.execute(query, (username,))
+    admin_info = cursor.fetchone()
+
+    conn.close()
+    return admin_info
+
+def get_adminTeams(query, page=1, per_page=24):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    if 'name' in query:
+        query['t.name'] = query.pop('name')
+
+    if 'abbreviation' in query:
+        query['t.abbreviation'] = query.pop('abbreviation')
+
+    sql_query = f"""
+        SELECT t.team_id, t.name, t.nickname, t.abbreviation, t.owner, t.general_manager, t.headcoach, c.name as city_name, c.city_id, a.name as arena_name, a.arena_id, t.year_founded, t.facebook, t.instagram, t.twitter, t.logo_url
+        FROM teams t
+        JOIN arenas a ON t.arena_id = a.arena_id
+        JOIN cities c ON t.city_id = c.city_id
+        JOIN states s ON c.state_id = s.state_id
+        JOIN countries cout ON s.country_id = cout.country_id
+        {query_to_sql(query)}
+        LIMIT ? OFFSET ?
+    """
+    params = (per_page, (page - 1) * per_page)
+
+    cursor.execute(sql_query, params)
+    admin_teams = cursor.fetchall()
+
+    if 'city_name' in query:
+        query['c.name'] = query.pop('city_name')
+
+    if 'arena_name' in query:
+        query['a.name'] = query.pop('arena_name')
+
+    sql_query = f"""
+        SELECT COUNT(*)
+        FROM teams t
+        JOIN arenas a ON t.arena_id = a.arena_id
+        JOIN cities c ON t.city_id = c.city_id
+        JOIN states s ON c.state_id = s.state_id
+        JOIN countries cout ON s.country_id = cout.country_id
+        {query_to_sql(query)}
+    """
+
+    cursor.execute(sql_query)
+    total_count = cursor.fetchone()[0]
+
+    return admin_teams, total_count
+
+def get_adminPlayers(query, page=1, per_page=24):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    if 'player_id' in query:
+        query['p.player_id'] = query.pop('player_id')
+
+    if 'country_name' in query:
+        query['c.name'] = query.pop('country_name')
+
+    if 'team_name' in query:
+        query['t.name'] = query.pop('team_name')
+
+    sql_query = f"""
+        SELECT p.player_id, p.first_name, p.last_name, p.height, p.weight, p.birth_date, p.college, c.name as country_name, c.country_id as country_id, t.name as team_name, t.team_id as team_id, pi.is_active, pi.position, pi.from_year, pi.to_year, pi.jersey
+        FROM players p
+        LEFT JOIN player_infos pi ON p.player_id = pi.player_id
+        LEFT JOIN teams t ON t.team_id = pi.team_id
+        LEFT JOIN countries c ON c.country_id = p.country_id
+        {query_to_sql(query)}
+        LIMIT ? OFFSET ?
+    """
+    params = (per_page, (page - 1) * per_page)
+
+    cursor.execute(sql_query, params)
+    admin_players = cursor.fetchall()
+
+    sql_query = f"""
+        SELECT COUNT(*)
+        FROM players p
+        LEFT JOIN player_infos pi ON p.player_id = pi.player_id
+        LEFT JOIN teams t ON t.team_id = pi.team_id
+        LEFT JOIN countries c ON c.country_id = p.country_id
+        {query_to_sql(query)}
+    """
+
+    cursor.execute(sql_query)
+    total_count = cursor.fetchone()[0]
+
+    return admin_players, total_count
+
+def get_adminGames(query, page=1, per_page=24):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    if 'game_id' in query:
+        query['g.game_id'] = query.pop('game_id')
+
+    if 'home_team_name' in query:
+        query['t1.nickname'] = query.pop('home_team_name')
+
+    if 'away_team_name' in query:
+        query['t2.nickname'] = query.pop('away_team_name')
+
+    sql_query = f"""
+        SELECT g.game_id,
+        g.date,
+        t1.nickname AS home_team_name,
+        t1.team_id AS home_team_id,
+        t2.nickname AS away_team_name,
+        t2.team_id AS away_team_id,
+        o.first_name || ' ' || o.last_name AS official_name,
+        o.official_id,
+        gs.season,
+        gs.home_team_score,
+        gs.away_team_score,
+        gs.home_qtr1_points,
+        gs.home_qtr2_points,
+        gs.home_qtr3_points,
+        gs.home_qtr4_points,
+        gs.away_qtr1_points,
+        gs.away_qtr2_points,
+        gs.away_qtr3_points,
+        gs.away_qtr4_points,
+        gs.home_rebounds,
+        gs.home_blocks,
+        gs.home_steals,
+        gs.away_rebounds,
+        gs.away_blocks,
+        gs.away_steals
+        FROM games g
+        LEFT JOIN game_stats gs ON g.game_id = gs.game_id
+        LEFT JOIN teams t1 ON t1.team_id = g.home_team_id
+        LEFT JOIN teams t2 ON t2.team_id = g.away_team_id
+        LEFT JOIN officials o ON o.official_id = g.official_id
+        {query_to_sql(query)}
+        LIMIT ? OFFSET ?
+    """
+    params = (per_page, (page - 1) * per_page)
+
+    cursor.execute(sql_query, params)
+    admin_games = cursor.fetchall()
+
+    sql_query = f"""
+        SELECT COUNT(*), o.first_name || ' ' || o.last_name AS official_name
+        FROM games g
+        LEFT JOIN game_stats gs ON g.game_id = gs.game_id
+        LEFT JOIN teams t1 ON t1.team_id = g.home_team_id
+        LEFT JOIN teams t2 ON t2.team_id = g.away_team_id
+        LEFT JOIN officials o ON o.official_id = g.official_id
+        {query_to_sql(query)}
+    """
+
+    cursor.execute(sql_query)
+    total_count = cursor.fetchone()[0]
+
+    return admin_games, total_count
+
+
+def query_to_sql(query):
+    sql = "WHERE "
+    conditions = []
+
+    for key, value in query.items():
+        if isinstance(value, dict) and "constraints" in value:
+            operator = value.get("operator", "and").upper()
+            constraint_conditions = []
+
+            for constraint in value["constraints"]:
+                filterValue = constraint.get("value")
+                constraint_operator = constraint.get("operator")
+                if filterValue is not None and constraint_operator is not None:
+                    constraint_conditions.append(f"{key} {constraint_operator} {filterValue}")
+                    
+            if constraint_conditions:
+                conditions.append(f" ({f' {operator} '.join(constraint_conditions)}) ")
+
+    if conditions:
+        sql += " AND ".join(conditions)
+    else:
+        sql = sql.rstrip("WHERE ")
+
+    return sql
