@@ -562,7 +562,7 @@ def get_adminTeams(query, page=1, per_page=24):
     params = (per_page, (page - 1) * per_page)
 
     cursor.execute(sql_query, params)
-    country_teams = cursor.fetchall()
+    admin_teams = cursor.fetchall()
 
     if 'city_name' in query:
         query['c.name'] = query.pop('city_name')
@@ -583,7 +583,7 @@ def get_adminTeams(query, page=1, per_page=24):
     cursor.execute(sql_query)
     total_count = cursor.fetchone()[0]
 
-    return country_teams, total_count
+    return admin_teams, total_count
 
 
 def query_to_sql(query):
