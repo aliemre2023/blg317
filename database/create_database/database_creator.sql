@@ -504,7 +504,7 @@ DROP TABLE arenas_old;
 -----------------------------------------------------------------
 ATTACH DATABASE '/Users/aliemre2023/Downloads/archive/nba.sqlite' AS nba_original;
 CREATE TABLE IF NOT EXISTS teams (
-    team_id INTEGER PRIMARY KEY,
+    team_id INTEGER PRIMARY KEY AUTOINCREMENT,
     abbreviation VARCHAR NOT NULL,
     nickname VARCHAR NOT NULL,
     year_founded TIMESTAMP,
@@ -726,7 +726,7 @@ DROP TABLE officials_old;
 -----------------------------------------------------------------
 -- PLAYERS TABLE
 CREATE TABLE IF NOT EXISTS players (
-    player_id INTEGER PRIMARY KEY,
+    player_id INTEGER PRIMARY KEY AUTOINCREMENT,
     first_name VARCHAR NOT NULL,
     last_name VARCHAR NOT NULL,
     height TEXT,
@@ -1101,7 +1101,7 @@ WHERE
 -- games
 -----------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS games(
-    game_id INT PRIMARY KEY,
+    game_id INT PRIMARY KEY AUTOINCREMENT,
     date DATE,
     home_team_id INT,
     away_team_id INT,
