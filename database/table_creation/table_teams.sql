@@ -1,6 +1,6 @@
 ATTACH DATABASE '/Users/aliemre2023/Downloads/archive (8)/nba.sqlite' AS nba_original;
 CREATE TABLE IF NOT EXISTS teams (
-    team_id INTEGER PRIMARY KEY,
+    team_id INTEGER PRIMARY KEY AUTOINCREMENT,
     abbreviation VARCHAR NOT NULL,
     nickname VARCHAR NOT NULL,
     year_founded TIMESTAMP,
