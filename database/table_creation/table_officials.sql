@@ -1,8 +1,8 @@
 CREATE TABLE IF NOT EXISTS officials(
-    official_id INT PRIMARY KEY,
+    official_id INTEGER PRIMARY KEY AUTOINCREMENT,
     first_name VARCHAR,
     last_name VARCHAR,
-    jersey_num  INT
+    jersey_num  INTEGER
 );
 
 

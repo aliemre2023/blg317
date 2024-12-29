@@ -3,11 +3,11 @@ ALTER TABLE games RENAME TO games_old;
 
 -- Create the new table with the same structure
 CREATE TABLE IF NOT EXISTS games (
-    game_id INT PRIMARY KEY,
+    game_id INTEGER PRIMARY KEY AUTOINCREMENT,
     date DATE,
-    home_team_id INT,
-    away_team_id INT,
-    official_id INT,
+    home_team_id INTEGER,
+    away_team_id INTEGER,
+    official_id INTEGER,
 
     FOREIGN KEY (home_team_id) REFERENCES teams(team_id) ON DELETE SET NULL,
     FOREIGN KEY (away_team_id) REFERENCES teams(team_id) ON DELETE SET NULL,

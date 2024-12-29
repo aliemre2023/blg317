@@ -3,7 +3,7 @@ ALTER TABLE teams RENAME TO teams_old;
 
 -- Create the new table with data validations
 CREATE TABLE IF NOT EXISTS teams (
-    team_id INTEGER PRIMARY KEY,
+    team_id INTEGER PRIMARY KEY AUTOINCREMENT,
     abbreviation VARCHAR NOT NULL CHECK (length(abbreviation) = 3), -- Ensure abbreviation is 3 characters long
     nickname VARCHAR NOT NULL CHECK (length(trim(nickname)) > 0), -- Ensure nickname is not empty or only spaces
     name TEXT,
