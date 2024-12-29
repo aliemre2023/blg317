@@ -14,7 +14,13 @@ export default function gameInfo({ params }) {
     useEffect(() => {
         setGameInfo(null);
         fetch(`http://127.0.0.1:5000/api/games/${id}`)
-            .then((response) => response.json())
+            .then((response) => {
+                const data = response.json();
+                if (!response.ok) {
+                    throw new Error(data.error || 'Unknown error');
+                }
+                return data;
+            })
             .then((data) => {
                 if (!data || Object.keys(data).length === 0) {
                     router.replace('/404');
@@ -29,7 +35,7 @@ export default function gameInfo({ params }) {
     }, [id, router]);
 
     const handleClick = (teamId) => {
-        router.push(`/teams/${teamId}`); 
+        router.push(`/teams/${teamId}`);
     };
 
     if (loading) {
@@ -74,12 +80,11 @@ export default function gameInfo({ params }) {
                     <div className="col-0 md:col-2"></div>
                 </div>
             </div>
-            
+
             <div className="w-screen">
                 <div className="grid mt-4 w-10 mx-auto">
                     <div className="col-12 px-0 surface-ground">
                         <div className="flex flex-wrap w-full">
-                            
                             <div className="flex flex-wrap justify-content-center w-full mx-0 text-center">
                                 <div className="w-4 mt-2 text-xl bg-primary-reverse align-items-center justify-content-center flex border-round-md">
                                     {gameInfo.home_team_name}
@@ -90,7 +95,6 @@ export default function gameInfo({ params }) {
 
                                 <div className="w-4 mt-2 text-xl align-items-center justify-content-center flex">
                                     <img
-                                    
                                         src={gameInfo.home_team_logo}
                                         alt={`Logo of ${gameInfo.home_team_name}`}
                                         onError={(e) => {
@@ -98,7 +102,7 @@ export default function gameInfo({ params }) {
                                             e.target.src = '/null_team.png';
                                         }}
                                         onClick={() => handleClick(gameInfo.home_team_id)}
-                                        className="w-8 h-8 sm:w-24 sm:h-24 md:w-32 md:h-32 object-contain cursor-pointer" 
+                                        className="w-8 h-8 sm:w-24 sm:h-24 md:w-32 md:h-32 object-contain cursor-pointer"
                                     />
                                 </div>
                                 <div className="w-4 mt-2 text-xl ml-8 align-items-center justify-content-center flex">
@@ -110,25 +114,24 @@ export default function gameInfo({ params }) {
                                             e.target.src = '/null_team.png';
                                         }}
                                         onClick={() => handleClick(gameInfo.away_team_id)}
-                                        className="w-8 h-8 sm:w-24 sm:h-24 md:w-32 md:h-32 object-contain cursor-pointer" 
+                                        className="w-8 h-8 sm:w-24 sm:h-24 md:w-32 md:h-32 object-contain cursor-pointer"
                                     />
                                 </div>
 
                                 <div className="w-4 mt-2 text-4xl font-bold align-items-center justify-content-center flex">
-                                    {gameInfo.home_team_score} 
+                                    {gameInfo.home_team_score}
                                 </div>
-                                <div className='w-1 text-4xl font-bold'>-</div>
+                                <div className="w-1 text-4xl font-bold">-</div>
                                 <div className="w-4 mt-2 text-4xl font-bold align-items-center justify-content-center flex">
                                     {gameInfo.away_team_score}
                                 </div>
 
-
-                                <div className='w-12 flex justify-content-center pt-6'>
+                                <div className="w-12 flex justify-content-center pt-6">
                                     <div className="w-6 text-xl bg-primary-reverse font-medium align-items-center justify-content-center border-round-md">
                                         QUARTER POINTS
                                     </div>
                                 </div>
-                                <div className='w-12  flex justify-content-center align-items-center'>
+                                <div className="w-12  flex justify-content-center align-items-center">
                                     <div className="w-1 mt-2 bg-primary-reverse align-items-center justify-content-center flex">
                                         {gameInfo.home_qtr1_points}
                                     </div>
@@ -140,7 +143,7 @@ export default function gameInfo({ params }) {
                                     </div>
                                 </div>
 
-                                <div className='w-12  flex justify-content-center align-items-center'>
+                                <div className="w-12  flex justify-content-center align-items-center">
                                     <div className="w-1 mt-2 bg-primary-reverse align-items-center justify-content-center flex">
                                         {gameInfo.home_qtr2_points}
                                     </div>
@@ -152,7 +155,7 @@ export default function gameInfo({ params }) {
                                     </div>
                                 </div>
 
-                                <div className='w-12  flex justify-content-center align-items-center'>
+                                <div className="w-12  flex justify-content-center align-items-center">
                                     <div className="w-1 mt-2 bg-primary-reverse align-items-center justify-content-center flex">
                                         {gameInfo.home_qtr3_points}
                                     </div>
@@ -164,7 +167,7 @@ export default function gameInfo({ params }) {
                                     </div>
                                 </div>
 
-                                <div className='w-12  flex justify-content-center align-items-center'>
+                                <div className="w-12  flex justify-content-center align-items-center">
                                     <div className="w-1 mt-2 bg-primary-reverse align-items-center justify-content-center flex">
                                         {gameInfo.home_qtr4_points}
                                     </div>
@@ -176,15 +179,13 @@ export default function gameInfo({ params }) {
                                     </div>
                                 </div>
 
-
-
-                                <div className='w-12 flex justify-content-center pt-6'>
+                                <div className="w-12 flex justify-content-center pt-6">
                                     <div className="w-6 text-xl bg-primary-reverse font-medium align-items-center justify-content-center border-round-md">
                                         REBOUND / BLOCK / STEAL
                                     </div>
                                 </div>
 
-                                <div className='w-12  flex justify-content-center align-items-center'>
+                                <div className="w-12  flex justify-content-center align-items-center">
                                     <div className="w-1 mt-2 bg-primary-reverse align-items-center justify-content-center flex">
                                         {gameInfo.home_rebounds}
                                     </div>
@@ -196,7 +197,7 @@ export default function gameInfo({ params }) {
                                     </div>
                                 </div>
 
-                                <div className='w-12  flex justify-content-center align-items-center'>
+                                <div className="w-12  flex justify-content-center align-items-center">
                                     <div className="w-1 mt-2 bg-primary-reverse align-items-center justify-content-center flex">
                                         {gameInfo.home_blocks}
                                     </div>
@@ -208,7 +209,7 @@ export default function gameInfo({ params }) {
                                     </div>
                                 </div>
 
-                                <div className='w-12  flex justify-content-center align-items-center'>
+                                <div className="w-12  flex justify-content-center align-items-center">
                                     <div className="w-1 mt-2 bg-primary-reverse align-items-center justify-content-center flex">
                                         {gameInfo.home_steals}
                                     </div>
@@ -220,39 +221,38 @@ export default function gameInfo({ params }) {
                                     </div>
                                 </div>
 
-                                <div className='w-12 flex justify-content-center pt-6'>
+                                <div className="w-12 flex justify-content-center pt-6">
                                     <div className="w-6 text-xl bg-primary-reverse font-medium align-items-center justify-content-center border-round-md">
                                         OTHER INFOS
                                     </div>
                                 </div>
 
-                                <div className='w-12  flex justify-content-center align-items-center'>
+                                <div className="w-12  flex justify-content-center align-items-center">
                                     <div className="w-2 md:w-1 mt-2 bg-primary-reverse align-items-center justify-content-center flex">
                                         Official
-                                    </div> 
+                                    </div>
                                     <div className="w-2 mt-2 bg-primary-reverse ml-4 align-items-center justify-content-center flex">
                                         {gameInfo.official_name}
-                                    </div> 
+                                    </div>
                                 </div>
 
-                                <div className='w-12  flex justify-content-center align-items-center'>
+                                <div className="w-12  flex justify-content-center align-items-center">
                                     <div className="w-2 md:w-1 mt-2 bg-primary-reverse align-items-center justify-content-center flex">
                                         Season
-                                    </div> 
+                                    </div>
                                     <div className="w-2 mt-2 bg-primary-reverse ml-4 align-items-center justify-content-center flex">
                                         {gameInfo.season}
-                                    </div> 
+                                    </div>
                                 </div>
 
-                                <div className='w-12  flex justify-content-center align-items-center'>
+                                <div className="w-12  flex justify-content-center align-items-center">
                                     <div className="w-2 md:w-1 mt-2 bg-primary-reverse align-items-center justify-content-center flex">
                                         Date
-                                    </div> 
+                                    </div>
                                     <div className="w-2 mt-2 bg-primary-reverse ml-4 align-items-center justify-content-center flex flex-wrap">
                                         {gameInfo.date && gameInfo.date.split(' ')[0]}
-                                    </div> 
+                                    </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>

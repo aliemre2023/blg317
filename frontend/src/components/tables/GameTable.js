@@ -51,7 +51,13 @@ export default function GameTable() {
             },
             body: JSON.stringify({ filters, sorts }),
         })
-            .then((response) => response.json())
+            .then((response) => {
+                const data = response.json();
+                if (!response.ok) {
+                    throw new Error(data.error || 'Unknown error');
+                }
+                return data;
+            })
             .then((data) => {
                 setTotalRecords(data.totalGames);
                 setData(data.games);
@@ -275,7 +281,13 @@ export default function GameTable() {
 
     const deleteTeam = (game_id) => () => {
         fetch(`http://127.0.0.1:5000/api/admin/games/${game_id}`, { method: 'DELETE' })
-            .then((response) => response.json())
+            .then((response) => {
+                const data = response.json();
+                if (!response.ok) {
+                    throw new Error(data.error || 'Unknown error');
+                }
+                return data;
+            })
             .then((data) => {
                 if (data.success)
                     toast.current.show({ severity: 'success', summary: 'Success', detail: data.message, life: 3000 });

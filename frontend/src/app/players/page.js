@@ -37,16 +37,22 @@ function Players() {
 
     const activePlayersCheckbox = (e) => {
         setIsActive(e.checked);
-    }
+    };
 
     // Fetch players based on search and pagination
     useEffect(() => {
         let url = `http://127.0.0.1:5000/api/players?page=${currentPage}&name=${searchText}`;
         if (isActive) {
-            url += "&is_active=1";
+            url += '&is_active=1';
         }
         fetch(url)
-            .then((response) => response.json())
+            .then((response) => {
+                const data = response.json();
+                if (!response.ok) {
+                    throw new Error(data.error || 'Unknown error');
+                }
+                return data;
+            })
             .then((data) => {
                 setTotalPlayers(data.total_players);
                 setPlayers(data.players);
@@ -97,17 +103,16 @@ function Players() {
                     <div className="col-4 md:col-2"></div>
                 </div>
                 <div className="search-bar mt-3">
-                    <div className='align-items-center items-center mr-4'>
-                        <div className='text-xs bg-primary -mb-2'>Only Active</div>
+                    <div className="align-items-center items-center mr-4">
+                        <div className="text-xs bg-primary -mb-2">Only Active</div>
 
                         <Checkbox
-                            className = "bg-reverse"
+                            className="bg-reverse"
                             inputId="isActive"
                             checked={isActive}
                             onChange={activePlayersCheckbox}
                             label="Active Players"
                         />
-                        
                     </div>
                     <InputText
                         className="p-inputtext-sm"

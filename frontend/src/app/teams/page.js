@@ -36,7 +36,13 @@ function Teams() {
     // Fetch teams based on search and pagination
     useEffect(() => {
         fetch(`http://127.0.0.1:5000/api/teams?page=${currentPage}&nickname=${searchText}`)
-            .then((response) => response.json())
+            .then((response) => {
+                const data = response.json();
+                if (!response.ok) {
+                    throw new Error(data.error || 'Unknown error');
+                }
+                return data;
+            })
             .then((data) => {
                 // console.log(data);
                 setTotalTeams(data.total_teams);

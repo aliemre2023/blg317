@@ -20,7 +20,7 @@ export default function signup() {
 
     const validationSchema = Yup.object().shape({
         username: Yup.string().required("Username can't be empty."),
-        mail: Yup.string().email("Invalid email format").required("Mail can't be empty."),
+        mail: Yup.string().email('Invalid email format').required("Mail can't be empty."),
         password: Yup.string().required("Password can't be empty."),
         confirmPassword: Yup.string().test('test-password', 'Passwords does not match.', function (value) {
             return value === formik.values.password;
@@ -58,9 +58,19 @@ export default function signup() {
     const handleSubmit = (formikData) => {
         fetch('/api/auth/signup', {
             method: 'POST',
-            body: JSON.stringify({ username: formikData.username, mail: formikData.mail, password: formikData.password }),
+            body: JSON.stringify({
+                username: formikData.username,
+                mail: formikData.mail,
+                password: formikData.password,
+            }),
         })
-            .then((response) => response.json())
+            .then((response) => {
+                const data = response.json();
+                if (!response.ok) {
+                    throw new Error(data.error || 'Unknown error');
+                }
+                return data;
+            })
             .then((data) => {
                 console.log("DATA in auth: ", data);
                 if (data.success) {

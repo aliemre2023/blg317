@@ -37,7 +37,13 @@ function Countries() {
 
     useEffect(() => {
         fetch(`http://127.0.0.1:5000/api/countries?page=${currentPage}&name=${searchText}`)
-            .then((response) => response.json())
+            .then((response) => {
+                const data = response.json();
+                if (!response.ok) {
+                    throw new Error(data.error || 'Unknown error');
+                }
+                return data;
+            })
             .then((data) => {
                 setTotalCountries(data.total_countries);
                 setCountries(data.countries);
@@ -47,7 +53,13 @@ function Countries() {
 
     useEffect(() => {
         fetch('http://127.0.0.1:5000/api/numberOfTeams')
-            .then((response) => response.json())
+            .then((response) => {
+                const data = response.json();
+                if (!response.ok) {
+                    throw new Error(data.error || 'Unknown error');
+                }
+                return data;
+            })
             .then((data) => {
                 //console.log(data); // Debugging
                 setTeamCounts(data.numberOfTeams);
@@ -55,7 +67,13 @@ function Countries() {
             .catch((error) => console.log(error));
 
         fetch('http://127.0.0.1:5000/api/numberOfPlayers')
-            .then((response) => response.json())
+            .then((response) => {
+                const data = response.json();
+                if (!response.ok) {
+                    throw new Error(data.error || 'Unknown error');
+                }
+                return data;
+            })
             .then((data) => {
                 //console.log(data); // Debugging
                 setPlayerCounts(data.numberOfPlayers);
