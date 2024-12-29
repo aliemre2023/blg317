@@ -38,13 +38,13 @@ export default function Page({ params }) {
 
     useEffect(() => {
         setData([]);
-
+    
         let request = `http://127.0.0.1:5000/api/country/${id}/`;
-        if (activeIndex == 0) request += 'teams';
-        else if (activeIndex == 1) request += 'players';
-
+        if (activeIndex === 0) request += 'teams';
+        else if (activeIndex === 1) request += 'players';
+    
         const queries = lazyFilters ? lazyLoad(lazyFilters) : {};
-
+    
         fetch(`${request}?page=${currentPage}&limit=${limit}`, {
             method: 'POST',
             headers: {
@@ -52,17 +52,31 @@ export default function Page({ params }) {
             },
             body: JSON.stringify({ ...queries }),
         })
-            .then((response) => response.json())
+            .then((response) => {
+                if (!response.ok) {
+                    router.replace('/404');
+                    return null;
+                }
+                return response.json();
+            })
             .then((data) => {
-                if (activeIndex == 0) {
-                    setTotalRecords(data.totalCountryTeams);
-                    setData(data.counrtyTeams);
-                } else if (activeIndex == 1) {
-                    setTotalRecords(data.totalCountryPlayers);
-                    setData(data.counrtyPlayers);
+                if (data) {
+                    if (activeIndex === 0) {
+                        setTotalRecords(data.totalCountryTeams);
+                        setData(data.counrtyTeams);
+                    } else if (activeIndex === 1) {
+                        setTotalRecords(data.totalCountryPlayers);
+                        setData(data.counrtyPlayers);
+                    }
+                    if (!data.totalCountryTeams && !data.totalCountryPlayers) {
+                        router.replace('/404');
+                    }
                 }
             })
-            .catch((error) => console.log(error));
+            .catch((error) => {
+                console.error(error);
+                router.replace('/404');
+            });
     }, [activeIndex, currentPage, limit, lazyFilters]);
 
     useEffect(() => {
