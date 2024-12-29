@@ -61,7 +61,7 @@ function Teams() {
                 }}
             >
                 <img
-                    src={options.logo_url}
+                    src={options.logo_url || '/null_team.png'} // handle null values
                     alt={`Logo of ${options.nickname}`}
                     onError={(e) => {
                         e.target.onerror = null;
