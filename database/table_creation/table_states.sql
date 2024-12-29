@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS states (
     country_id INTEGER,
 
     FOREIGN KEY (country_id) REFERENCES countries(country_id)
+        ON UPDATE CASCADE
         ON DELETE CASCADE
 );
 
