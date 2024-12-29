@@ -7,8 +7,12 @@ CREATE TABLE IF NOT EXISTS drafts (
     overall_pick INTEGER CHECK (overall_pick > 0), -- Ensure overall pick is positive
     position VARCHAR CHECK (position IN ('PG', 'SG', 'SF', 'PF', 'C')), -- Validate position
 
-    FOREIGN KEY (player_id) REFERENCES players(player_id),
+    FOREIGN KEY (player_id) REFERENCES players(player_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
     FOREIGN KEY (team_id) REFERENCES teams(team_id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
 );
 
 -- Insert data from the old table to the new table, handling potential violations

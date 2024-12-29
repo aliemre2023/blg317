@@ -8,8 +8,12 @@ CREATE TABLE IF NOT EXISTS drafts (
     overall_pick INTEGER,
     position VARCHAR,
 
-    FOREIGN KEY (player_id) REFERENCES players(player_id),
+    FOREIGN KEY (player_id) REFERENCES players(player_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
     FOREIGN KEY (team_id) REFERENCES teams(team_id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
 );
 
 INSERT INTO drafts (player_id, team_id, season, overall_pick, position)
