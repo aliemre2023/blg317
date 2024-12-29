@@ -13,7 +13,9 @@ CREATE TABLE IF NOT EXISTS players (
     country_id INTEGER,
     png_name TEXT NOT NULL DEFAULT '',
 
-    FOREIGN KEY (country_id) REFERENCES countries(country_id) ON DELETE SET NULL
+    FOREIGN KEY (country_id) REFERENCES countries(country_id) 
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
 );
 
 -- Insert data from the old table to the new table, handling potential violations

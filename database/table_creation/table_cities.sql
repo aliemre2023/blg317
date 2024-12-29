@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS cities (
     coordinate_y DOUBLE PRECISION(10, 4),
 
     FOREIGN KEY (state_id) REFERENCES states(state_id)
+        ON UPDATE CASCADE
         ON DELETE CASCADE
 );
 

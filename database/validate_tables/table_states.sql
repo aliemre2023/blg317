@@ -7,7 +7,9 @@ CREATE TABLE IF NOT EXISTS states (
     name VARCHAR NOT NULL CHECK (length(trim(name)) > 0), -- Ensure state name is not empty 
     country_id INTEGER,
 
-    FOREIGN KEY (country_id) REFERENCES countries(country_id) ON DELETE CASCADE
+    FOREIGN KEY (country_id) REFERENCES countries(country_id) 
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
 );
 
 -- Insert data from the old table to the new table, handling potential violations
