@@ -74,18 +74,17 @@ def get_countries(query=None, page=1, per_page=24):
                 playerWithCountry
             GROUP BY country_id
         ) player_counts ON c.country_id = player_counts.country_id
-        WHERE
-            COALESCE(team_counts.team_count, 0) > 0 OR
-            COALESCE(player_counts.player_count, 0) > 0
+        WHERE (COALESCE(team_counts.team_count, 0) > 0 OR COALESCE(player_counts.player_count, 0) > 0)
     """
 
     if query:
-        base_query += " AND c.name LIKE ?"
+        base_query += " AND (c.name LIKE ?)"
         params = (f"{query}%",)
     else:
         params = ()
 
     # Add pagination
+    base_query += "ORDER BY team_counts.team_count DESC, player_counts.player_count DESC"
     base_query += " LIMIT ? OFFSET ?"
     params += (per_page, (page - 1) * per_page)
 
