@@ -25,21 +25,88 @@ def get_countries(query=None, page=1, per_page=24):
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    if query:
-        sql_query = "SELECT country_id, name, flag_link FROM countries WHERE name LIKE ? LIMIT ? OFFSET ?"
-        params = (f"{query}%", per_page, (page - 1) * per_page)
-    else:
-        sql_query = "SELECT country_id, name, flag_link FROM countries LIMIT ? OFFSET ?"
-        params = (per_page, (page - 1) * per_page)
+    base_query = """
+    WITH teamsWithCountry AS (
+        SELECT t.team_id,
+               co.country_id
+        FROM teams t
+        JOIN cities ci ON t.city_id = ci.city_id
+        JOIN states st ON ci.state_id = st.state_id
+        JOIN countries co ON st.country_id = co.country_id
+    ),
+    playerWithCountry AS (
+        SELECT p.player_id,
+               co.country_id
+        FROM players p
+        JOIN countries co ON p.country_id = co.country_id
+    )
+    SELECT c.country_id,
+           c.name,
+           c.flag_link,
+           COALESCE(team_counts.team_count, 0) AS team_count,
+           COALESCE(player_counts.player_count, 0) AS player_count
+    FROM countries c
+    LEFT JOIN (
+        SELECT country_id, COUNT(team_id) AS team_count
+        FROM teamsWithCountry
+        GROUP BY country_id
+    ) team_counts ON c.country_id = team_counts.country_id
+    LEFT JOIN (
+        SELECT country_id, COUNT(player_id) AS player_count
+        FROM playerWithCountry
+        GROUP BY country_id
+    ) player_counts ON c.country_id = player_counts.country_id
+    WHERE COALESCE(team_counts.team_count, 0) > 0 OR COALESCE(player_counts.player_count, 0) > 0
+    """
 
-    cursor.execute(sql_query, params)
+    if query:
+        base_query += " AND c.name LIKE ?"
+        params = (f"{query}%",)
+    else:
+        params = ()
+
+    # Add pagination
+    base_query += " LIMIT ? OFFSET ?"
+    params += (per_page, (page - 1) * per_page)
+
+    cursor.execute(base_query, params)
     countries = cursor.fetchall()
 
+    # Get total count for pagination
+    count_query = """
+    WITH teamsWithCountry AS (
+        SELECT t.team_id,
+               co.country_id
+        FROM teams t
+        JOIN cities ci ON t.city_id = ci.city_id
+        JOIN states st ON ci.state_id = st.state_id
+        JOIN countries co ON st.country_id = co.country_id
+    ),
+    playerWithCountry AS (
+        SELECT p.player_id,
+               co.country_id
+        FROM players p
+        JOIN countries co ON p.country_id = co.country_id
+    )
+    SELECT COUNT(*)
+    FROM countries c
+    LEFT JOIN (
+        SELECT country_id, COUNT(team_id) AS team_count
+        FROM teamsWithCountry
+        GROUP BY country_id
+    ) team_counts ON c.country_id = team_counts.country_id
+    LEFT JOIN (
+        SELECT country_id, COUNT(player_id) AS player_count
+        FROM playerWithCountry
+        GROUP BY country_id
+    ) player_counts ON c.country_id = player_counts.country_id
+    WHERE COALESCE(team_counts.team_count, 0) > 0 OR COALESCE(player_counts.player_count, 0) > 0
+    """
+
     if query:
-        count_query = "SELECT COUNT(*) FROM countries WHERE name LIKE ?"
+        count_query += " AND c.name LIKE ?"
         cursor.execute(count_query, (f"{query}%",))
     else:
-        count_query = "SELECT COUNT(*) FROM countries"
         cursor.execute(count_query)
 
     total_count = cursor.fetchone()[0]
