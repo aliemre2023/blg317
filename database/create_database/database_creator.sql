@@ -318,6 +318,7 @@ CREATE TABLE IF NOT EXISTS states (
     country_id INTEGER,
 
     FOREIGN KEY (country_id) REFERENCES countries(country_id)
+        ON UPDATE CASCADE
         ON DELETE CASCADE
 );
 
@@ -357,7 +358,9 @@ CREATE TABLE IF NOT EXISTS states (
     name VARCHAR NOT NULL CHECK (length(trim(name)) > 0), -- Ensure state name is not empty
     country_id INTEGER,
 
-    FOREIGN KEY (country_id) REFERENCES countries(country_id) ON DELETE CASCADE
+    FOREIGN KEY (country_id) REFERENCES countries(country_id) 
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
 );
 
 -- Insert data from the old table to the new table, handling potential violations
@@ -385,6 +388,7 @@ CREATE TABLE IF NOT EXISTS cities (
     coordinate_y DOUBLE PRECISION(10, 4),
 
     FOREIGN KEY (state_id) REFERENCES states(state_id)
+        ON UPDATE CASCADE
         ON DELETE CASCADE
 );
 
@@ -431,7 +435,9 @@ CREATE TABLE IF NOT EXISTS cities (
     coordinate_x DOUBLE PRECISION CHECK(coordinate_x BETWEEN -90 AND 90),
     coordinate_y DOUBLE PRECISION CHECK(coordinate_y BETWEEN -180 AND 180),
 
-    FOREIGN KEY (state_id) REFERENCES states(state_id) ON DELETE CASCADE
+    FOREIGN KEY (state_id) REFERENCES states(state_id) 
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
 );
 
 -- Insert data from the old table to the new table, handling potential violations
@@ -518,8 +524,12 @@ CREATE TABLE IF NOT EXISTS teams (
     instagram TEXT,
     twitter TEXT,
 
-    FOREIGN KEY (city_id) REFERENCES cities(city_id),
+    FOREIGN KEY (city_id) REFERENCES cities(city_id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL,
     FOREIGN KEY (arena_id) REFERENCES arenas(arena_id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
 );
 
 INSERT INTO teams(team_id, abbreviation, nickname, year_founded, owner, general_manager, headcoach, dleague_affiliation, facebook, instagram, twitter, city_id, arena_id)
@@ -636,8 +646,12 @@ CREATE TABLE IF NOT EXISTS teams (
     twitter TEXT,
     logo_url TEXT,
 
-    FOREIGN KEY (city_id) REFERENCES cities(city_id),
+    FOREIGN KEY (city_id) REFERENCES cities(city_id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL,
     FOREIGN KEY (arena_id) REFERENCES arenas(arena_id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
 );
 
 -- Insert data from the old table to the new table, handling potential violations
@@ -735,7 +749,9 @@ CREATE TABLE IF NOT EXISTS players (
     college VARCHAR,
     country_id INTEGER,
 
-    FOREIGN KEY (country_id) REFERENCES countries(country_id) ON DELETE SET NULL
+    FOREIGN KEY (country_id) REFERENCES countries(country_id) 
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
 );
 
 ATTACH DATABASE '/Users/aliemre2023/Downloads/archive/nba.sqlite' AS nba_original;
@@ -872,7 +888,9 @@ CREATE TABLE IF NOT EXISTS players (
     country_id INTEGER,
     png_name TEXT NOT NULL DEFAULT '',
 
-    FOREIGN KEY (country_id) REFERENCES countries(country_id) ON DELETE SET NULL
+    FOREIGN KEY (country_id) REFERENCES countries(country_id) 
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
 );
 
 -- Insert data from the old table to the new table, handling potential violations
@@ -910,6 +928,7 @@ CREATE TABLE IF NOT EXISTS quotes (
     player_id INTEGER,
     quote TEXT,
     FOREIGN KEY (player_id) REFERENCES players(player_id)
+        ON UPDATE CASCADE
         ON DELETE CASCADE
 );
 
@@ -928,7 +947,9 @@ CREATE TABLE IF NOT EXISTS quotes (
     quote_id INTEGER PRIMARY KEY AUTOINCREMENT,
     player_id INTEGER,
     quote TEXT CHECK (length(trim(quote)) > 0), -- Ensure the quote is not empty
-    FOREIGN KEY (player_id) REFERENCES players(player_id) ON DELETE CASCADE
+    FOREIGN KEY (player_id) REFERENCES players(player_id) 
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
 );
 
 -- Insert data from the old table to the new table, handling potential violations
@@ -960,8 +981,12 @@ CREATE TABLE IF NOT EXISTS player_infos (
     jersey INTEGER,
     season_exp INTEGER,
 
-    FOREIGN KEY (player_id) REFERENCES players(player_id),
+    FOREIGN KEY (player_id) REFERENCES players(player_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
     FOREIGN KEY (team_id) REFERENCES teams(team_id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
 );
 
 INSERT INTO player_infos (player_id, team_id, is_active, position, from_year, to_year, jersey, season_exp)
@@ -997,8 +1022,12 @@ CREATE TABLE IF NOT EXISTS player_infos (
     jersey INTEGER CHECK (jersey >= 0), -- Ensure jersey is non-negative
     season_exp INTEGER CHECK (season_exp >= 0),
 
-    FOREIGN KEY (player_id) REFERENCES players(player_id),
+    FOREIGN KEY (player_id) REFERENCES players(player_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
     FOREIGN KEY (team_id) REFERENCES teams(team_id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
 );
 
 -- Insert data from the old table to the new table, handling potential violations
@@ -1047,8 +1076,12 @@ CREATE TABLE IF NOT EXISTS drafts (
     overall_pick INTEGER,
     position VARCHAR,
 
-    FOREIGN KEY (player_id) REFERENCES players(player_id),
+    FOREIGN KEY (player_id) REFERENCES players(player_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
     FOREIGN KEY (team_id) REFERENCES teams(team_id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
 );
 
 INSERT INTO drafts (player_id, team_id, season, overall_pick, position)
@@ -1079,8 +1112,12 @@ CREATE TABLE IF NOT EXISTS drafts (
     overall_pick INTEGER CHECK (overall_pick > 0), -- Ensure overall pick is positive
     position VARCHAR CHECK (position IN ('PG', 'SG', 'SF', 'PF', 'C')), -- Validate position
 
-    FOREIGN KEY (player_id) REFERENCES players(player_id),
+    FOREIGN KEY (player_id) REFERENCES players(player_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
     FOREIGN KEY (team_id) REFERENCES teams(team_id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
 );
 
 -- Insert data from the old table to the new table, handling potential violations
@@ -1107,9 +1144,15 @@ CREATE TABLE IF NOT EXISTS games(
     away_team_id INTEGER,
     official_id INTEGER,
 
-    FOREIGN KEY (home_team_id) REFERENCES teams(team_id) ON DELETE SET NULL,
-    FOREIGN KEY (away_team_id) REFERENCES teams(team_id) ON DELETE SET NULL,
-    FOREIGN KEY (official_id) REFERENCES officials(official_id) ON DELETE SET NULL
+    FOREIGN KEY (home_team_id) REFERENCES teams(team_id) 
+        ON UPDATE CASCADE
+        ON DELETE SET NULL,
+    FOREIGN KEY (away_team_id) REFERENCES teams(team_id) 
+        ON UPDATE CASCADE
+        ON DELETE SET NULL,
+    FOREIGN KEY (official_id) REFERENCES officials(official_id) 
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
 );
 
 ATTACH DATABASE '/Users/aliemre2023/Downloads/archive/nba.sqlite' AS nba_original;
@@ -1141,9 +1184,15 @@ CREATE TABLE IF NOT EXISTS games (
     away_team_id INTEGER,
     official_id INTEGER,
 
-    FOREIGN KEY (home_team_id) REFERENCES teams(team_id) ON DELETE SET NULL,
-    FOREIGN KEY (away_team_id) REFERENCES teams(team_id) ON DELETE SET NULL,
-    FOREIGN KEY (official_id) REFERENCES officials(official_id) ON DELETE SET NULL
+    FOREIGN KEY (home_team_id) REFERENCES teams(team_id) 
+        ON UPDATE CASCADE
+        ON DELETE SET NULL,
+    FOREIGN KEY (away_team_id) REFERENCES teams(team_id) 
+        ON UPDATE CASCADE
+        ON DELETE SET NULL,
+    FOREIGN KEY (official_id) REFERENCES officials(official_id) 
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
 );
 
 -- Insert data from the old table to the new table, handling potential violations
@@ -1185,6 +1234,8 @@ CREATE TABLE IF NOT EXISTS game_stats (
     away_steals INTEGER,
 
     FOREIGN KEY (game_id) REFERENCES games (game_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
 );
 
 INSERT INTO game_stats (game_id, season, home_team_score, away_team_score, home_qtr1_points, home_qtr2_points,
@@ -1248,6 +1299,8 @@ CREATE TABLE IF NOT EXISTS game_stats (
     away_steals INTEGER CHECK (away_steals >= 0) DEFAULT 0,
 
     FOREIGN KEY (game_id) REFERENCES games (game_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
 );
 
 -- Insert data from the old table to the new table, handling potential violations
