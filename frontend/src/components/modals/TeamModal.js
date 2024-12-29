@@ -19,6 +19,7 @@ export default function TeamModal({
     owner,
     general_manager,
     headcoach,
+    dleague_affiliation,
     city_id,
     arena_id,
     year_founded,
@@ -40,6 +41,7 @@ export default function TeamModal({
         { name: 'owner', type: 'text', label: 'Owner' },
         { name: 'general_manager', type: 'text', label: 'General Manager' },
         { name: 'headcoach', type: 'text', label: 'Headcoach' },
+        { name: 'dleague_affiliation', type: 'text', label: 'D-League Affiliation' },
         { name: 'city_id', type: 'option', label: 'City' },
         { name: 'arena_id', type: 'option', label: 'Arena' },
         { name: 'year_founded', type: 'number', label: 'Year Founded' },
@@ -80,6 +82,11 @@ export default function TeamModal({
             .test('test-headcoach', "Headcoach can't be empty.", function (value) {
                 return value.trim().length > 0;
             }),
+        dleague_affiliation: Yup.string()
+            .required("D-League Affiliation can't be empty.")
+            .test('test-dLeague', "D-League Affiliation can't be empty.", function (value) {
+                return value.trim().length > 0;
+            }),
         city_id: Yup.number().required("City can't be empty."),
         arena_id: Yup.number().required("Arena can't be empty."),
         year_founded: Yup.number()
@@ -97,6 +104,7 @@ export default function TeamModal({
             owner: owner || '',
             general_manager: general_manager || '',
             headcoach: headcoach || '',
+            dleague_affiliation: dleague_affiliation || '',
             city_id: city_id || null,
             arena_id: arena_id || null,
             year_founded: year_founded || 0,

@@ -980,6 +980,7 @@ def get_adminTeams(query, page=1, per_page=24):
             t.owner,
             t.general_manager,
             t.headcoach,
+            t.dleague_affiliation,
             c.name as city_name,
             c.city_id,
             a.name as arena_name,
@@ -1061,7 +1062,8 @@ def get_adminPlayers(query, page=1, per_page=24):
             pi.position,
             pi.from_year,
             pi.to_year,
-            pi.jersey
+            pi.jersey,
+            pi.season_exp
         FROM
             players p
         LEFT JOIN

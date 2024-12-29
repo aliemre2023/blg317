@@ -119,6 +119,10 @@ export default function TeamTable() {
                 operator: FilterOperator.AND,
                 constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
             },
+            season_exp: {
+                operator: FilterOperator.AND,
+                constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
+            },
         });
         setLazyFilters({
             player_id: {
@@ -183,6 +187,11 @@ export default function TeamTable() {
                 type: 'Integer',
             },
             jersey: {
+                operator: FilterOperator.AND,
+                constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
+                type: 'Integer',
+            },
+            season_exp: {
                 operator: FilterOperator.AND,
                 constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
                 type: 'Integer',
@@ -522,6 +531,7 @@ export default function TeamTable() {
                 <Column field="from_year" filter sortable dataType="numeric" header="From Year"></Column>
                 <Column field="to_year" filter sortable dataType="numeric" header="To Year"></Column>
                 <Column field="jersey" filter sortable dataType="numeric" header="Jersey Number"></Column>
+                <Column field="season_exp" filter sortable dataType="numeric" header="Season Exp"></Column>
                 <Column body={(rowData) => actionsTemplate(rowData)}></Column>
             </DataTable>
             <PlayerModal

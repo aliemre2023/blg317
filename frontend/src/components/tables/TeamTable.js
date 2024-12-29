@@ -91,6 +91,10 @@ export default function TeamTable() {
                 operator: FilterOperator.AND,
                 constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
             },
+            dleague_affiliation: {
+                operator: FilterOperator.AND,
+                constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+            },
             city_name: {
                 operator: FilterOperator.AND,
                 constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
@@ -136,6 +140,11 @@ export default function TeamTable() {
                 type: 'String',
             },
             headcoach: {
+                operator: FilterOperator.AND,
+                constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+                type: 'String',
+            },
+            dleague_affiliation: {
                 operator: FilterOperator.AND,
                 constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
                 type: 'String',
@@ -436,6 +445,7 @@ export default function TeamTable() {
                 <Column field="owner" filter sortable header="Owner"></Column>
                 <Column field="general_manager" filter sortable header="General Manager"></Column>
                 <Column field="headcoach" filter sortable header="Headcoach"></Column>
+                <Column field="dleague_affiliation" filter sortable header="D-League Affiliation"></Column>
                 <Column field="city_name" filter sortable header="City Name"></Column>
                 <Column field="arena_name" filter sortable header="Arena Name"></Column>
                 <Column field="year_founded" filter sortable dataType="numeric" header="Founded Year"></Column>

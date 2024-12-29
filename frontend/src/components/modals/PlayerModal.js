@@ -28,6 +28,7 @@ export default function PlayerModal({
     from_year,
     to_year,
     jersey,
+    season_exp,
     visible,
     setVisible,
     type,
@@ -49,6 +50,7 @@ export default function PlayerModal({
         { name: 'player_info.from_year', type: 'number', label: 'From Year' },
         { name: 'player_info.to_year', type: 'number', label: 'To Year' },
         { name: 'player_info.jersey', type: 'number', label: 'Jersey' },
+        { name: 'player_info.season_exp', type: 'number', label: 'Season Exp' },
     ]);
 
     const validationSchema = Yup.object().shape({
@@ -99,6 +101,7 @@ export default function PlayerModal({
                 .test('test-jersey', 'Jersey must be greater than 0.', function (value) {
                     return value > 0;
                 }),
+            season_exp: Yup.number().required("Season Exp can't be empty."),
         }),
     });
 
@@ -120,6 +123,7 @@ export default function PlayerModal({
                 from_year: from_year || 0,
                 to_year: to_year || 0,
                 jersey: jersey || 0,
+                season_exp: season_exp || 0,
             },
         },
         validationSchema: validationSchema,

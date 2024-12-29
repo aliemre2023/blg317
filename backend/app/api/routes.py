@@ -558,15 +558,16 @@ def admin_teams():
                     "owner": row[4],
                     "general_manager": row[5],
                     "headcoach": row[6],
-                    "city_name": row[7],
-                    "city_id": row[8],
-                    "arena_name": row[9],
-                    "arena_id": row[10],
-                    "year_founded": row[11],
-                    "facebook": row[12],
-                    "instagram": row[13],
-                    "twitter": row[14],
-                    "logo_url": row[15],
+                    "dleague_affiliation": row[7],
+                    "city_name": row[8],
+                    "city_id": row[9],
+                    "arena_name": row[10],
+                    "arena_id": row[11],
+                    "year_founded": row[12],
+                    "facebook": row[13],
+                    "instagram": row[14],
+                    "twitter": row[15],
+                    "logo_url": row[16],
                 }
                 for row in table
             ],
@@ -624,6 +625,7 @@ def admin_players():
                     "from_year": row[13],
                     "to_year": row[14],
                     "jersey": row[15],
+                    "season_exp": row[16],
                 }
                 for row in table
             ],
