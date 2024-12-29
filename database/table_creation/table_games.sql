@@ -5,9 +5,15 @@ CREATE TABLE IF NOT EXISTS games(
     away_team_id INTEGER,
     official_id INTEGER,
 
-    FOREIGN KEY (home_team_id) REFERENCES teams(team_id) ON DELETE SET NULL,
-    FOREIGN KEY (away_team_id) REFERENCES teams(team_id) ON DELETE SET NULL,
-    FOREIGN KEY (official_id) REFERENCES officials(official_id) ON DELETE SET NULL
+    FOREIGN KEY (home_team_id) REFERENCES teams(team_id) 
+        ON UPDATE CASCADE
+        ON DELETE SET NULL,
+    FOREIGN KEY (away_team_id) REFERENCES teams(team_id) 
+        ON UPDATE CASCADE
+        ON DELETE SET NULL,
+    FOREIGN KEY (official_id) REFERENCES officials(official_id) 
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
 );
 
 ATTACH DATABASE '/Users/kickm/Downloads/archive/nba.sqlite' AS nba_original;
