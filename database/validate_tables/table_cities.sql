@@ -10,7 +10,9 @@ CREATE TABLE IF NOT EXISTS cities (
     coordinate_x DOUBLE PRECISION CHECK(coordinate_x BETWEEN -90 AND 90),
     coordinate_y DOUBLE PRECISION CHECK(coordinate_y BETWEEN -180 AND 180),
 
-    FOREIGN KEY (state_id) REFERENCES states(state_id) ON DELETE CASCADE
+    FOREIGN KEY (state_id) REFERENCES states(state_id) 
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
 );
 
 -- Insert data from the old table to the new table, handling potential violations
