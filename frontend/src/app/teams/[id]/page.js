@@ -85,11 +85,11 @@ export default function TeamInfo({ params }) {
         router.push(`/players/${player_id}`);
     };
     const handleClick_game = (game_id) => {
-        console.log(game_id);
+        // console.log(game_id);
         router.push(`/games/${game_id}`);
     };
     const handle_YearChange = (event) => {
-        console.log(event.target);
+        // console.log(event.target);
         setWinRate(null);
         setYear(event.target.value);
     };
