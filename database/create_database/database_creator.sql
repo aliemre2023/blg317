@@ -670,10 +670,10 @@ DROP TABLE teams_old;
 -- officials
 -----------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS officials(
-    official_id INT PRIMARY KEY AUTOINCREMENT,
+    official_id INTEGER PRIMARY KEY AUTOINCREMENT,
     first_name VARCHAR,
     last_name VARCHAR,
-    jersey_num  INT
+    jersey_num  INTEGER
 );
 
 
@@ -697,10 +697,10 @@ ALTER TABLE officials RENAME TO officials_old;
 
 -- Create the new table with data validations
 CREATE TABLE IF NOT EXISTS officials (
-    official_id INT PRIMARY KEY AUTOINCREMENT CHECK (official_id > 0), -- Ensure official_id is positive
+    official_id INTEGER PRIMARY KEY AUTOINCREMENT CHECK (official_id > 0), -- Ensure official_id is positive
     first_name VARCHAR NOT NULL CHECK (length(trim(first_name)) > 0), -- Ensure first_name is not empty or only spaces
     last_name VARCHAR NOT NULL CHECK (length(trim(last_name)) > 0), -- Ensure last_name is not empty or only spaces
-    jersey_num INT CHECK (jersey_num > 0 AND jersey_num <= 99) -- Ensure jersey_num is between 1 and 99
+    jersey_num INTEGER CHECK (jersey_num > 0 AND jersey_num <= 99) -- Ensure jersey_num is between 1 and 99
 );
 
 -- Insert data from the old table to the new table, handling potential violations
@@ -848,14 +848,14 @@ DETACH DATABASE player_images;
 
 -- convert kg
 UPDATE players
-SET weight = CAST(weight * 0.453592 AS INT);
+SET weight = CAST(weight * 0.453592 AS INTEGER);
 
 UPDATE players
 SET height =
     CAST(
-        (CAST(substr(height, 1, instr(height, '-') - 1) AS INT) * 30.48 +
-         CAST(substr(height, instr(height, '-') + 1) AS INT) * 2.54)
-    AS INT);
+        (CAST(substr(height, 1, instr(height, '-') - 1) AS INTEGER) * 30.48 +
+         CAST(substr(height, instr(height, '-') + 1) AS INTEGER) * 2.54)
+    AS INTEGER);
 
 -- Rename the existing table
 ALTER TABLE players RENAME TO players_old;
@@ -1101,11 +1101,11 @@ WHERE
 -- games
 -----------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS games(
-    game_id INT PRIMARY KEY AUTOINCREMENT,
+    game_id INTEGER PRIMARY KEY AUTOINCREMENT,
     date DATE,
-    home_team_id INT,
-    away_team_id INT,
-    official_id INT,
+    home_team_id INTEGER,
+    away_team_id INTEGER,
+    official_id INTEGER,
 
     FOREIGN KEY (home_team_id) REFERENCES teams(team_id) ON DELETE SET NULL,
     FOREIGN KEY (away_team_id) REFERENCES teams(team_id) ON DELETE SET NULL,
@@ -1135,11 +1135,11 @@ ALTER TABLE games RENAME TO games_old;
 
 -- Create the new table with the same structure
 CREATE TABLE IF NOT EXISTS games (
-    game_id INT PRIMARY KEY AUTOINCREMENT,
+    game_id INTEGER PRIMARY KEY AUTOINCREMENT,
     date DATE,
-    home_team_id INT,
-    away_team_id INT,
-    official_id INT,
+    home_team_id INTEGER,
+    away_team_id INTEGER,
+    official_id INTEGER,
 
     FOREIGN KEY (home_team_id) REFERENCES teams(team_id) ON DELETE SET NULL,
     FOREIGN KEY (away_team_id) REFERENCES teams(team_id) ON DELETE SET NULL,
