@@ -14,8 +14,12 @@ CREATE TABLE IF NOT EXISTS teams (
     instagram TEXT,
     twitter TEXT,
 
-    FOREIGN KEY (city_id) REFERENCES cities(city_id),
+    FOREIGN KEY (city_id) REFERENCES cities(city_id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL,
     FOREIGN KEY (arena_id) REFERENCES arenas(arena_id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
 );
 
 INSERT INTO teams(team_id, abbreviation, nickname, year_founded, owner, general_manager, headcoach, dleague_affiliation, facebook, instagram, twitter, city_id, arena_id)

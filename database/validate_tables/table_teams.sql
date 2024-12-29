@@ -19,8 +19,12 @@ CREATE TABLE IF NOT EXISTS teams (
     twitter TEXT,
     logo_url TEXT,
 
-    FOREIGN KEY (city_id) REFERENCES cities(city_id),
+    FOREIGN KEY (city_id) REFERENCES cities(city_id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL,
     FOREIGN KEY (arena_id) REFERENCES arenas(arena_id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
 );
 
 -- Insert data from the old table to the new table, handling potential violations
