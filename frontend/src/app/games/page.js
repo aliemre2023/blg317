@@ -67,7 +67,7 @@ function Games() {
                 return data;
             })
             .then((data) => {
-                console.log(data)
+                // console.log(data)
                 setGames(data.games);
                 setTotalGames(data.total_games);
             })

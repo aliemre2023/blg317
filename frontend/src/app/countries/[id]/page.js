@@ -44,7 +44,7 @@ export default function Page({ params }) {
                 const countryInfoResponse = await fetch(`http://127.0.0.1:5000/api/country/${id}`);
                 const countryInfoData = await countryInfoResponse.json();
 
-                console.log(countryInfoData);
+                // console.log(countryInfoData);
                 if (countryInfoData.country_playercount <= 0 && countryInfoData.country_teamcount <= 0) {
                     router.replace('/404');
                     return;
