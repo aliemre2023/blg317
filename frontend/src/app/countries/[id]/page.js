@@ -28,6 +28,7 @@ export default function Page({ params }) {
     const [data, setData] = useState([]);
     const [filters, setFilters] = useState(null);
     const [lazyFilters, setLazyFilters] = useState(null);
+    const [multiSortMeta, setMultiSortMeta] = useState(null);
 
     const items = [
         { label: 'Teams', icon: <img src="/default_team.png" className="mr-2" style={{ width: 24, height: 24 }} /> },
@@ -56,14 +57,19 @@ export default function Page({ params }) {
                 if (activeIndex === 0) request += 'teams';
                 else if (activeIndex === 1) request += 'players';
 
-                const queries = lazyFilters ? lazyLoad(lazyFilters) : {};
+                const filters = lazyFilters ? lazyLoad(lazyFilters) : {};
+                const sorts = multiSortMeta
+                    ? multiSortMeta.map((sort) => ({
+                          [sort.field]: sort.order > 0 ? 'ASC' : 'DESC',
+                      }))
+                    : [];
 
                 const countryResponse = await fetch(`${request}?page=${currentPage}&limit=${limit}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ ...queries }),
+                    body: JSON.stringify({ filters, sorts }),
                 });
 
                 if (!countryResponse.ok) {
@@ -88,7 +94,7 @@ export default function Page({ params }) {
             }
         };
         fetchCountryInfo();
-    }, [activeIndex, currentPage, limit, lazyFilters]);
+    }, [activeIndex, currentPage, limit, lazyFilters, multiSortMeta]);
 
     useEffect(() => {
         initFilters();
@@ -227,6 +233,7 @@ export default function Page({ params }) {
 
     const clearFilter = () => {
         initFilters();
+        setMultiSortMeta(null);
     };
 
     const renderHeader = () => {
@@ -383,6 +390,10 @@ export default function Page({ params }) {
         );
     };
 
+    const onSort = (e) => {
+        setMultiSortMeta(e.multiSortMeta);
+    };
+
     const dataTable = {
         0: (
             <DataTable
@@ -391,6 +402,10 @@ export default function Page({ params }) {
                 value={data}
                 filters={filters}
                 onFilter={(e) => onFilter(e)}
+                sortMode="multiple"
+                removableSort
+                multiSortMeta={multiSortMeta}
+                onSort={(e) => onSort(e)}
                 lazy
                 paginator
                 paginatorTemplate={dataTablePaginatorTamplate}
@@ -411,14 +426,14 @@ export default function Page({ params }) {
                 scrollHeight="60vh"
                 stripedRows
             >
-                <Column field="team_id" header="#"></Column>
-                <Column field="name" filter header="Name"></Column>
-                <Column field="owner" filter header="Owner"></Column>
-                <Column field="general_manager" filter header="General Manager"></Column>
-                <Column field="headcoach" filter header="Headcoach"></Column>
-                <Column field="city_name" filter header="City"></Column>
-                <Column field="arena_name" filter header="Arena"></Column>
-                <Column field="year_founded" filter dataType="numeric" header="Year Founded"></Column>
+                <Column field="team_id" sortable header="#"></Column>
+                <Column field="name" filter sortable header="Name"></Column>
+                <Column field="owner" filter sortable header="Owner"></Column>
+                <Column field="general_manager" filter sortable header="General Manager"></Column>
+                <Column field="headcoach" filter sortable header="Headcoach"></Column>
+                <Column field="city_name" filter sortable header="City"></Column>
+                <Column field="arena_name" filter sortable header="Arena"></Column>
+                <Column field="year_founded" filter sortable dataType="numeric" header="Year Founded"></Column>
             </DataTable>
         ),
         1: (
@@ -428,6 +443,10 @@ export default function Page({ params }) {
                 value={data}
                 filters={filters}
                 onFilter={(e) => onFilter(e)}
+                sortMode="multiple"
+                removableSort
+                multiSortMeta={multiSortMeta}
+                onSort={(e) => onSort(e)}
                 lazy
                 paginator
                 paginatorTemplate={dataTablePaginatorTamplate}
@@ -448,20 +467,21 @@ export default function Page({ params }) {
                 scrollHeight="60vh"
                 stripedRows
             >
-                <Column field="player_id" header="#"></Column>
-                <Column field="first_name" filter header="First Name"></Column>
-                <Column field="last_name" filter header="Last Name"></Column>
-                <Column field="height" filter dataType="numeric" header="Height (inch)"></Column>
-                <Column field="weight" filter dataType="numeric" header="Weight (pound)"></Column>
+                <Column field="player_id" sortable header="#"></Column>
+                <Column field="first_name" filter sortable header="First Name"></Column>
+                <Column field="last_name" filter sortable header="Last Name"></Column>
+                <Column field="height" filter sortable dataType="numeric" header="Height"></Column>
+                <Column field="weight" filter sortable dataType="numeric" header="Weight"></Column>
                 <Column
                     field="birth_date"
                     filter
+                    sortable
                     dataType="date"
                     body={(rowData) => formatDate(rowData.birth_date)}
                     filterElement={dateFilterTemplate}
                     header="Birth Date"
                 ></Column>
-                <Column field="college" filter header="College"></Column>
+                <Column field="college" filter sortable header="College"></Column>
             </DataTable>
         ),
     }[activeIndex];

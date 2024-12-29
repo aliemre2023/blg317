@@ -25,6 +25,7 @@ export default function TeamTable() {
     const [data, setData] = useState([]);
     const [filters, setFilters] = useState(null);
     const [lazyFilters, setLazyFilters] = useState(null);
+    const [multiSortMeta, setMultiSortMeta] = useState(null);
 
     const [modalVisible, setModalVisible] = useState(false);
     const [modalData, setModalData] = useState({});
@@ -37,14 +38,19 @@ export default function TeamTable() {
     useEffect(() => {
         setData([]);
 
-        const queries = lazyFilters ? lazyLoad(lazyFilters) : {};
+        const filters = lazyFilters ? lazyLoad(lazyFilters) : {};
+        const sorts = multiSortMeta
+            ? multiSortMeta.map((sort) => ({
+                  [sort.field]: sort.order > 0 ? 'ASC' : 'DESC',
+              }))
+            : [];
 
         fetch(`http://127.0.0.1:5000/api/admin/players?page=${currentPage}&limit=${limit}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ ...queries }),
+            body: JSON.stringify({ filters, sorts }),
         })
             .then((response) => response.json())
             .then((data) => {
@@ -52,7 +58,7 @@ export default function TeamTable() {
                 setData(data.players);
             })
             .catch((error) => console.log(error));
-    }, [currentPage, limit, lazyFilters]);
+    }, [currentPage, limit, lazyFilters, multiSortMeta]);
 
     useEffect(() => {
         initFilters();
@@ -186,6 +192,7 @@ export default function TeamTable() {
 
     const clearFilter = () => {
         initFilters();
+        setMultiSortMeta(null);
     };
 
     const deleteTeam = (player_id) => () => {
@@ -451,6 +458,10 @@ export default function TeamTable() {
         );
     };
 
+    const onSort = (e) => {
+        setMultiSortMeta(e.multiSortMeta);
+    };
+
     return (
         <div className="datatable-wrapper mt-5">
             <DataTable
@@ -459,6 +470,10 @@ export default function TeamTable() {
                 value={data}
                 filters={filters}
                 onFilter={(e) => onFilter(e)}
+                sortMode="multiple"
+                removableSort
+                multiSortMeta={multiSortMeta}
+                onSort={(e) => onSort(e)}
                 lazy
                 paginator
                 paginatorTemplate={dataTablePaginatorTamplate}
@@ -478,22 +493,23 @@ export default function TeamTable() {
                 scrollHeight="60vh"
                 stripedRows
             >
-                <Column field="player_id" filter dataType="numeric" header="#"></Column>
-                <Column field="first_name" filter header="First Name"></Column>
-                <Column field="last_name" filter header="Last Name"></Column>
-                <Column field="height" filter dataType="numeric" header="Height"></Column>
-                <Column field="weight" filter dataType="numeric" header="Weight"></Column>
+                <Column field="player_id" filter sortable dataType="numeric" header="#"></Column>
+                <Column field="first_name" filter sortable header="First Name"></Column>
+                <Column field="last_name" filter sortable header="Last Name"></Column>
+                <Column field="height" filter sortable dataType="numeric" header="Height"></Column>
+                <Column field="weight" filter sortable dataType="numeric" header="Weight"></Column>
                 <Column
                     field="birth_date"
                     filter
+                    sortable
                     dataType="date"
                     body={(rowData) => formatDate(rowData.birth_date)}
                     filterElement={dateFilterTemplate}
                     header="Birth Date"
                 ></Column>
-                <Column field="college" filter header="College"></Column>
-                <Column field="country_name" filter header="Country"></Column>
-                <Column field="team_name" filter header="Team"></Column>
+                <Column field="college" filter sortable header="College"></Column>
+                <Column field="country_name" filter sortable header="Country"></Column>
+                <Column field="team_name" filter sortable header="Team"></Column>
                 <Column
                     field="is_active"
                     filter
@@ -503,9 +519,9 @@ export default function TeamTable() {
                     header="Is Active"
                 ></Column>
                 <Column field="position" filter header="Position"></Column>
-                <Column field="from_year" filter dataType="numeric" header="From Year"></Column>
-                <Column field="to_year" filter dataType="numeric" header="To Year"></Column>
-                <Column field="jersey" filter dataType="numeric" header="Jersey Number"></Column>
+                <Column field="from_year" filter sortable dataType="numeric" header="From Year"></Column>
+                <Column field="to_year" filter sortable dataType="numeric" header="To Year"></Column>
+                <Column field="jersey" filter sortable dataType="numeric" header="Jersey Number"></Column>
                 <Column body={(rowData) => actionsTemplate(rowData)}></Column>
             </DataTable>
             <PlayerModal

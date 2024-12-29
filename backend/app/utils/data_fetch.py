@@ -619,8 +619,21 @@ def get_countryTeams(query, page=1, per_page=24):
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    if "name" in query:
-        query["t.name"] = query.pop("name")
+    key_mapping = {
+        "name": "t.name",
+        "city_name": "c.name",
+        "arena_name": "a.name"
+    }
+
+    filters = query.get("filters", {})
+    for old_key, new_key in key_mapping.items():
+        if old_key in filters:
+            filters[new_key] = filters.pop(old_key)
+
+    for sort in query.get("sorts", []):
+        for old_key, new_key in key_mapping.items():
+            if old_key in sort:
+                sort[new_key] = sort.pop(old_key)
 
     sql_query = f"""
         SELECT
@@ -644,12 +657,6 @@ def get_countryTeams(query, page=1, per_page=24):
 
     cursor.execute(sql_query, params)
     country_teams = cursor.fetchall()
-
-    if "city_name" in query:
-        query["c.name"] = query.pop("city_name")
-
-    if "arena_name" in query:
-        query["a.name"] = query.pop("arena_name")
 
     sql_query = f"""
         SELECT COUNT(*)
@@ -946,11 +953,23 @@ def get_adminTeams(query, page=1, per_page=24):
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    if "name" in query:
-        query["t.name"] = query.pop("name")
+    key_mapping = {
+        "name": "t.name",
+        "abbreviation": "t.abbreviation",
+        "team_name": "t.name",
+        "city_name": "c.name",
+        "arena_name": "a.name"
+    }
 
-    if "abbreviation" in query:
-        query["t.abbreviation"] = query.pop("abbreviation")
+    filters = query.get("filters", {})
+    for old_key, new_key in key_mapping.items():
+        if old_key in filters:
+            filters[new_key] = filters.pop(old_key)
+
+    for sort in query.get("sorts", []):
+        for old_key, new_key in key_mapping.items():
+            if old_key in sort:
+                sort[new_key] = sort.pop(old_key)
 
     sql_query = f"""
         SELECT
@@ -984,12 +1003,6 @@ def get_adminTeams(query, page=1, per_page=24):
     cursor.execute(sql_query, params)
     admin_teams = cursor.fetchall()
 
-    if "city_name" in query:
-        query["c.name"] = query.pop("city_name")
-
-    if "arena_name" in query:
-        query["a.name"] = query.pop("arena_name")
-
     sql_query = f"""
         SELECT COUNT(*)
         FROM
@@ -1015,14 +1028,21 @@ def get_adminPlayers(query, page=1, per_page=24):
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    if "player_id" in query:
-        query["p.player_id"] = query.pop("player_id")
+    key_mapping = {
+        "player_id": "p.player_id",
+        "country_name": "c.name",
+        "team_name": "t.name"
+    }
 
-    if "country_name" in query:
-        query["c.name"] = query.pop("country_name")
+    filters = query.get("filters", {})
+    for old_key, new_key in key_mapping.items():
+        if old_key in filters:
+            filters[new_key] = filters.pop(old_key)
 
-    if "team_name" in query:
-        query["t.name"] = query.pop("team_name")
+    for sort in query.get("sorts", []):
+        for old_key, new_key in key_mapping.items():
+            if old_key in sort:
+                sort[new_key] = sort.pop(old_key)
 
     sql_query = f"""
         SELECT
@@ -1081,14 +1101,21 @@ def get_adminGames(query, page=1, per_page=24):
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    if "game_id" in query:
-        query["g.game_id"] = query.pop("game_id")
+    key_mapping = {
+        "game_id": "g.game_id",
+        "home_team_name": "t1.nickname",
+        "away_team_name": "t2.nickname",
+    }
 
-    if "home_team_name" in query:
-        query["t1.nickname"] = query.pop("home_team_name")
+    filters = query.get("filters", {})
+    for old_key, new_key in key_mapping.items():
+        if old_key in filters:
+            filters[new_key] = filters.pop(old_key)
 
-    if "away_team_name" in query:
-        query["t2.nickname"] = query.pop("away_team_name")
+    for sort in query.get("sorts", []):
+        for old_key, new_key in key_mapping.items():
+            if old_key in sort:
+                sort[new_key] = sort.pop(old_key)
 
     sql_query = f"""
         SELECT
@@ -1157,10 +1184,12 @@ def get_adminGames(query, page=1, per_page=24):
 
 
 def query_to_sql(query):
-    sql = "WHERE "
+    sql = ""
+
+    filters = "WHERE"
     conditions = []
 
-    for key, value in query.items():
+    for key, value in query["filters"].items():
         if isinstance(value, dict) and "constraints" in value:
             operator = value.get("operator", "and").upper()
             constraint_conditions = []
@@ -1178,8 +1207,15 @@ def query_to_sql(query):
                     f" ({f' {operator} '.join(constraint_conditions)}) ")
 
     if conditions:
-        sql += " AND ".join(conditions)
+        filters += " AND ".join(conditions)
     else:
-        sql = sql.rstrip("WHERE ")
+        filters = filters.rstrip("WHERE")
+
+    sql += filters
+
+    sorts = ", ".join([f"{key} {value}" for sort in query.get("sorts", [])
+                       for key, value in sort.items()])
+    if sorts:
+        sql += f"ORDER BY {sorts}"
 
     return sql

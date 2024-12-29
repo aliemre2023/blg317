@@ -24,6 +24,7 @@ export default function GameTable() {
     const [data, setData] = useState([]);
     const [filters, setFilters] = useState(null);
     const [lazyFilters, setLazyFilters] = useState(null);
+    const [multiSortMeta, setMultiSortMeta] = useState(null);
 
     const [modalVisible, setModalVisible] = useState(false);
     const [modalData, setModalData] = useState({});
@@ -36,14 +37,19 @@ export default function GameTable() {
     useEffect(() => {
         setData([]);
 
-        const queries = lazyFilters ? lazyLoad(lazyFilters) : {};
+        const filters = lazyFilters ? lazyLoad(lazyFilters) : {};
+        const sorts = multiSortMeta
+            ? multiSortMeta.map((sort) => ({
+                  [sort.field]: sort.order > 0 ? 'ASC' : 'DESC',
+              }))
+            : [];
 
         fetch(`http://127.0.0.1:5000/api/admin/games?page=${currentPage}&limit=${limit}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ ...queries }),
+            body: JSON.stringify({ filters, sorts }),
         })
             .then((response) => response.json())
             .then((data) => {
@@ -51,7 +57,7 @@ export default function GameTable() {
                 setData(data.games);
             })
             .catch((error) => console.log(error));
-    }, [currentPage, limit, lazyFilters]);
+    }, [currentPage, limit, lazyFilters, multiSortMeta]);
 
     useEffect(() => {
         initFilters();
@@ -264,6 +270,7 @@ export default function GameTable() {
 
     const clearFilter = () => {
         initFilters();
+        setMultiSortMeta(null);
     };
 
     const deleteTeam = (game_id) => () => {
@@ -505,6 +512,10 @@ export default function GameTable() {
         );
     };
 
+    const onSort = (e) => {
+        setMultiSortMeta(e.multiSortMeta);
+    };
+
     return (
         <div className="datatable-wrapper mt-5">
             <DataTable
@@ -513,6 +524,10 @@ export default function GameTable() {
                 value={data}
                 filters={filters}
                 onFilter={(e) => onFilter(e)}
+                sortMode="multiple"
+                removableSort
+                multiSortMeta={multiSortMeta}
+                onSort={(e) => onSort(e)}
                 lazy
                 paginator
                 paginatorTemplate={dataTablePaginatorTamplate}
@@ -532,35 +547,36 @@ export default function GameTable() {
                 scrollHeight="60vh"
                 stripedRows
             >
-                <Column field="game_id" filter dataType="numeric" header="#"></Column>
+                <Column field="game_id" filter sortable dataType="numeric" header="#"></Column>
                 <Column
                     field="date"
                     filter
+                    sortable
                     dataType="date"
                     body={(rowData) => formatDate(rowData.date)}
                     filterElement={dateFilterTemplate}
                     header="Date"
                 ></Column>
-                <Column field="home_team_name" filter header="Home Team"></Column>
-                <Column field="away_team_name" filter header="Away_Team"></Column>
-                <Column field="official_name" filter header="Offical"></Column>
-                <Column field="season" filter dataType="numeric" header="Season"></Column>
-                <Column field="home_team_score" filter dataType="numeric" header="Home Score"></Column>
-                <Column field="away_team_score" filter dataType="numeric" header="Away Score"></Column>
-                <Column field="home_qtr1_points" filter dataType="numeric" header="Home QTR1 Points"></Column>
-                <Column field="home_qtr2_points" filter dataType="numeric" header="Home QTR2 Points"></Column>
-                <Column field="home_qtr3_points" filter dataType="numeric" header="Home QTR3 Points"></Column>
-                <Column field="home_qtr4_points" filter dataType="numeric" header="Home QTR4 Points"></Column>
-                <Column field="away_qtr1_points" filter dataType="numeric" header="Away QTR1 Points"></Column>
-                <Column field="away_qtr2_points" filter dataType="numeric" header="Away QTR2 Points"></Column>
-                <Column field="away_qtr3_points" filter dataType="numeric" header="Away QTR3 Points"></Column>
-                <Column field="away_qtr4_points" filter dataType="numeric" header="Away QTR4 Points"></Column>
-                <Column field="home_rebounds" filter dataType="numeric" header="Home Rebounds"></Column>
-                <Column field="home_blocks" filter dataType="numeric" header="Home Blocks"></Column>
-                <Column field="home_steals" filter dataType="numeric" header="Home Steals"></Column>
-                <Column field="away_rebounds" filter dataType="numeric" header="Away Rebounds"></Column>
-                <Column field="away_blocks" filter dataType="numeric" header="Away Blocks"></Column>
-                <Column field="away_steals" filter dataType="numeric" header="Away Steals"></Column>
+                <Column field="home_team_name" filter sortable header="Home Team"></Column>
+                <Column field="away_team_name" filter sortable header="Away_Team"></Column>
+                <Column field="official_name" filter sortable header="Offical"></Column>
+                <Column field="season" filter sortable dataType="numeric" header="Season"></Column>
+                <Column field="home_team_score" filter sortable dataType="numeric" header="Home Score"></Column>
+                <Column field="away_team_score" filter sortable dataType="numeric" header="Away Score"></Column>
+                <Column field="home_qtr1_points" filter sortable dataType="numeric" header="Home QTR1 Points"></Column>
+                <Column field="home_qtr2_points" filter sortable dataType="numeric" header="Home QTR2 Points"></Column>
+                <Column field="home_qtr3_points" filter sortable dataType="numeric" header="Home QTR3 Points"></Column>
+                <Column field="home_qtr4_points" filter sortable dataType="numeric" header="Home QTR4 Points"></Column>
+                <Column field="away_qtr1_points" filter sortable dataType="numeric" header="Away QTR1 Points"></Column>
+                <Column field="away_qtr2_points" filter sortable dataType="numeric" header="Away QTR2 Points"></Column>
+                <Column field="away_qtr3_points" filter sortable dataType="numeric" header="Away QTR3 Points"></Column>
+                <Column field="away_qtr4_points" filter sortable dataType="numeric" header="Away QTR4 Points"></Column>
+                <Column field="home_rebounds" filter sortable dataType="numeric" header="Home Rebounds"></Column>
+                <Column field="home_blocks" filter sortable dataType="numeric" header="Home Blocks"></Column>
+                <Column field="home_steals" filter sortable dataType="numeric" header="Home Steals"></Column>
+                <Column field="away_rebounds" filter sortable dataType="numeric" header="Away Rebounds"></Column>
+                <Column field="away_blocks" filter sortable dataType="numeric" header="Away Blocks"></Column>
+                <Column field="away_steals" filter sortable dataType="numeric" header="Away Steals"></Column>
                 <Column body={(rowData) => actionsTemplate(rowData)}></Column>
             </DataTable>
             <GameModal

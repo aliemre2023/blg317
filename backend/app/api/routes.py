@@ -267,7 +267,7 @@ def countryPlayers_api(country_id):
     limit = int(request.args.get("limit", 10))
 
     query = request.get_json()
-    query["country_id"] = {
+    query["filters"]["country_id"] = {
         "operator": "and",
         "constraints": [{"value": f"{country_id}", "operator": "="}],
     }
@@ -300,7 +300,7 @@ def countryTeams_api(country_id):
     limit = int(request.args.get("limit", 10))
 
     query = request.get_json()
-    query["cout.country_id"] = {
+    query["filters"]["cout.country_id"] = {
         "operator": "and",
         "constraints": [{"value": f"{country_id}", "operator": "="}],
     }
