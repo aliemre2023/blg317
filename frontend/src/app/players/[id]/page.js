@@ -9,15 +9,35 @@ export default function playerInfo({ params }) {
     const { id } = React.use(params);
     const router = useRouter();
     const [playerInfo, setPlayerInfo] = useState([]);
+    const [loading, setLoading] = useState(true);
     useEffect(() => {
-        setPlayerInfo([]);
+        setLoading(true);
         fetch(`http://127.0.0.1:5000/api/players/${id}`)
-            .then((response) => response.json())
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Player not found');
+                }
+                return response.json();
+            })
             .then((data) => {
                 setPlayerInfo(data);
             })
-            .catch((error) => console.log(error));
-    }, [id]);
+            .catch(() => {
+                router.replace('/404');
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }, [id, router]);
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (!playerInfo) {
+        return null;
+    }
+    
     return (
         <div className="w-screen">
             <div className="w-screen">
