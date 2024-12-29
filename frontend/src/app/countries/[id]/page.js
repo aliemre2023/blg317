@@ -17,6 +17,7 @@ export default function Page({ params }) {
     const router = useRouter();
     const { id } = React.use(params);
 
+    const [countryName, setCountryName] = useState('');
     const [activeIndex, setActiveIndex] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
     const [reportPage, setReportPage] = useState(1);
@@ -37,46 +38,56 @@ export default function Page({ params }) {
     ];
 
     useEffect(() => {
-        setData([]);
-    
-        let request = `http://127.0.0.1:5000/api/country/${id}/`;
-        if (activeIndex === 0) request += 'teams';
-        else if (activeIndex === 1) request += 'players';
-    
-        const queries = lazyFilters ? lazyLoad(lazyFilters) : {};
-    
-        fetch(`${request}?page=${currentPage}&limit=${limit}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ ...queries }),
-        })
-            .then((response) => {
-                if (!response.ok) {
+        const fetchCountryInfo = async () => {
+            try {
+                const countryInfoResponse = await fetch(`http://127.0.0.1:5000/api/country/${id}`);
+                const countryInfoData = await countryInfoResponse.json();
+
+                console.log(countryInfoData);
+                if (countryInfoData.country_playercount <= 0 && countryInfoData.country_teamcount <= 0) {
                     router.replace('/404');
-                    return null;
+                    return;
                 }
-                return response.json();
-            })
-            .then((data) => {
-                if (data) {
+
+                setCountryName(countryInfoData.country_name);
+                setData([]);
+
+                let request = `http://127.0.0.1:5000/api/country/${id}/`;
+                if (activeIndex === 0) request += 'teams';
+                else if (activeIndex === 1) request += 'players';
+
+                const queries = lazyFilters ? lazyLoad(lazyFilters) : {};
+
+                const countryResponse = await fetch(`${request}?page=${currentPage}&limit=${limit}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ ...queries }),
+                });
+
+                if (!countryResponse.ok) {
+                    router.replace('/404');
+                    return;
+                }
+
+                const countryData = await countryResponse.json();
+
+                if (countryData) {
                     if (activeIndex === 0) {
-                        setTotalRecords(data.totalCountryTeams);
-                        setData(data.counrtyTeams);
+                        setTotalRecords(countryData.totalCountryTeams);
+                        setData(countryData.counrtyTeams);
                     } else if (activeIndex === 1) {
-                        setTotalRecords(data.totalCountryPlayers);
-                        setData(data.counrtyPlayers);
-                    }
-                    if (!data.totalCountryTeams && !data.totalCountryPlayers) {
-                        router.replace('/404');
+                        setTotalRecords(countryData.totalCountryPlayers);
+                        setData(countryData.counrtyPlayers);
                     }
                 }
-            })
-            .catch((error) => {
+            } catch (error) {
                 console.error(error);
                 router.replace('/404');
-            });
+            }
+        };
+        fetchCountryInfo();
     }, [activeIndex, currentPage, limit, lazyFilters]);
 
     useEffect(() => {
@@ -482,7 +493,7 @@ export default function Page({ params }) {
                         </Button>
                     </div>
                     <div className="col-6 md:col-9">
-                        <div className="text-center p-3 border-round-sm font-bold">COUNTRIES</div>
+                        <div className="text-center p-3 border-round-sm font-bold">{countryName}</div>
                     </div>
                 </div>
             </div>
