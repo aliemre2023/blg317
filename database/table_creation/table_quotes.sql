@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS quotes (
     player_id INTEGER,
     quote TEXT,
     FOREIGN KEY (player_id) REFERENCES players(player_id)
+        ON UPDATE CASCADE
         ON DELETE CASCADE
 );
 

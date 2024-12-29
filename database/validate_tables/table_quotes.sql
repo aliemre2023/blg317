@@ -6,7 +6,9 @@ CREATE TABLE IF NOT EXISTS quotes (
     quote_id INTEGER PRIMARY KEY AUTOINCREMENT,
     player_id INTEGER,
     quote TEXT CHECK (length(trim(quote)) > 0), -- Ensure the quote is not empty
-    FOREIGN KEY (player_id) REFERENCES players(player_id) ON DELETE CASCADE
+    FOREIGN KEY (player_id) REFERENCES players(player_id) 
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
 );
 
 -- Insert data from the old table to the new table, handling potential violations
