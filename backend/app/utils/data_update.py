@@ -17,7 +17,7 @@ def update_team(team_id, data):
     cursor = conn.cursor()
 
     sql_query = f"UPDATE teams SET {
-        generate_updae_query(data)} WHERE team_id = {team_id}"
+        generate_update_query(data)} WHERE team_id = {team_id}"
     cursor.execute(sql_query)
     conn.commit()
     conn.close()
