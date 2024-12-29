@@ -395,6 +395,40 @@ def get_gameInfo(gameid):
     conn.close()
     return gameinfos
 
+def get_countryInfo(country_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = """
+    WITH teamsWithCountry AS (
+        SELECT t.team_id, co.country_id
+        FROM teams t
+        JOIN cities ci ON t.city_id = ci.city_id
+        JOIN states st ON ci.state_id = st.state_id
+        JOIN countries co ON st.country_id = co.country_id
+    ),
+    playerWithCountry AS (
+        SELECT p.player_id, co.country_id
+        FROM players p
+        JOIN countries co ON p.country_id = co.country_id
+    )
+    SELECT
+        COALESCE(c.country_id, 'Unknown') AS country_id,
+        COALESCE(c.name, 'Unknown') AS country_name,
+        COALESCE(c.flag_link, 'Unknown') AS flag_link,
+        COALESCE(COUNT(DISTINCT p.player_id), 0) AS player_count,
+        COALESCE(COUNT(DISTINCT t.team_id), 0) AS team_count
+    FROM countries c
+    LEFT JOIN playerWithCountry p ON c.country_id = p.country_id
+    LEFT JOIN teamsWithCountry t ON c.country_id = t.country_id
+    WHERE c.country_id = ?
+    GROUP BY c.country_id, c.name, c.flag_link;
+    """
+    cursor.execute(query, (country_id,))
+    country_info = cursor.fetchone()
+    conn.close()
+    return country_info
+
+
 def get_numberOfTeamsInCountry():
     team_number_in_country = fetch_from_sql_file("team_number_in_country.sql")
     return team_number_in_country

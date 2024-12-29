@@ -17,6 +17,7 @@ export default function TeamInfo({ params }) {
     const [year, setYear] = useState(2020);
     const [winRate, setWinRate] = useState(null);
     const [averageRosterAge, setAverageRosterAge] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         setTeamRoster([]);
@@ -24,11 +25,19 @@ export default function TeamInfo({ params }) {
         fetch(`http://127.0.0.1:5000/api/teams/${id}`)
             .then((response) => response.json())
             .then((data) => {
-                setTeamRoster(data.activeRoster);
-                setTeamInfo(data.teamInfo[0]);
-                setLast5Games(data.last5Games);
+                if (!data.teamInfo || data.teamInfo.length === 0) {
+                    router.replace('/404');
+                } else {
+                    setTeamRoster(data.activeRoster);
+                    setTeamInfo(data.teamInfo[0]);
+                    setLast5Games(data.last5Games);
+                }
             })
-            .catch((error) => console.log(error));
+            .catch((error) => {
+                console.log(error);
+                router.replace('/404');
+            })
+            .finally(() => setLoading(false));
     }, [id]);
 
     useEffect(() => {
@@ -67,7 +76,9 @@ export default function TeamInfo({ params }) {
         setWinRate(null);
         setYear(event.target.value);
     };
-
+    if (loading) {
+        return <div>Loading...</div>; // Yüklenme ekranı
+    }
     return (
         <div className="w-screen">
             <div className="w-screen">

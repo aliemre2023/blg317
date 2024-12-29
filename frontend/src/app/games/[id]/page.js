@@ -9,20 +9,36 @@ export default function gameInfo({ params }) {
     const { id } = React.use(params);
     const router = useRouter();
     const [gameInfo, setGameInfo] = useState([]);
+    const [loading, setLoading] = useState(true);
+
     useEffect(() => {
-        setGameInfo([]);
+        setGameInfo(null);
         fetch(`http://127.0.0.1:5000/api/games/${id}`)
             .then((response) => response.json())
             .then((data) => {
-                console.log(data);
-                setGameInfo(data);
+                if (!data || Object.keys(data).length === 0) {
+                    router.replace('/404');
+                } else {
+                    setGameInfo(data);
+                }
             })
-            .catch((error) => console.log(error));
-    }, [id]);
+            .catch(() => {
+                router.replace('/404');
+            })
+            .finally(() => setLoading(false));
+    }, [id, router]);
 
     const handleClick = (teamId) => {
         router.push(`/teams/${teamId}`); 
     };
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (!gameInfo) {
+        return null;
+    }
 
     return (
         <div className="w-screen">
