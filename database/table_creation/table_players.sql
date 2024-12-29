@@ -1,6 +1,6 @@
 -- PLAYERS TABLE
 CREATE TABLE IF NOT EXISTS players (
-    player_id INTEGER PRIMARY KEY,
+    player_id INTEGER PRIMARY KEY AUTOINCREMENT,
     first_name VARCHAR NOT NULL,
     last_name VARCHAR NOT NULL,
     height TEXT,
