@@ -11,8 +11,12 @@ CREATE TABLE IF NOT EXISTS player_infos (
     jersey INTEGER,
     season_exp INTEGER,
 
-    FOREIGN KEY (player_id) REFERENCES players(player_id),
+    FOREIGN KEY (player_id) REFERENCES players(player_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
     FOREIGN KEY (team_id) REFERENCES teams(team_id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
 );
 
 INSERT INTO player_infos (player_id, team_id, is_active, position, from_year, to_year, jersey, season_exp)

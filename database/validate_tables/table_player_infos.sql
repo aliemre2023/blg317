@@ -12,8 +12,12 @@ CREATE TABLE IF NOT EXISTS player_infos (
     jersey INTEGER CHECK (jersey >= 0), -- Ensure jersey is non-negative
     season_exp INTEGER CHECK (season_exp >= 0),
 
-    FOREIGN KEY (player_id) REFERENCES players(player_id),
+    FOREIGN KEY (player_id) REFERENCES players(player_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
     FOREIGN KEY (team_id) REFERENCES teams(team_id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
 );
 
 -- Insert data from the old table to the new table, handling potential violations
