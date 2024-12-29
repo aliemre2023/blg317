@@ -54,11 +54,11 @@ def update_player(player_id, data):
     cursor = conn.cursor()
 
     if 'player' in data:
-        sql_query = f"UPDATE players SET {generate_updae_query(data['player'])} WHERE player_id = {player_id}"
+        sql_query = f"UPDATE players SET {generate_update_query(data['player'])} WHERE player_id = {player_id}"
         cursor.execute(sql_query)
 
     if 'player_info' in data:
-        sql_query = f"UPDATE player_infos SET {generate_updae_query(data['player_info'])} WHERE player_id = {player_id}"
+        sql_query = f"UPDATE player_infos SET {generate_update_query(data['player_info'])} WHERE player_id = {player_id}"
         cursor.execute(sql_query)
 
     conn.commit()
@@ -96,11 +96,11 @@ def update_game(game_id, data):
     cursor = conn.cursor()
 
     if 'game' in data:
-        sql_query = f"UPDATE games SET {generate_updae_query(data['game'])} WHERE game_id = {game_id}"
+        sql_query = f"UPDATE games SET {generate_update_query(data['game'])} WHERE game_id = {game_id}"
         cursor.execute(sql_query)
 
     if 'game_stat' in data:
-        sql_query = f"UPDATE game_stats SET {generate_updae_query(data['game_stat'])} WHERE game_id = {game_id}"
+        sql_query = f"UPDATE game_stats SET {generate_update_query(data['game_stat'])} WHERE game_id = {game_id}"
         cursor.execute(sql_query)
 
     conn.commit()
@@ -124,5 +124,5 @@ def generate_insert_query(data):
     return f"({keys}) VALUES ({values})"
 
 
-def generate_updae_query(data):
+def generate_update_query(data):
     return ', '.join(f"{k} = '{v}'" if isinstance( v, str) else f"{k} = {v}" for k, v in data.items())
