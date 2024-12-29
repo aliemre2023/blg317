@@ -23,7 +23,13 @@ export default function TeamInfo({ params }) {
         setTeamRoster([]);
         setTeamInfo([]);
         fetch(`http://127.0.0.1:5000/api/teams/${id}`)
-            .then((response) => response.json())
+            .then((response) => {
+                const data = response.json();
+                if (!response.ok) {
+                    throw new Error(data.error || 'Unknown error');
+                }
+                return data;
+            })
             .then((data) => {
                 if (!data.teamInfo || data.teamInfo.length === 0) {
                     router.replace('/404');
@@ -43,9 +49,14 @@ export default function TeamInfo({ params }) {
     useEffect(() => {
         if (year) {
             fetch(`http://127.0.0.1:5000/api/teams_win_rate?id=${id}&year=${year}`)
-                .then((response) => response.json())
+                .then((response) => {
+                    const data = response.json();
+                    if (!response.ok) {
+                        throw new Error(data.error || 'Unknown error');
+                    }
+                    return data;
+                })
                 .then((data) => {
-                    console.log(data[0])
                     setWinRate((data[0].win_rate * 100).toFixed(2));
                 })
                 .catch((error) => console.log(error));
@@ -53,23 +64,29 @@ export default function TeamInfo({ params }) {
     }, [year, id]);
 
     useEffect(() => {
-        fetch("http://127.0.0.1:5000/api/averageRosterAge")
-            .then((response) => response.json())
+        fetch('http://127.0.0.1:5000/api/averageRosterAge')
+            .then((response) => {
+                const data = response.json();
+                if (!response.ok) {
+                    throw new Error(data.error || 'Unknown error');
+                }
+                return data;
+            })
             .then((data) => {
                 //console.log(data);
                 //console.log(data.averageRosterAge);
                 const team = data.averageRosterAge.find((team) => team.team_id === parseInt(id));
-                setAverageRosterAge(team.average_roster_age);  
+                setAverageRosterAge(team.average_roster_age);
             })
             .catch((error) => console.log(error));
     }, [id]);
 
     const handleClick_player = (player_id) => {
-        router.push(`/players/${player_id}`); 
+        router.push(`/players/${player_id}`);
     };
     const handleClick_game = (game_id) => {
         console.log(game_id);
-        router.push(`/games/${game_id}`); 
+        router.push(`/games/${game_id}`);
     };
     const handle_YearChange = (event) => {
         console.log(event.target);
@@ -171,25 +188,22 @@ export default function TeamInfo({ params }) {
                             </div>
                         </div>
                         <div className="w-full grid text-center mt-2">
-                            <div className="col-4 bg-primary-reverse text-weight-semibold">
-                                Win Rate
-                            </div>
+                            <div className="col-4 bg-primary-reverse text-weight-semibold">Win Rate</div>
                             <div className="col-7 col-offset-1 bg-primary-reverse">
-                                Win rate after 
+                                Win rate after
                                 <InputText
-                                    className='ml-2 mr-2, -mt-2 -mb-2'
+                                    className="ml-2 mr-2, -mt-2 -mb-2"
                                     name="year"
                                     placeholder="year"
                                     value={year}
                                     onChange={handle_YearChange}
-                                    style={{ height: '30px' , width: '65px'}}
+                                    style={{ height: '30px', width: '65px' }}
                                     maxLength={4}
                                 />
                                 :
-                                {(year && winRate !== null) && (String(year).length === 4)
+                                {year && winRate !== null && String(year).length === 4
                                     ? ` ${winRate}%`
                                     : ' Enter a year'}
-                                
                             </div>
                         </div>
                     </div>
@@ -197,7 +211,15 @@ export default function TeamInfo({ params }) {
                 <div className="col-12 lg:col-5">
                     {/* table */}
                     <div className="w-full text-center bg-primary-reverse font-semibold">Roster</div>
-                    <DataTable value={teamRoster} size="small" lazy stripedRows showGridlines onRowClick={(e) => handleClick_player(e.data.player_id)} className='cursor-pointer' >
+                    <DataTable
+                        value={teamRoster}
+                        size="small"
+                        lazy
+                        stripedRows
+                        showGridlines
+                        onRowClick={(e) => handleClick_player(e.data.player_id)}
+                        className="cursor-pointer"
+                    >
                         <Column field="jerseyNumber" header="#"></Column>
                         <Column field="firstName" header="Name"></Column>
                         <Column field="lastName" header="Surname"></Column>
@@ -205,7 +227,8 @@ export default function TeamInfo({ params }) {
                         <Column field="height" header="Height"></Column>
                     </DataTable>
                     <div className="w-full text-center bg-primary-reverse">
-                        Average age of the Roster: {averageRosterAge != null && averageRosterAge > 10 ? averageRosterAge : "NULL"}
+                        Average age of the Roster:{' '}
+                        {averageRosterAge != null && averageRosterAge > 10 ? averageRosterAge : 'NULL'}
                     </div>
                 </div>
                 <div className="col-12">
@@ -219,7 +242,7 @@ export default function TeamInfo({ params }) {
                         showGridlines
                         style={{ textAlign: 'center' }}
                         onRowClick={(e) => handleClick_game(e.data.game_id)}
-                        className='cursor-pointer'
+                        className="cursor-pointer"
                     >
                         <Column
                             field="date"

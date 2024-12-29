@@ -13,7 +13,13 @@ function Page() {
     useEffect(() => {
         // Fetch the last games from the API
         fetch('http://127.0.0.1:5000/api/getLastGames') // Adjust API endpoint if necessary
-            .then((response) => response.json())
+            .then((response) => {
+                const data = response.json();
+                if (!response.ok) {
+                    throw new Error(data.error || 'Unknown error');
+                }
+                return data;
+            })
             .then((data) => {
                 setLastGames(data);
                 setLoading(false);
@@ -26,23 +32,29 @@ function Page() {
 
     useEffect(() => {
         fetch('http://127.0.0.1:5000/api/randomQuote')
-            .then((response) => response.json())
+            .then((response) => {
+                const data = response.json();
+                if (!response.ok) {
+                    throw new Error(data.error || 'Unknown error');
+                }
+                return data;
+            })
             .then((data) => {
                 console.log(data.quote[0])
                 setQuote(data.quote[0])
                 console.log(quote)
             })
             .catch((error) => {
-                console.error("Quote Fetching Error", error);
+                console.error('Quote Fetching Error', error);
             });
     }, []);
 
     const handleClick_player = (player_id) => {
-        router.push(`/players/${player_id}`); 
+        router.push(`/players/${player_id}`);
     };
 
-    const handleClick_game= (game_id) => {
-        router.push(`/games/${game_id}`); 
+    const handleClick_game = (game_id) => {
+        router.push(`/games/${game_id}`);
     };
 
     return (
@@ -109,10 +121,10 @@ function Page() {
                 </div>
             </div>
             <div className="lg:flex h-auto mt-2 w-10 mx-auto justify-content-center align-content-center fadeindown animation-ease-in animation-duration-1000 surface-ground pl-2 pt-2 pb-2 pr-2">
-                <div className='lg:col-4 md:col-8 sm:col-8 my-auto mx-auto bg-primary border-2 border-yellow-300 p-4 border-round-md'>
-                    <img 
-                        className="w-full h-40 object-cover rounded-lg mb-4 bg-primary-reverse border-round-md cursor-pointer" 
-                        src={"player_images/" + quote.png_name} 
+                <div className="lg:col-4 md:col-8 sm:col-8 my-auto mx-auto bg-primary border-2 border-yellow-300 p-4 border-round-md">
+                    <img
+                        className="w-full h-40 object-cover rounded-lg mb-4 bg-primary-reverse border-round-md cursor-pointer"
+                        src={'player_images/' + quote.png_name}
                         alt={quote.player_name}
                         onError={(e) => {
                             e.target.onerror = null;
@@ -120,14 +132,12 @@ function Page() {
                         }}
                         onClick={() => handleClick_player(quote.player_id)}
                     />
-                    <p className='w-full text-center text-xl font-semibold'>
-                        "{quote.quote}"
-                    </p>
-                    <p className='w-full text-center text-lg bg-primary-reverse mt-2 border-round-md'>
+                    <p className="w-full text-center text-xl font-semibold">"{quote.quote}"</p>
+                    <p className="w-full text-center text-lg bg-primary-reverse mt-2 border-round-md">
                         - {quote.player_name}
                     </p>
                 </div>
-                <div className="lg:col-8">             
+                <div className="lg:col-8">
                     <h2 className="text-4xl mb-4 text-center">Last 5 Games</h2>
                     {loading ? (
                         <div className="text-center">Loading...</div>
@@ -142,9 +152,13 @@ function Page() {
                                     <th className="border border-gray-300 col-2 py-2">Official</th>
                                 </tr>
                             </thead>
-                            <tbody >
+                            <tbody>
                                 {lastGames.map((game) => (
-                                    <tr key={game.game_id} className="text-center cursor-pointer" onClick={() => handleClick_game(game.game_id)}>
+                                    <tr
+                                        key={game.game_id}
+                                        className="text-center cursor-pointer"
+                                        onClick={() => handleClick_game(game.game_id)}
+                                    >
                                         <td className="border border-gray-300 col-2 py-2">{game.date.split(' ')[0]}</td>
                                         <td className="border border-gray-300 col-2 py-2">{game.home_team_name}</td>
                                         <td className="border border-gray-300 col-2 py-2">

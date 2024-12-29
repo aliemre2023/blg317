@@ -9,7 +9,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { useRouter } from 'next/navigation';
 import classNames from 'classnames'; // Import classNames
-import 'styles/styles.scss';  // Absolute path based on baseUrl
+import 'styles/styles.scss'; // Absolute path based on baseUrl
 
 function Games() {
     const router = useRouter();
@@ -59,7 +59,13 @@ function Games() {
         });
 
         fetch(`http://127.0.0.1:5000/api/games?${queryParams.toString()}`)
-            .then((response) => response.json())
+            .then((response) => {
+                const data = response.json();
+                if (!response.ok) {
+                    throw new Error(data.error || 'Unknown error');
+                }
+                return data;
+            })
             .then((data) => {
                 console.log(data)
                 setGames(data.games);
@@ -274,14 +280,12 @@ function Games() {
                     scrollHeight="60vh"
                     stripedRows
                     showGridlines
-                    style={{ textAlign: 'center' , cursor: 'pointer'}}
+                    style={{ textAlign: 'center', cursor: 'pointer' }}
                     // need fix
                     onRowClick={(rowData) => {
-                        console.log("rowData content:")
-                        console.log(rowData);  
-                        router.push(`/games/${rowData.data.game_id}`); 
+                        router.push(`/games/${rowData.data.game_id}`);
                     }}
-                >         
+                >
                     <Column
                         field="date"
                         header="DATE"
@@ -313,7 +317,7 @@ function Games() {
                         header="OFFICIAL"
                         headerStyle={{ textAlign: 'center' }}
                         style={{ textAlign: 'center' }}
-                    />        
+                    />
                 </DataTable>
             </div>
         </div>
