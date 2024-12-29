@@ -21,6 +21,8 @@ CREATE TABLE IF NOT EXISTS game_stats (
     away_steals INTEGER,
 
     FOREIGN KEY (game_id) REFERENCES games (game_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
 );
 
 INSERT INTO game_stats (game_id, season, home_team_score, away_team_score, home_qtr1_points, home_qtr2_points,

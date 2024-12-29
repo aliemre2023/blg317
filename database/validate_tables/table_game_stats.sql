@@ -23,6 +23,8 @@ CREATE TABLE IF NOT EXISTS game_stats (
     away_steals INTEGER CHECK (away_steals >= 0) DEFAULT 0,
 
     FOREIGN KEY (game_id) REFERENCES games (game_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
 );
 
 -- Insert data from the old table to the new table, handling potential violations
