@@ -620,7 +620,7 @@ ALTER TABLE teams RENAME TO teams_old;
 
 -- Create the new table with data validations
 CREATE TABLE IF NOT EXISTS teams (
-    team_id INTEGER PRIMARY KEY,
+    team_id INTEGER PRIMARY KEY AUTOINCREMENT,
     abbreviation VARCHAR NOT NULL CHECK (length(abbreviation) = 3), -- Ensure abbreviation is 3 characters long
     nickname VARCHAR NOT NULL CHECK (length(trim(nickname)) > 0), -- Ensure nickname is not empty or only spaces
     name TEXT,
@@ -670,7 +670,7 @@ DROP TABLE teams_old;
 -- officials
 -----------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS officials(
-    official_id INT PRIMARY KEY,
+    official_id INT PRIMARY KEY AUTOINCREMENT,
     first_name VARCHAR,
     last_name VARCHAR,
     jersey_num  INT
@@ -697,7 +697,7 @@ ALTER TABLE officials RENAME TO officials_old;
 
 -- Create the new table with data validations
 CREATE TABLE IF NOT EXISTS officials (
-    official_id INT PRIMARY KEY CHECK (official_id > 0), -- Ensure official_id is positive
+    official_id INT PRIMARY KEY AUTOINCREMENT CHECK (official_id > 0), -- Ensure official_id is positive
     first_name VARCHAR NOT NULL CHECK (length(trim(first_name)) > 0), -- Ensure first_name is not empty or only spaces
     last_name VARCHAR NOT NULL CHECK (length(trim(last_name)) > 0), -- Ensure last_name is not empty or only spaces
     jersey_num INT CHECK (jersey_num > 0 AND jersey_num <= 99) -- Ensure jersey_num is between 1 and 99
@@ -862,7 +862,7 @@ ALTER TABLE players RENAME TO players_old;
 
 -- Create the new table with data validations
 CREATE TABLE IF NOT EXISTS players (
-    player_id INTEGER PRIMARY KEY,
+    player_id INTEGER PRIMARY KEY AUTOINCREMENT,
     first_name VARCHAR NOT NULL CHECK (length(trim(first_name)) > 0),
     last_name VARCHAR NOT NULL CHECK (length(trim(last_name)) > 0),
     height INTEGER CHECK (height >= 0),
@@ -1135,7 +1135,7 @@ ALTER TABLE games RENAME TO games_old;
 
 -- Create the new table with the same structure
 CREATE TABLE IF NOT EXISTS games (
-    game_id INT PRIMARY KEY,
+    game_id INT PRIMARY KEY AUTOINCREMENT,
     date DATE,
     home_team_id INT,
     away_team_id INT,
