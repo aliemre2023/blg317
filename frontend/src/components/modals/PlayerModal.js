@@ -1,9 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import UseUnsavedChangesWarning from '../UseUnsavedChangesWarning';
 import { Sidebar } from 'primereact/sidebar';
 import { Divider } from 'primereact/divider';
 import { InputText } from 'primereact/inputtext';
 import { InputNumber } from 'primereact/inputnumber';
+import { Dropdown } from 'primereact/dropdown';
 import { InputSwitch } from 'primereact/inputswitch';
 import { Calendar } from 'primereact/calendar';
 import { Button } from 'primereact/button';
@@ -34,21 +35,21 @@ export default function PlayerModal({
     const toast = useRef(null);
     const [warningVisible, setWarningVisible] = useState(false);
 
-    const fields = [
+    const [fields, setFields] = useState([
         { name: 'player.first_name', type: 'text', label: 'First Name' },
         { name: 'player.last_name', type: 'text', label: 'Last Name' },
         { name: 'player.height', type: 'number', label: 'Height' },
         { name: 'player.weight', type: 'number', label: 'Weight' },
         { name: 'player.birth_date', type: 'date', label: 'Birth Date' },
         { name: 'player.college', type: 'text', label: 'College' },
-        { name: 'player.country_id', type: 'number', label: 'Country' },
-        { name: 'player_info.team_id', type: 'number', label: 'Team' },
+        { name: 'player.country_id', type: 'option', label: 'Country' },
+        { name: 'player_info.team_id', type: 'option', label: 'Team' },
         { name: 'player_info.is_active', type: 'boolean', label: 'Active' },
         { name: 'player_info.position', type: 'text', label: 'Position' },
         { name: 'player_info.from_year', type: 'number', label: 'From Year' },
         { name: 'player_info.to_year', type: 'number', label: 'To Year' },
         { name: 'player_info.jersey', type: 'number', label: 'Jersey' },
-    ];
+    ]);
 
     const validationSchema = Yup.object().shape({
         player: Yup.object().shape({
@@ -65,18 +66,10 @@ export default function PlayerModal({
                     return value !== 0;
                 }),
             birth_date: Yup.date().required("Birth Date can't be empty."),
-            country_id: Yup.number()
-                .required("Country can't be empty.")
-                .test('test-country', 'Country can not be 0.', function (value) {
-                    return value !== 0;
-                }),
+            country_id: Yup.number().required("Country can't be empty."),
         }),
         player_info: Yup.object().shape({
-            team_id: Yup.number()
-                .required("Team can't be empty.")
-                .test('test-team', 'Team can not be 0.', function (value) {
-                    return value !== 0;
-                }),
+            team_id: Yup.number().required("Team can't be empty."),
             position: Yup.string().required("Position can't be empty."),
             from_year: Yup.number()
                 .required("From Year can't be empty.")
@@ -105,10 +98,10 @@ export default function PlayerModal({
                 weight: weight || 0,
                 birth_date: birth_date ? new Date(birth_date) : null,
                 college: college || '',
-                country_id: country_id || 0,
+                country_id: country_id || null,
             },
             player_info: {
-                team_id: team_id || 0,
+                team_id: team_id || null,
                 is_active: is_active === 1 ? true : false,
                 position: position || '',
                 from_year: from_year || 0,
@@ -123,6 +116,42 @@ export default function PlayerModal({
         },
     });
     const { values, initialValues } = formik;
+
+    useEffect(() => {
+        const fetchOptions = async () => {
+            try {
+                const countriesResponse = await fetch(`http://127.0.0.1:5000/api/countries/options`);
+                const countriesData = await countriesResponse.json();
+                const countriesOptions = countriesData.map((item) => ({
+                    label: item.name,
+                    value: item.country_id,
+                }));
+
+                const teamsResponse = await fetch(`http://127.0.0.1:5000/api/teams/options`);
+                const teamsData = await teamsResponse.json();
+                const teamsOptions = teamsData.map((item) => ({
+                    label: item.nickname,
+                    value: item.team_id,
+                }));
+
+                setFields((prevFields) =>
+                    prevFields.map((field) => {
+                        if (field.name === 'player.country_id') {
+                            return { ...field, options: countriesOptions };
+                        }
+                        if (field.name === 'player_info.team_id') {
+                            return { ...field, options: teamsOptions };
+                        }
+                        return field;
+                    }),
+                );
+            } catch (error) {
+                console.error('Options fetch error:', error);
+            }
+        };
+
+        fetchOptions();
+    }, []);
 
     const handleSubmit = (data) => {
         const changedData = Object.keys(data).reduce((acc, key) => {
@@ -273,6 +302,23 @@ export default function PlayerModal({
                         useGrouping={false}
                         onChange={(e) => {
                             formik.handleChange(e.originalEvent);
+                        }}
+                    />
+                </>
+            );
+        } else if (field.type === 'option') {
+            return (
+                <>
+                    <label>{field.label}</label>
+                    <Dropdown
+                        name={field.name}
+                        value={getNestedValue(values, field.name)}
+                        options={field.options}
+                        optionLabel="label"
+                        filter
+                        checkmark
+                        onChange={(e) => {
+                            formik.setFieldValue(field.name, e.value);
                         }}
                     />
                 </>

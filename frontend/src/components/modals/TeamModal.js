@@ -1,9 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import UseUnsavedChangesWarning from '../UseUnsavedChangesWarning';
 import { Sidebar } from 'primereact/sidebar';
 import { Divider } from 'primereact/divider';
 import { InputText } from 'primereact/inputtext';
 import { InputNumber } from 'primereact/inputnumber';
+import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import { useFormik } from 'formik';
@@ -32,21 +33,21 @@ export default function TeamModal({
     const toast = useRef(null);
     const [warningVisible, setWarningVisible] = useState(false);
 
-    const fields = [
+    const [fields, setFields] = useState([
         { name: 'name', type: 'text', label: 'Team Name' },
         { name: 'nickname', type: 'text', label: 'Nickname' },
         { name: 'abbreviation', type: 'text', label: 'Abbreviation' },
         { name: 'owner', type: 'text', label: 'Owner' },
         { name: 'general_manager', type: 'text', label: 'General Manager' },
         { name: 'headcoach', type: 'text', label: 'Headcoach' },
-        { name: 'city_id', type: 'number', label: 'City' },
-        { name: 'arena_id', type: 'number', label: 'Arena' },
+        { name: 'city_id', type: 'option', label: 'City' },
+        { name: 'arena_id', type: 'option', label: 'Arena' },
         { name: 'year_founded', type: 'number', label: 'Year Founded' },
         { name: 'facebook', type: 'url', label: 'Facebook', icon: 'fa-brands fa-facebook-f' },
         { name: 'instagram', type: 'url', label: 'Instagram', icon: 'pi pi-instagram' },
         { name: 'twitter', type: 'url', label: 'Twitter', icon: 'pi pi-twitter' },
         { name: 'logo_url', type: 'url', label: 'Logo Url', icon: 'pi pi-image' },
-    ];
+    ]);
 
     const validationSchema = Yup.object().shape({
         name: Yup.string().required("Team Name can't be empty."),
@@ -55,16 +56,8 @@ export default function TeamModal({
         owner: Yup.string().required("Owner can't be empty."),
         general_manager: Yup.string().required("General Manager can't be empty."),
         headcoach: Yup.string().required("Headcoach can't be empty."),
-        city_id: Yup.number()
-            .required("City can't be empty.")
-            .test('test-city', 'City can not be 0.', function (value) {
-                return value !== 0;
-            }),
-        arena_id: Yup.number()
-            .required("Arena can't be empty.")
-            .test('test-arena', 'Arena can not be 0.', function (value) {
-                return value !== 0;
-            }),
+        city_id: Yup.number().required("City can't be empty."),
+        arena_id: Yup.number().required("Arena can't be empty."),
         year_founded: Yup.number()
             .required("Year Founded can't be empty.")
             .test('test-year', 'Year Founded can not be 0.', function (value) {
@@ -80,8 +73,8 @@ export default function TeamModal({
             owner: owner || '',
             general_manager: general_manager || '',
             headcoach: headcoach || '',
-            city_id: city_id || 0,
-            arena_id: arena_id || 0,
+            city_id: city_id || null,
+            arena_id: arena_id || null,
             year_founded: year_founded || 0,
             facebook: facebook || '',
             instagram: instagram || '',
@@ -95,6 +88,42 @@ export default function TeamModal({
         },
     });
     const { values, initialValues } = formik;
+
+    useEffect(() => {
+        const fetchOptions = async () => {
+            try {
+                const citiesResponse = await fetch(`http://127.0.0.1:5000/api/cities/options`);
+                const citiesData = await citiesResponse.json();
+                const citiesOptions = citiesData.map((item) => ({
+                    label: item.name,
+                    value: item.city_id,
+                }));
+
+                const arenasResponse = await fetch(`http://127.0.0.1:5000/api/arenas/options`);
+                const arenasData = await arenasResponse.json();
+                const arenasOptions = arenasData.map((item) => ({
+                    label: item.name,
+                    value: item.arena_id,
+                }));
+
+                setFields((prevFields) =>
+                    prevFields.map((field) => {
+                        if (field.name === 'city_id') {
+                            return { ...field, options: citiesOptions };
+                        }
+                        if (field.name === 'arena_id') {
+                            return { ...field, options: arenasOptions };
+                        }
+                        return field;
+                    }),
+                );
+            } catch (error) {
+                console.error('Options fetch error:', error);
+            }
+        };
+
+        fetchOptions();
+    }, []);
 
     const handleSubmit = (data) => {
         const changedData = Object.keys(data).reduce((acc, key) => {
@@ -200,6 +229,20 @@ export default function TeamModal({
                     useGrouping={false}
                     onChange={(e) => {
                         formik.handleChange(e.originalEvent);
+                    }}
+                />
+            );
+        } else if (field.type === 'option') {
+            return (
+                <Dropdown
+                    name={field.name}
+                    value={formik.values[field.name]}
+                    options={field.options}
+                    optionLabel="label"
+                    filter
+                    checkmark
+                    onChange={(e) => {
+                        formik.setFieldValue(field.name, e.value);
                     }}
                 />
             );

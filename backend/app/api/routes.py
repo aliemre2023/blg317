@@ -304,6 +304,51 @@ def averageRosterAge_api():
             'average_roster_age': row[2]} for row in table],
     })
 
+@api_bp.route('/countries/options', methods=['GET'])
+def countryOptions_api():
+    table = get_country_options()
+
+    return jsonify([{
+            'country_id': row[0], 
+            'name': row[1]} for row in table],
+    )
+
+@api_bp.route('/cities/options', methods=['GET'])
+def cityOptions_api():
+    table = get_city_options()
+
+    return jsonify([{
+            'city_id': row[0], 
+            'name': row[1]} for row in table],
+    )
+
+@api_bp.route('/arenas/options', methods=['GET'])
+def arenaOptions_api():
+    table = get_arena_options()
+
+    return jsonify([{
+            'arena_id': row[0], 
+            'name': row[1]} for row in table],
+    )
+
+@api_bp.route('/officials/options', methods=['GET'])
+def officialOptions_api():
+    table = get_official_options()
+
+    return jsonify([{
+            'official_id': row[0], 
+            'official_name': row[1]} for row in table],
+    )
+
+@api_bp.route('/teams/options', methods=['GET'])
+def teamOptions_api():
+    table = get_team_options()
+
+    return jsonify([{
+            'team_id': row[0], 
+            'nickname': row[1]} for row in table],
+    )
+
 @api_bp.route('/signup', methods=['POST'])
 def admin_signup():
     try:

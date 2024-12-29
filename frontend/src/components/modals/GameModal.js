@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import UseUnsavedChangesWarning from '../UseUnsavedChangesWarning';
 import { Sidebar } from 'primereact/sidebar';
 import { Divider } from 'primereact/divider';
@@ -11,6 +11,7 @@ import { Toast } from 'primereact/toast';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import classNames from 'classnames';
+import { Dropdown } from 'primereact/dropdown';
 
 export default function PlayerModal({
     game_id,
@@ -42,11 +43,11 @@ export default function PlayerModal({
     const toast = useRef(null);
     const [warningVisible, setWarningVisible] = useState(false);
 
-    const fields = [
+    const [fields, setFields] = useState([
         { name: 'game.date', type: 'date', label: 'Date' },
-        { name: 'game.home_team_id', type: 'number', label: 'Home Team' },
-        { name: 'game.away_team_id', type: 'number', label: 'Away Team' },
-        { name: 'game.official_id', type: 'number', label: 'Offical' },
+        { name: 'game.home_team_id', type: 'option', label: 'Home Team' },
+        { name: 'game.away_team_id', type: 'option', label: 'Away Team' },
+        { name: 'game.official_id', type: 'option', label: 'Offical' },
         { name: 'game_stat.season', type: 'number', label: 'Season' },
         { name: 'game_stat.home_team_score', type: 'number', label: 'Home Team Score' },
         { name: 'game_stat.away_team_score', type: 'number', label: 'Away Team Score' },
@@ -64,26 +65,14 @@ export default function PlayerModal({
         { name: 'game_stat.away_rebounds', type: 'number', label: 'Away Rebounds' },
         { name: 'game_stat.away_blocks', type: 'number', label: 'Away Blocks' },
         { name: 'game_stat.away_steals', type: 'number', label: 'Away Steals' },
-    ];
+    ]);
 
     const validationSchema = Yup.object().shape({
         game: Yup.object().shape({
             date: Yup.date().required("Date can't be empty."),
-            home_team_id: Yup.number()
-                .required("Home Team can't be empty.")
-                .test('test-homeTeam', 'Home Team can not be 0.', function (value) {
-                    return value !== 0;
-                }),
-            away_team_id: Yup.number()
-                .required("Away Team can't be empty.")
-                .test('test-awayTeam', 'Away Team can not be 0.', function (value) {
-                    return value !== 0;
-                }),
-            official_id: Yup.number()
-                .required("Official can't be empty.")
-                .test('test-official', 'Official can not be 0.', function (value) {
-                    return value !== 0;
-                }),
+            home_team_id: Yup.number().required("Home Team can't be empty."),
+            away_team_id: Yup.number().required("Away Team can't be empty."),
+            official_id: Yup.number().required("Official can't be empty."),
         }),
         game_stat: Yup.object().shape({
             home_team_score: Yup.number().required("Home Team Score can't be empty."),
@@ -109,9 +98,9 @@ export default function PlayerModal({
         initialValues: {
             game: {
                 date: date ? new Date(date) : null,
-                home_team_id: home_team_id || 0,
-                away_team_id: away_team_id || 0,
-                official_id: official_id || 0,
+                home_team_id: home_team_id || null,
+                away_team_id: away_team_id || null,
+                official_id: official_id || null,
             },
             game_stat: {
                 season: season || 0,
@@ -140,6 +129,42 @@ export default function PlayerModal({
         },
     });
     const { values, initialValues } = formik;
+
+    useEffect(() => {
+        const fetchOptions = async () => {
+            try {
+                const officialsResponse = await fetch(`http://127.0.0.1:5000/api/officials/options`);
+                const officialsData = await officialsResponse.json();
+                const officialsOptions = officialsData.map((item) => ({
+                    label: item.official_name,
+                    value: item.official_id,
+                }));
+
+                const teamsResponse = await fetch(`http://127.0.0.1:5000/api/teams/options`);
+                const teamsData = await teamsResponse.json();
+                const teamsOptions = teamsData.map((item) => ({
+                    label: item.nickname,
+                    value: item.team_id,
+                }));
+
+                setFields((prevFields) =>
+                    prevFields.map((field) => {
+                        if (field.name === 'game.official_id') {
+                            return { ...field, options: officialsOptions };
+                        }
+                        if (field.name === 'game.home_team_id' || field.name === 'game.away_team_id') {
+                            return { ...field, options: teamsOptions };
+                        }
+                        return field;
+                    }),
+                );
+            } catch (error) {
+                console.error('Options fetch error:', error);
+            }
+        };
+
+        fetchOptions();
+    }, []);
 
     const handleSubmit = (data) => {
         const changedData = Object.keys(data).reduce((acc, key) => {
@@ -292,6 +317,20 @@ export default function PlayerModal({
                     checked={getNestedValue(values, field.name)}
                     onChange={(e) => {
                         formik.handleChange(e.originalEvent);
+                    }}
+                />
+            );
+        } else if (field.type === 'option') {
+            return (
+                <Dropdown
+                    name={field.name}
+                    value={getNestedValue(values, field.name)}
+                    options={field.options}
+                    optionLabel="label"
+                    filter
+                    checkmark
+                    onChange={(e) => {
+                        formik.setFieldValue(field.name, e.value);
                     }}
                 />
             );

@@ -684,6 +684,96 @@ def average_roster_age_perTeam():
     average_roster_age = fetch_from_sql_file("average_roster_age.sql")
     return average_roster_age
 
+def get_country_options():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    sql_query = """
+        SELECT
+            country_id,
+            name
+        FROM 
+            countries
+    """
+
+    cursor.execute(sql_query)
+    country_options = cursor.fetchall()
+
+    conn.close()
+    return country_options
+
+def get_city_options():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    sql_query = """
+        SELECT
+            city_id,
+            name
+        FROM 
+            cities
+    """
+
+    cursor.execute(sql_query)
+    city_options = cursor.fetchall()
+
+    conn.close()
+    return city_options
+
+def get_arena_options():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    sql_query = """
+        SELECT
+            arena_id,
+            name
+        FROM 
+            arenas
+    """
+
+    cursor.execute(sql_query)
+    arena_options = cursor.fetchall()
+
+    conn.close()
+    return arena_options
+
+def get_official_options():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    sql_query = """
+        SELECT
+            official_id,
+            first_name || ' ' || last_name AS official_name
+        FROM 
+            officials
+    """
+
+    cursor.execute(sql_query)
+    official_options = cursor.fetchall()
+
+    conn.close()
+    return official_options
+
+def get_team_options():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    sql_query = """
+        SELECT
+            team_id,
+            nickname
+        FROM 
+            teams
+    """
+
+    cursor.execute(sql_query)
+    team_options = cursor.fetchall()
+
+    conn.close()
+    return team_options
+
 def get_admin(username): 
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -718,8 +808,6 @@ def get_adminTeams(query, page=1, per_page=24):
         FROM teams t
         JOIN arenas a ON t.arena_id = a.arena_id
         JOIN cities c ON t.city_id = c.city_id
-        JOIN states s ON c.state_id = s.state_id
-        JOIN countries cout ON s.country_id = cout.country_id
         {query_to_sql(query)}
         LIMIT ? OFFSET ?
     """
