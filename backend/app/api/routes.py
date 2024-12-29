@@ -205,6 +205,19 @@ def getLastGames_api():
 
     return jsonify(formatted_games)
 
+@api_bp.route('/country/<int:country_id>', methods=['GET'])
+def countryInfo_api(country_id):
+    country_info = get_countryInfo(country_id)
+    country_json = {
+        "country_id" : country_info[0],
+        "country_name" : country_info[1],
+        "country_flag" : country_info[2],
+        "country_playercount" : country_info[3],
+        "country_teamcount" : country_info[4]
+    }
+    return jsonify(country_json)
+
+
 @api_bp.route('/country/<int:country_id>/players', methods=['POST'])
 def countryPlayers_api(country_id):
     page = int(request.args.get("page", 1))

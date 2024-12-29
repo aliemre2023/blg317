@@ -17,13 +17,13 @@ export default function gameInfo({ params }) {
             .then((response) => response.json())
             .then((data) => {
                 if (!data || Object.keys(data).length === 0) {
-                    router.replace('/404'); // Game bulunamazsa 404'e yönlendirme
+                    router.replace('/404');
                 } else {
                     setGameInfo(data);
                 }
             })
             .catch(() => {
-                router.replace('/404'); // Hata durumunda 404'e yönlendirme
+                router.replace('/404');
             })
             .finally(() => setLoading(false));
     }, [id, router]);
@@ -33,11 +33,11 @@ export default function gameInfo({ params }) {
     };
 
     if (loading) {
-        return <div>Loading...</div>; // Yüklenme ekranı
+        return <div>Loading...</div>;
     }
 
     if (!gameInfo) {
-        return null; // Eğer yönlendirme gerçekleşmezse boş döner
+        return null;
     }
 
     return (
