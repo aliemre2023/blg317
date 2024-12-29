@@ -53,19 +53,32 @@ export default function PlayerModal({
 
     const validationSchema = Yup.object().shape({
         player: Yup.object().shape({
-            first_name: Yup.string().required("First Name can't be empty."),
-            last_name: Yup.string().required("Last Name can't be empty."),
+            first_name: Yup.string()
+                .required("First Name can't be empty.")
+                .test('test-first-name', "First Name can't be empty.", function (value) {
+                    return value.trim().length > 0;
+                }),
+            last_name: Yup.string()
+                .required("Last Name can't be empty.")
+                .test('test-last-name', "Last Name can't be empty.", function (value) {
+                    return value.trim().length > 0;
+                }),
             height: Yup.number()
                 .required("Height can't be empty.")
-                .test('test-height', 'Height can not be 0.', function (value) {
-                    return value !== 0;
+                .test('test-height', 'Height must be greater than 0.', function (value) {
+                    return value > 0;
                 }),
             weight: Yup.number()
                 .required("Weight can't be empty.")
-                .test('test-weight', 'Weight can not be 0.', function (value) {
-                    return value !== 0;
+                .test('test-weight', 'Weight must be greater than 0.', function (value) {
+                    return value > 0;
                 }),
             birth_date: Yup.date().required("Birth Date can't be empty."),
+            college: Yup.string()
+                .required("Collage can't be empty.")
+                .test('test-first-name', "Collage can't be empty.", function (value) {
+                    return value.trim().length > 0;
+                }),
             country_id: Yup.number().required("Country can't be empty."),
         }),
         player_info: Yup.object().shape({
@@ -73,18 +86,18 @@ export default function PlayerModal({
             position: Yup.string().required("Position can't be empty."),
             from_year: Yup.number()
                 .required("From Year can't be empty.")
-                .test('test-from-year', 'From Year can not be 0.', function (value) {
-                    return value !== 0;
+                .test('test-from-year', 'From Year must be greater than 1900.', function (value) {
+                    return value > 1900;
                 }),
             to_year: Yup.number()
                 .required("To Year can't be empty.")
-                .test('test-to-year', 'To Year can not be 0.', function (value) {
-                    return value !== 0;
+                .test('test-to-year', 'To Year must be greater than From Year.', function (value) {
+                    return value > 1900 && value >= formik.values.player_info.from_year;
                 }),
             jersey: Yup.number()
                 .required("Jersey can't be empty.")
-                .test('test-jersey', 'Jersey can not be 0.', function (value) {
-                    return value !== 0;
+                .test('test-jersey', 'Jersey must be greater than 0.', function (value) {
+                    return value > 0;
                 }),
         }),
     });
@@ -317,6 +330,9 @@ export default function PlayerModal({
                         optionLabel="label"
                         filter
                         checkmark
+                        className={classNames({
+                            'p-invalid': isFormFieldValid(field.name),
+                        })}
                         onChange={(e) => {
                             formik.setFieldValue(field.name, e.value);
                         }}

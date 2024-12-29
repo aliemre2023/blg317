@@ -75,6 +75,9 @@ export default function PlayerModal({
             official_id: Yup.number().required("Official can't be empty."),
         }),
         game_stat: Yup.object().shape({
+            season: Yup.number()
+                .required("Season can't be empty.")
+                .test('test-season', 'Season must be greater than 0.', (value) => value > 0),
             home_team_score: Yup.number().required("Home Team Score can't be empty."),
             away_team_score: Yup.number().required("Away Team Score can't be empty."),
             home_qtr1_points: Yup.number().required("Home QTR1 Points can't be empty."),
@@ -329,6 +332,9 @@ export default function PlayerModal({
                     optionLabel="label"
                     filter
                     checkmark
+                    className={classNames({
+                        'p-invalid': isFormFieldValid(field.name),
+                    })}
                     onChange={(e) => {
                         formik.setFieldValue(field.name, e.value);
                     }}

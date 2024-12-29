@@ -50,18 +50,42 @@ export default function TeamModal({
     ]);
 
     const validationSchema = Yup.object().shape({
-        name: Yup.string().required("Team Name can't be empty."),
-        nickname: Yup.string().required("Nickname can't be empty."),
-        abbreviation: Yup.string().required("Abbreviation can't be empty."),
-        owner: Yup.string().required("Owner can't be empty."),
-        general_manager: Yup.string().required("General Manager can't be empty."),
-        headcoach: Yup.string().required("Headcoach can't be empty."),
+        name: Yup.string()
+            .required("Team Name can't be empty.")
+            .test('test-team-name', "Team Name can't be empty.", function (value) {
+                return value.trim().length > 0;
+            }),
+        nickname: Yup.string()
+            .required("Nickname can't be empty.")
+            .test('test-nickname', "Nickname can't be empty.", function (value) {
+                return value.trim().length > 0;
+            }),
+        abbreviation: Yup.string()
+            .required("Abbreviation can't be empty.")
+            .test('test-abbreviation', 'Abbreviation must be 3 characters long', function (value) {
+                return value.trim().length === 3;
+            }),
+        owner: Yup.string()
+            .required("Owner can't be empty.")
+            .test('test-owner', "Owner can't be empty.", function (value) {
+                return value.trim().length > 0;
+            }),
+        general_manager: Yup.string()
+            .required("General Manager can't be empty.")
+            .test('test-general_manager', "General Manager can't be empty.", function (value) {
+                return value.trim().length > 0;
+            }),
+        headcoach: Yup.string()
+            .required("Headcoach can't be empty.")
+            .test('test-headcoach', "Headcoach can't be empty.", function (value) {
+                return value.trim().length > 0;
+            }),
         city_id: Yup.number().required("City can't be empty."),
         arena_id: Yup.number().required("Arena can't be empty."),
         year_founded: Yup.number()
             .required("Year Founded can't be empty.")
-            .test('test-year', 'Year Founded can not be 0.', function (value) {
-                return value !== 0;
+            .test('test-year', 'Year Founded must be greater than 0.', function (value) {
+                return value > 0;
             }),
     });
 
@@ -241,6 +265,9 @@ export default function TeamModal({
                     optionLabel="label"
                     filter
                     checkmark
+                    className={classNames({
+                        'p-invalid': isFormFieldValid(field.name),
+                    })}
                     onChange={(e) => {
                         formik.setFieldValue(field.name, e.value);
                     }}
