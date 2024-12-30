@@ -40,9 +40,9 @@ function Page() {
                 return data;
             })
             .then((data) => {
-                console.log(data.quote[0])
+                // console.log(data.quote[0])
                 setQuote(data.quote[0])
-                console.log(quote)
+                // console.log(quote)
             })
             .catch((error) => {
                 console.error('Quote Fetching Error', error);

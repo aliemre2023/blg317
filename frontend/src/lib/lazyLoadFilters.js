@@ -166,7 +166,6 @@ export default function lazyLoad(filters) {
             }
             case 'Boolean': {
                 if (value.value !== null && value.value !== '') {
-                    console.log('value', value);
                     queries[filterKey] = {
                         operator: 'and',
                         constraints: [{ value: value.value ? 1 : 0, operator: '=' }],
