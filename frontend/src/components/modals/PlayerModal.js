@@ -207,13 +207,7 @@ export default function PlayerModal({
             },
             body: JSON.stringify(changedData),
         })
-            .then((response) => {
-                const data = response.json();
-                if (!response.ok) {
-                    throw new Error(data.error || 'Unknown error');
-                }
-                return data;
-            })
+            .then((response) => response.json())
             .then((data) => {
                 if (data.success)
                     toast.current.show({

@@ -43,6 +43,9 @@ export default function Page({ params }) {
             try {
                 const countryInfoResponse = await fetch(`http://127.0.0.1:5000/api/country/${id}`);
                 const countryInfoData = await countryInfoResponse.json();
+                if(!countryInfoResponse.ok) {
+                    throw new Error(countryInfoData.error || 'Unknown error');
+                }
 
                 // console.log(countryInfoData);
                 if (countryInfoData.country_playercount <= 0 && countryInfoData.country_teamcount <= 0) {
@@ -71,13 +74,10 @@ export default function Page({ params }) {
                     },
                     body: JSON.stringify({ filters, sorts }),
                 });
-
-                if (!countryResponse.ok) {
-                    router.replace('/404');
-                    return;
-                }
-
                 const countryData = await countryResponse.json();
+                if (!countryResponse.ok) {
+                    throw new Error(countryData.error || 'Unknown error');
+                }
 
                 if (countryData) {
                     if (activeIndex === 0) {

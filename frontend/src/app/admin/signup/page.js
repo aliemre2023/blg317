@@ -66,7 +66,7 @@ export default function signup() {
         })
             .then((response) => {
                 const data = response.json();
-                if (!response.ok) {
+                if (!response.ok && response.status === 500) {
                     throw new Error(data.error || 'Unknown error');
                 }
                 return data;
