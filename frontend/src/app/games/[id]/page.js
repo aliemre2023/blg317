@@ -13,7 +13,7 @@ export default function gameInfo({ params }) {
 
     useEffect(() => {
         setGameInfo(null);
-        fetch(`http://127.0.0.1:5000/api/games/${id}`)
+        fetch(`https://blg317api.onrender.com/api/games/${id}`)
             .then((response) => {
                 const data = response.json();
                 if (!response.ok) {

@@ -58,7 +58,7 @@ function Games() {
             ...(filters.official_name && { official_name: filters.official_name }),
         });
 
-        fetch(`http://127.0.0.1:5000/api/games?${queryParams.toString()}`)
+        fetch(`https://blg317api.onrender.com/api/games?${queryParams.toString()}`)
             .then((response) => {
                 const data = response.json();
                 if (!response.ok) {

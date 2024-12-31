@@ -41,7 +41,7 @@ function Players() {
 
     // Fetch players based on search and pagination
     useEffect(() => {
-        let url = `http://127.0.0.1:5000/api/players?page=${currentPage}&name=${searchText}`;
+        let url = `https://blg317api.onrender.com/api/players?page=${currentPage}&name=${searchText}`;
         if (isActive) {
             url += '&is_active=1';
         }

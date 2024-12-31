@@ -12,7 +12,7 @@ export default function playerInfo({ params }) {
     const [loading, setLoading] = useState(true);
     useEffect(() => {
         setLoading(true);
-        fetch(`http://127.0.0.1:5000/api/players/${id}`)
+        fetch(`https://blg317api.onrender.com/api/players/${id}`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error('Player not found');

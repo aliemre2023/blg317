@@ -12,7 +12,7 @@ function Page() {
 
     useEffect(() => {
         // Fetch the last games from the API
-        fetch('http://127.0.0.1:5000/api/getLastGames') // Adjust API endpoint if necessary
+        fetch('https://blg317api.onrender.com/api/getLastGames') // Adjust API endpoint if necessary
             .then((response) => {
                 const data = response.json();
                 if (!response.ok) {
@@ -31,7 +31,7 @@ function Page() {
     }, []);
 
     useEffect(() => {
-        fetch('http://127.0.0.1:5000/api/randomQuote')
+        fetch('https://blg317api.onrender.com/api/randomQuote')
             .then((response) => {
                 const data = response.json();
                 if (!response.ok) {

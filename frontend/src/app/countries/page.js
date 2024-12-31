@@ -36,7 +36,7 @@ function Countries() {
     };
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:5000/api/countries?page=${currentPage}&name=${searchText}`)
+        fetch(`https://blg317api.onrender.com/api/countries?page=${currentPage}&name=${searchText}`)
             .then((response) => {
                 const data = response.json();
                 if (!response.ok) {
@@ -52,7 +52,7 @@ function Countries() {
     }, [currentPage, searchText]);
 
     useEffect(() => {
-        fetch('http://127.0.0.1:5000/api/numberOfTeams')
+        fetch('https://blg317api.onrender.com/api/numberOfTeams')
             .then((response) => {
                 const data = response.json();
                 if (!response.ok) {
@@ -66,7 +66,7 @@ function Countries() {
             })
             .catch((error) => console.log(error));
 
-        fetch('http://127.0.0.1:5000/api/numberOfPlayers')
+        fetch('https://blg317api.onrender.com/api/numberOfPlayers')
             .then((response) => {
                 const data = response.json();
                 if (!response.ok) {

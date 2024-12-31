@@ -41,7 +41,7 @@ export default function Page({ params }) {
     useEffect(() => {
         const fetchCountryInfo = async () => {
             try {
-                const countryInfoResponse = await fetch(`http://127.0.0.1:5000/api/country/${id}`);
+                const countryInfoResponse = await fetch(`https://blg317api.onrender.com/api/country/${id}`);
                 const countryInfoData = await countryInfoResponse.json();
                 if(!countryInfoResponse.ok) {
                     throw new Error(countryInfoData.error || 'Unknown error');
@@ -56,7 +56,7 @@ export default function Page({ params }) {
                 setCountryName(countryInfoData.country_name);
                 setData([]);
 
-                let request = `http://127.0.0.1:5000/api/country/${id}/`;
+                let request = `https://blg317api.onrender.com/api/country/${id}/`;
                 if (activeIndex === 0) request += 'teams';
                 else if (activeIndex === 1) request += 'players';
 

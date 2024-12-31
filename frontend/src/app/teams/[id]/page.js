@@ -22,7 +22,7 @@ export default function TeamInfo({ params }) {
     useEffect(() => {
         setTeamRoster([]);
         setTeamInfo([]);
-        fetch(`http://127.0.0.1:5000/api/teams/${id}`)
+        fetch(`https://blg317api.onrender.com/api/teams/${id}`)
             .then((response) => {
                 const data = response.json();
                 if (!response.ok) {
@@ -48,7 +48,7 @@ export default function TeamInfo({ params }) {
 
     useEffect(() => {
         if (year) {
-            fetch(`http://127.0.0.1:5000/api/teams_win_rate?id=${id}&year=${year}`)
+            fetch(`https://blg317api.onrender.com/api/teams_win_rate?id=${id}&year=${year}`)
                 .then((response) => {
                     const data = response.json();
                     if (!response.ok) {
@@ -64,7 +64,7 @@ export default function TeamInfo({ params }) {
     }, [year, id]);
 
     useEffect(() => {
-        fetch('http://127.0.0.1:5000/api/averageRosterAge')
+        fetch('https://blg317api.onrender.com/api/averageRosterAge')
             .then((response) => {
                 const data = response.json();
                 if (!response.ok) {

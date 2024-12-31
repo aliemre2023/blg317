@@ -35,7 +35,7 @@ function Teams() {
 
     // Fetch teams based on search and pagination
     useEffect(() => {
-        fetch(`http://127.0.0.1:5000/api/teams?page=${currentPage}&nickname=${searchText}`)
+        fetch(`https://blg317api.onrender.com/api/teams?page=${currentPage}&nickname=${searchText}`)
             .then((response) => {
                 const data = response.json();
                 if (!response.ok) {

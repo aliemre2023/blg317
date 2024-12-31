@@ -137,14 +137,14 @@ export default function PlayerModal({
     useEffect(() => {
         const fetchOptions = async () => {
             try {
-                const countriesResponse = await fetch(`http://127.0.0.1:5000/api/countries/options`);
+                const countriesResponse = await fetch(`https://blg317api.onrender.com/api/countries/options`);
                 const countriesData = await countriesResponse.json();
                 const countriesOptions = countriesData.map((item) => ({
                     label: item.name,
                     value: item.country_id,
                 }));
 
-                const teamsResponse = await fetch(`http://127.0.0.1:5000/api/teams/options`);
+                const teamsResponse = await fetch(`https://blg317api.onrender.com/api/teams/options`);
                 const teamsData = await teamsResponse.json();
                 const teamsOptions = teamsData.map((item) => ({
                     label: item.nickname,
@@ -200,7 +200,7 @@ export default function PlayerModal({
         if (changedData?.player_info?.is_active)
             changedData.player_info.is_active = changedData.player_info.is_active ? 1 : 0;
 
-        fetch(`http://127.0.0.1:5000/api/admin/players/${player_id || 0}`, {
+        fetch(`https://blg317api.onrender.com/api/admin/players/${player_id || 0}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

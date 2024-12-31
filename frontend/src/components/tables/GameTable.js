@@ -44,7 +44,7 @@ export default function GameTable() {
               }))
             : [];
 
-        fetch(`http://127.0.0.1:5000/api/admin/games?page=${currentPage}&limit=${limit}`, {
+        fetch(`https://blg317api.onrender.com/api/admin/games?page=${currentPage}&limit=${limit}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -280,7 +280,7 @@ export default function GameTable() {
     };
 
     const deleteTeam = (game_id) => () => {
-        fetch(`http://127.0.0.1:5000/api/admin/games/${game_id}`, { method: 'DELETE' })
+        fetch(`https://blg317api.onrender.com/api/admin/games/${game_id}`, { method: 'DELETE' })
             .then((response) => {
                 const data = response.json();
                 if (!response.ok) {

@@ -4,7 +4,7 @@ export async function POST(request) {
     try {
         const { username, mail, password } = await request.json();
 
-        const apiResponse = await fetch('http://127.0.0.1:5000/api/signup', {
+        const apiResponse = await fetch('https://blg317api.onrender.com/api/signup', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

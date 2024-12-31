@@ -124,14 +124,14 @@ export default function TeamModal({
     useEffect(() => {
         const fetchOptions = async () => {
             try {
-                const citiesResponse = await fetch(`http://127.0.0.1:5000/api/cities/options`);
+                const citiesResponse = await fetch(`https://blg317api.onrender.com/api/cities/options`);
                 const citiesData = await citiesResponse.json();
                 const citiesOptions = citiesData.map((item) => ({
                     label: item.name,
                     value: item.city_id,
                 }));
 
-                const arenasResponse = await fetch(`http://127.0.0.1:5000/api/arenas/options`);
+                const arenasResponse = await fetch(`https://blg317api.onrender.com/api/arenas/options`);
                 const arenasData = await arenasResponse.json();
                 const arenasOptions = arenasData.map((item) => ({
                     label: item.name,
@@ -165,7 +165,7 @@ export default function TeamModal({
             return acc;
         }, {});
 
-        fetch(`http://127.0.0.1:5000/api/admin/teams/${team_id || 0}`, {
+        fetch(`https://blg317api.onrender.com/api/admin/teams/${team_id || 0}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

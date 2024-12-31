@@ -45,7 +45,7 @@ export default function TeamTable() {
               }))
             : [];
 
-        fetch(`http://127.0.0.1:5000/api/admin/players?page=${currentPage}&limit=${limit}`, {
+        fetch(`https://blg317api.onrender.com/api/admin/players?page=${currentPage}&limit=${limit}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -211,7 +211,7 @@ export default function TeamTable() {
     };
 
     const deleteTeam = (player_id) => () => {
-        fetch(`http://127.0.0.1:5000/api/admin/players/${player_id}`, { method: 'DELETE' })
+        fetch(`https://blg317api.onrender.com/api/admin/players/${player_id}`, { method: 'DELETE' })
             .then((response) => {
                 const data = response.json();
                 if (!response.ok) {
