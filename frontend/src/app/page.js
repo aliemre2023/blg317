@@ -57,7 +57,7 @@ function Page() {
         router.push(`/games/${game_id}`);
     };
 
-    return (
+    return (     
         <div className="h-auto">
             <div className="grid mt-1 w-full bg-primary">
                 <div className="col-8 col-offset-2">
@@ -172,7 +172,12 @@ function Page() {
                         </table>
                     )}
                 </div>
-            </div>
+            </div> 
+            {!quote.player_id && (
+                <div className="text-center flex justify-content-center align-items-center text-8xl col-12 bg-red-500 font-bold h-screen w-screen fixed top-0 left-0 z-5">
+                    Wait for API load <br></br>(10 second)
+                </div>
+            )}
         </div>
     );
 }
