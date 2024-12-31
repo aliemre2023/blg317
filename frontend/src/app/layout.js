@@ -1,5 +1,6 @@
 import { PrimeReactProvider } from 'primereact/api';
 import classNames from 'classnames';
+import { Analytics } from "@vercel/analytics/react"
 
 import localFont from 'next/font/local';
 import '@/styles/globals.css';
