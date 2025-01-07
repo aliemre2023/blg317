@@ -1,3 +1,5 @@
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { PrimeReactProvider } from 'primereact/api';
 import classNames from 'classnames';
 
@@ -32,6 +34,8 @@ export default function RootLayout({ children }) {
             </head>
             <body className={`${geistSans.variable} ${geistMono.variable}`}>
                 <PrimeReactProvider>{children}</PrimeReactProvider>
+                <Analytics/>
+                <SpeedInsights/>
             </body>
         </html>
     );
